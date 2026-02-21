@@ -16,13 +16,13 @@ public class TelegramClient : ITelegramClient
         _logger = logger;
     }
 
-    public async Task SendMessageAsync(long chatId, string message)
+    public async Task SendMessageAsync(long chatId, string message, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Sending message to {ChatId}", chatId);
         await _client.SendMessage(chatId, message);
     }
 
-    public async Task SetCommandsAsync(IEnumerable<ICommand> commands)
+    public async Task SetCommandsAsync(IEnumerable<ICommand> commands, CancellationToken cancellationToken = default)
     {
         var botCommands = commands.Select(e => new BotCommand
         {

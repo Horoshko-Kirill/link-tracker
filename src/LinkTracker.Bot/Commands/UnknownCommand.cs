@@ -3,10 +3,10 @@ using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;
 
-public class UnknowCommand : ICommand
+public class UnknownCommand : ICommand
 {
     private readonly ITelegramClient _client;
-    public UnknowCommand(ITelegramClient client)
+    public UnknownCommand(ITelegramClient client)
     {
         _client = client; 
     }
@@ -14,8 +14,8 @@ public class UnknowCommand : ICommand
 
     public string Description => String.Empty;
 
-    public async Task ExecuteAsync(long chatId)
+    public async Task ExecuteAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        await _client.SendMessageAsync(chatId, "Неизвестная команда. Используйте /help.");
+        await _client.SendMessageAsync(chatId, "Неизвестная команда. Используйте /help.", cancellationToken);
     }
 }
