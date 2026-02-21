@@ -13,6 +13,8 @@ public class StartCommand : ICommand
     }
     public string Name => "/start";
 
+    public string Description => "Начать выполнение";
+
     public async Task ExecuteAsync(long chatId, CancellationToken cancellationToken = default)
     {
         await _client.SendMessageAsync(chatId, "Добро пожаловать! Используйте /help для списка команд.", cancellationToken);

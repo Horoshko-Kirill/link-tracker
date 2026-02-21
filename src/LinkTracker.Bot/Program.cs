@@ -12,6 +12,9 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<BotOptions>(
     builder.Configuration.GetSection("Bot"));
 
+builder.Logging.ClearProviders(); 
+builder.Logging.AddConsole();
+
 builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
 
 builder.Services.AddTransient<ICommand, StartCommand>();

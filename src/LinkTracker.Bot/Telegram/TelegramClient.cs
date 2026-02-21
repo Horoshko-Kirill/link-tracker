@@ -29,6 +29,7 @@ public class TelegramClient : ITelegramClient
         var botCommands = commands.Select(e => new BotCommand
         {
             Command = e.Name.TrimStart('/'),
+            Description = e.Description
         });
 
         await _client.SetMyCommands(botCommands);
