@@ -14,6 +14,8 @@ public class HelpCommand : ICommand
     }
     public string Name => "/help";
 
+    public string Description => "Список команд";
+
     public async Task ExecuteAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var message = HelpConstants.constants;
