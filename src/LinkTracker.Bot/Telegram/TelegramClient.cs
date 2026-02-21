@@ -35,8 +35,10 @@ public class TelegramClient : ITelegramClient
         await _client.SetMyCommands(botCommands);
     }
 
-    public void StartReceiving(Func<Update, Task> handleUpdate, CancellationToken cancellationToken)
+    public Task StartReceivingAsync(Func<Update, Task> handleUpdate, CancellationToken cancellationToken)
     {
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
         _client.StartReceiving(
             async (bot, update, token) =>
             {
@@ -51,5 +53,9 @@ public class TelegramClient : ITelegramClient
                 AllowedUpdates = Array.Empty<UpdateType>()
             },
             cancellationToken);
+
+        cancellationToken.Register(() => tcs.TrySetResult());
+
+        return tcs.Task;
     }
 }
