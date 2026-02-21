@@ -1,4 +1,5 @@
 ﻿using LinkTracker.Bot.Commands.Interfaces;
+using LinkTracker.Bot.Constans;
 using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;
@@ -6,25 +7,16 @@ namespace LinkTracker.Bot.Commands;
 public class HelpCommand : ICommand
 {
     private readonly ITelegramClient _client;
-    private readonly IEnumerable<ICommand> _command;
 
-    public HelpCommand(ITelegramClient client, IEnumerable<ICommand> command)
+    public HelpCommand(ITelegramClient client)
     {
         _client = client;
-        _command = command;
     }
     public string Name => "/help";
 
-    public string Description => "Список команд";
-
     public async Task ExecuteAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        var text = _command
-            .Where(c => !string.IsNullOrEmpty(c.Name))
-            .Select(e => $"{e.Name} - {e.Description}")
-            .ToList();
-
-        var message = string.Join("\n", text);
+        var message = HelpConstants.constants;
 
         await _client.SendMessageAsync(chatId, message, cancellationToken);
     }
