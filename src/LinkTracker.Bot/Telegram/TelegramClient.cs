@@ -1,4 +1,5 @@
-﻿using LinkTracker.Bot.Configuration;
+﻿using LinkTracker.Bot.Commands.Interfaces;
+using LinkTracker.Bot.Configuration;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -21,8 +22,14 @@ public class TelegramClient : ITelegramClient
         await _client.SendMessage(chatId, message);
     }
 
-    public async Task SetCommandsAsync(IEnumerable<BotCommand> commands)
+    public async Task SetCommandsAsync(IEnumerable<ICommand> commands)
     {
-        await _client.SetMyCommands(commands);
+        var botCommands = commands.Select(e => new BotCommand
+        {
+            Command = e.Name.TrimStart('/'),
+            Description = e.Description
+        });
+
+        await _client.SetMyCommands(botCommands);
     }
 }
