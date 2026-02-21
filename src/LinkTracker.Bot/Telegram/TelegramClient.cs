@@ -26,7 +26,9 @@ public class TelegramClient : ITelegramClient
 
     public async Task SetCommandsAsync(IEnumerable<ICommand> commands, CancellationToken cancellationToken = default)
     {
-        var botCommands = commands.Select(e => new BotCommand
+        var botCommands = commands
+            .Where(e => !string.IsNullOrEmpty(e.Name))
+            .Select(e => new BotCommand
         {
             Command = e.Name.TrimStart('/'),
             Description = e.Description
