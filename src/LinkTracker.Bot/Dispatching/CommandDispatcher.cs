@@ -11,7 +11,7 @@ public class CommandDispatcher : ICommandDispatcher
     public CommandDispatcher(IEnumerable<ICommand> commands)
     {
         _commands = commands;
-        _unknownCommand = SetUnknownCommand(_commands);        
+        _unknownCommand = SetUnknownCommand(_commands);
     }
 
     private ICommand SetUnknownCommand(IEnumerable<ICommand> commands)

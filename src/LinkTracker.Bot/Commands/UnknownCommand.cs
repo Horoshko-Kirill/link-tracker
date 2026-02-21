@@ -11,7 +11,7 @@ public class UnknownCommand : ICommand
     private readonly ITelegramClient _client;
     public UnknownCommand(ITelegramClient client)
     {
-        _client = client; 
+        _client = client;
     }
     public string Name => String.Empty;
 
