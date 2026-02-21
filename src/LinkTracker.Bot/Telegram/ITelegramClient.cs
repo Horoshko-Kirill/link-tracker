@@ -7,5 +7,5 @@ public interface ITelegramClient
 {
     Task SendMessageAsync(long chatId, string message, CancellationToken cancellationToken);
     Task SetCommandsAsync(IEnumerable<ICommand> commands, CancellationToken cancellationToken);
-    Task StartReceivingAsync(Func<Update, Task> handleUpdate, CancellationToken cancellationToken);
+    void StartReceivingAsync(Func<Update, Task> handleUpdate, CancellationToken cancellationToken);
 }
