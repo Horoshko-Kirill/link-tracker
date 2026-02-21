@@ -2,9 +2,9 @@
 
 public class TelegramHostedService : IHostedService
 {
-    private readonly TelegramReceivingService _telegramReceivingService;
+    private readonly ITelegramReceivingService _telegramReceivingService;
 
-    public TelegramHostedService (TelegramReceivingService telegramReceivingService)
+    public TelegramHostedService (ITelegramReceivingService telegramReceivingService)
     {
         _telegramReceivingService = telegramReceivingService;
     }

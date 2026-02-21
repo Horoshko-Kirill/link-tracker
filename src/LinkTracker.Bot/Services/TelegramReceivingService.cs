@@ -5,13 +5,13 @@ using Telegram.Bot.Types.Enums;
 
 namespace LinkTracker.Bot.Services;
 
-public class TelegramReceivingService
+public class TelegramReceivingService : ITelegramReceivingService
 {
     private readonly ITelegramClient _client;
-    private readonly CommandDispatcher _dispatcher;
+    private readonly ICommandDispatcher _dispatcher;
     private readonly IEnumerable<ICommand> _commands;
 
-    public TelegramReceivingService(ITelegramClient client, CommandDispatcher dispatcher, IEnumerable<ICommand> commands)
+    public TelegramReceivingService(ITelegramClient client, ICommandDispatcher dispatcher, IEnumerable<ICommand> commands)
     {
         _client = client;
         _dispatcher = dispatcher;

@@ -19,12 +19,11 @@ builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
 
 builder.Services.AddTransient<ICommand, StartCommand>();
 builder.Services.AddTransient<ICommand, HelpCommand>();
+builder.Services.AddTransient<ICommand, UnknownCommand>();
 
-builder.Services.AddTransient<UnknownCommand>();
+builder.Services.AddTransient<ICommandDispatcher, CommandDispatcher>();
 
-builder.Services.AddTransient<CommandDispatcher>();
-
-builder.Services.AddSingleton<TelegramReceivingService>();
+builder.Services.AddSingleton<ITelegramReceivingService, TelegramReceivingService>();
 
 builder.Services.AddHostedService<TelegramHostedService>();
 
