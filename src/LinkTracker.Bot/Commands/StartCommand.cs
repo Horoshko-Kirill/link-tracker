@@ -9,7 +9,7 @@ public class StartCommand : ICommand
 
     public StartCommand(ITelegramClient client)
     {
-        _client = client; 
+        _client = client;
     }
     public string Name => "/start";
 

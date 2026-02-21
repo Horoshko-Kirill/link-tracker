@@ -32,10 +32,10 @@ public class TelegramClient : ITelegramClient
         var botCommands = commands
             .Where(e => !string.IsNullOrEmpty(e.Name))
             .Select(e => new BotCommand
-        {
-            Command = e.Name.TrimStart('/'),
-            Description = e.Description
-        });
+            {
+                Command = e.Name.TrimStart('/'),
+                Description = e.Description
+            });
 
         await _client.SetMyCommands(botCommands);
     }
