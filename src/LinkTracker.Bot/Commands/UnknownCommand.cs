@@ -3,6 +3,9 @@ using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;
 
+/// <summary>
+/// Неизвестная команда для обработки исключительных ситуаций пользовательского ввода
+/// </summary>
 public class UnknownCommand : ICommand
 {
     private readonly ITelegramClient _client;

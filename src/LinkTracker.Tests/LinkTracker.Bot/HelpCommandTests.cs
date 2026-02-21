@@ -7,6 +7,10 @@ namespace LinkTracker.Tests.LinkTracker.Bot;
 
 public class HelpCommandTests
 {
+    /// <summary>
+    /// Положительный тест на вызов команды /help
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async Task ExecuteAsync_ShouldBeListAllCommand()
     {
