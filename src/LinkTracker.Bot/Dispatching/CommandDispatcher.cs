@@ -14,7 +14,7 @@ public class CommandDispatcher
         _unknownCommnd = unknownCommnd;
     }
 
-    public async Task DispatckAsync(string name, long chatId, CancellationToken cancellationToken = default)
+    public async Task DispatchAsync(string name, long chatId, CancellationToken cancellationToken = default)
     {
 
         var command = _commands.FirstOrDefault(c => c.Name == name);
