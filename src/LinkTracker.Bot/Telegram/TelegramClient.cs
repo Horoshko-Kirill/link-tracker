@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LinkTracker.Bot.Telegram;
 
