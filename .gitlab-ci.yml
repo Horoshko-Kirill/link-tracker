@@ -15,7 +15,7 @@ build:
     - dotnet build
   only:
     - merge_requests
-    - master
+
 
 linter:
   stage: validate
@@ -23,7 +23,7 @@ linter:
     - dotnet format --verify-no-changes
   only:
     - merge_requests
-    - master
+
 
 module_test:
   stage: test

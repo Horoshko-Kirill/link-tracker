@@ -1,5 +1,7 @@
 ﻿namespace LinkTracker.Bot.Services;
-
+/// <summary>
+/// Класс, запускающий фоновую задачу для отслеживания обновлений телеграма 
+/// </summary>
 public class TelegramHostedService : IHostedService
 {
     private readonly ITelegramReceivingService _telegramReceivingService;

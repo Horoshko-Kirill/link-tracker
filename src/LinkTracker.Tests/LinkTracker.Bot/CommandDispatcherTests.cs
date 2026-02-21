@@ -8,6 +8,10 @@ namespace LinkTracker.Tests.LinkTracker.Bot;
 
 public class CommandDispatcherTests
 {
+    /// <summary>
+    /// Позитивные тест на вызов корректной комманды
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async Task DispatchAsync_ShouldCallCorrectCommand()
     {
@@ -27,6 +31,11 @@ public class CommandDispatcherTests
         await unknown.DidNotReceive().ExecuteAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
     }
 
+
+    /// <summary>
+    /// Негативный тест на вызов несуществующей команды
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async Task DispatchAsync_ShouldCallUnknownCommand_WhenNotFound()
     {

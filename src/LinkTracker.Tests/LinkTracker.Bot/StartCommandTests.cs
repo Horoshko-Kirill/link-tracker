@@ -6,6 +6,10 @@ namespace LinkTracker.Tests.LinkTracker.Bot
 {
     public class StartCommandTests
     {
+        /// <summary>
+        /// Положительный тест на вызов команды /start
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ExecuteAsync_ShouldBeWelcomeMessage()
         {

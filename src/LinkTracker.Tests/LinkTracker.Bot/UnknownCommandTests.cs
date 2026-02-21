@@ -6,6 +6,10 @@ namespace LinkTracker.Tests.LinkTracker.Bot;
 
 public class UnknownCommandTests
 {
+    /// <summary>
+    /// Положительный тест на вызов неизвестной команды 
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async Task ExecuteAsync_ShouldBeUnknownMessage()
     {

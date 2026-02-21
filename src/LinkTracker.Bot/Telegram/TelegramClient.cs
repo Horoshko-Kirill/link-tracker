@@ -8,6 +8,9 @@ using Telegram.Bot.Types.Enums;
 
 namespace LinkTracker.Bot.Telegram;
 
+/// <summary>
+/// Класс реализовывающий ITelegramClient
+/// </summary>
 public class TelegramClient : ITelegramClient
 {
     private readonly TelegramBotClient _client;
@@ -42,15 +45,15 @@ public class TelegramClient : ITelegramClient
         _client.StartReceiving(
             async (bot, update, token) =>
             {
-                await handleUpdate(update);
+                await handleUpdate(update); //Обработка обычной ситуации
             },
             async (bot, exception, token) =>
             {
-                _logger.LogError("Telegram error: {exception}", exception);
+                _logger.LogError("Telegram error: {exception}", exception); //Обработка исключительной ситуации на стороне телеграмма
             },
             new ReceiverOptions
             {
-                AllowedUpdates = Array.Empty<UpdateType>()
+                AllowedUpdates = Array.Empty<UpdateType>() //Таким образом мы говорим, что хотим получать все обновления
             },
             cancellationToken);
     }

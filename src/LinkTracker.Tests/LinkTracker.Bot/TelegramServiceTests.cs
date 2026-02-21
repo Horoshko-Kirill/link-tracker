@@ -8,6 +8,10 @@ namespace LinkTracker.Tests.LinkTracker.Bot;
 
 public class TelegramServiceTests
 {
+    /// <summary>
+    /// Положительный тест на установку команд телеграмму 
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async Task StartAsync_ShouldSetCommands()
     {
