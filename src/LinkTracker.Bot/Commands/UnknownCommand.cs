@@ -12,8 +12,6 @@ public class UnknownCommand : ICommand
     }
     public string Name => String.Empty;
 
-    public string Description => String.Empty;
-
     public async Task ExecuteAsync(long chatId, CancellationToken cancellationToken = default)
     {
         await _client.SendMessageAsync(chatId, "Неизвестная команда. Используйте /help.", cancellationToken);

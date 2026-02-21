@@ -5,13 +5,13 @@ using Telegram.Bot.Types.Enums;
 
 namespace LinkTracker.Bot.Services;
 
-public class TelegramService
+public class TelegramReceivingService
 {
     private readonly ITelegramClient _client;
     private readonly CommandDispatcher _dispatcher;
     private readonly IEnumerable<ICommand> _commands;
 
-    public TelegramService(ITelegramClient client, CommandDispatcher dispatcher, IEnumerable<ICommand> commands)
+    public TelegramReceivingService(ITelegramClient client, CommandDispatcher dispatcher, IEnumerable<ICommand> commands)
     {
         _client = client;
         _dispatcher = dispatcher;
@@ -34,5 +34,3 @@ public class TelegramService
         }, cancellationToken);
     }
 }
-
-так как сюда добавить твой хостнг, что бы разпускало или как поправить код 

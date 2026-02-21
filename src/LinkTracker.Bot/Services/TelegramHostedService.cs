@@ -2,16 +2,16 @@
 
 public class TelegramHostedService : IHostedService
 {
-    private readonly TelegramHostedService _telegramHostedService;
+    private readonly TelegramReceivingService _telegramReceivingService;
 
-    public TelegramHostedService(TelegramHostedService telegramHostedService)
+    public TelegramHostedService (TelegramReceivingService telegramReceivingService)
     {
-        _telegramHostedService = telegramHostedService;
+        _telegramReceivingService = telegramReceivingService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken = default)
     {
-        return _telegramHostedService.StartAsync(cancellationToken);
+        return _telegramReceivingService.StartAsync(cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken = default)

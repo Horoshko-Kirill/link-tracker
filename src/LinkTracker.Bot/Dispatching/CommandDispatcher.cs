@@ -27,5 +27,4 @@ public class CommandDispatcher
 
         await command.ExecuteAsync(chatId, cancellationToken);
     }
-
 }
