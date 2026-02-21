@@ -22,7 +22,7 @@ public class TelegramReceivingService
     {
         await _client.SetCommandsAsync(_commands, cancellationToken);
 
-        await _client.StartReceivingAsync(async (update) =>
+        _client.StartReceivingAsync(async (update) =>
         {
             if (update.Type != UpdateType.Message || update.Message?.Text is null)
             {
