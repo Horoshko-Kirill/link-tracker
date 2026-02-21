@@ -4,7 +4,9 @@ using LinkTracker.Bot.Telegram;
 using Telegram.Bot.Types.Enums;
 
 namespace LinkTracker.Bot.Services;
-
+/// <summary>
+/// Класс реализующий интерфейс ITelegramReceivingService
+/// </summary>
 public class TelegramReceivingService : ITelegramReceivingService
 {
     private readonly ITelegramClient _client;
@@ -18,6 +20,13 @@ public class TelegramReceivingService : ITelegramReceivingService
         _commands = commands;
     }
 
+    /// <summary>
+    /// Метод запуска работы с телеграммом
+    /// Передает существующие команды
+    /// А также назначающий обработчик для обновлений телеграмма
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task StartAsync(CancellationToken cancellationToken = default)
     {
         await _client.SetCommandsAsync(_commands, cancellationToken);

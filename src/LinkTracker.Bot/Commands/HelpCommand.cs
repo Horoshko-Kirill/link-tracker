@@ -4,6 +4,9 @@ using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;
 
+/// <summary>
+/// Команда /help для вывода возможных команд
+/// </summary>
 public class HelpCommand : ICommand
 {
     private readonly ITelegramClient _client;
