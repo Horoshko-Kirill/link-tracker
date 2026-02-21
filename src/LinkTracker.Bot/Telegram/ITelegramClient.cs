@@ -5,6 +5,6 @@ namespace LinkTracker.Bot.Telegram;
 
 public interface ITelegramClient
 {
-    Task SendMessageAsync(long chatId, string message);
-    Task SetCommandsAsync(IEnumerable<ICommand> commands);
+    Task SendMessageAsync(long chatId, string message, CancellationToken cancellationToken);
+    Task SetCommandsAsync(IEnumerable<ICommand> commands, CancellationToken cancellationToken);
 }

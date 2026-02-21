@@ -17,7 +17,7 @@ public class HelpCommand : ICommand
 
     public string Description => "Список команд";
 
-    public async Task ExecuteAsync(long chatId)
+    public async Task ExecuteAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var text = _command
             .Where(c => !string.IsNullOrEmpty(c.Name))
@@ -26,6 +26,6 @@ public class HelpCommand : ICommand
 
         var message = string.Join("\n", text);
 
-        await _client.SendMessageAsync(chatId, message);
+        await _client.SendMessageAsync(chatId, message, cancellationToken);
     }
 }
