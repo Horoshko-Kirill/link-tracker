@@ -2,7 +2,9 @@
 using LinkTracker.Bot.Configuration;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace LinkTracker.Bot.Telegram;
 
@@ -31,5 +33,23 @@ public class TelegramClient : ITelegramClient
         });
 
         await _client.SetMyCommands(botCommands);
+    }
+
+    public void StartReceiving(Func<Update, Task> handleUpdate, CancellationToken cancellationToken)
+    {
+        _client.StartReceiving(
+            async (bot, update, token) =>
+            {
+                await handleUpdate(update);
+            },
+            async (bot, exception, token) =>
+            {
+                _logger.LogError("Telegram error: {exception}", exception);
+            },
+            new ReceiverOptions
+            {
+                AllowedUpdates = Array.Empty<UpdateType>()
+            },
+            cancellationToken);
     }
 }
