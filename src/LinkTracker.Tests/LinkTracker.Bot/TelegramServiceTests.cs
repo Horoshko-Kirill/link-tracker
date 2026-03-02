@@ -21,7 +21,7 @@ public class TelegramServiceTests
         start.Name.Returns("/start");
 
         var commands = new List<ICommand> { start };
-        var service = new TelegramReceivingService(client, dispatcher, commands);
+        var service = new TelegramHostedService(client, dispatcher, commands);
 
         await service.StartAsync(CancellationToken.None);
 
