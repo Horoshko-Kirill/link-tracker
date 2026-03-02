@@ -23,8 +23,6 @@ builder.Services.AddTransient<ICommand, UnknownCommand>();
 
 builder.Services.AddTransient<ICommandDispatcher, CommandDispatcher>();
 
-builder.Services.AddSingleton<ITelegramReceivingService, TelegramReceivingService>();
-
 builder.Services.AddHostedService<TelegramHostedService>();
 
 var app = builder.Build();
