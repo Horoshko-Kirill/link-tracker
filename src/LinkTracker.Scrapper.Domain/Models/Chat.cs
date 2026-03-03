@@ -2,6 +2,6 @@
 {
     public class Chat : Entity
     {
-        
+       public long ChatId { get; set; }
     }
 }
