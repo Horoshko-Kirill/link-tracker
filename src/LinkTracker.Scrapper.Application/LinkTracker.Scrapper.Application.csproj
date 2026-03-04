@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="InterfacesServices\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\LinkTracker.Scrapper.Contracts\LinkTracker.Scrapper.Contracts.csproj" />
     <ProjectReference Include="..\LinkTracker.Scrapper.Domain\LinkTracker.Scrapper.Domain.csproj" />
   </ItemGroup>
 

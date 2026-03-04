@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LinkTracker.Scrapper.Controllers;
 
+[ApiController]
+[Route("links")]
 public class LinksController : ControllerBase
 {
     private readonly ILinkService _linkService;
