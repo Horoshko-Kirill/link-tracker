@@ -2,7 +2,6 @@
 
 public class ApiErrorResponse
 {
-    public string Description { get; set; } = null!;
     public string Code { get; set; } = null!;
     public string? ExceptionName { get; set; }
     public string? ExceptionMessage { get; set; }
