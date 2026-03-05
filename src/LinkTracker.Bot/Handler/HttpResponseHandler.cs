@@ -5,8 +5,13 @@ namespace LinkTracker.Bot.Handler;
 
 public static class HttpResponseHandler
 {
-    public static async Task EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
+    public static async Task EnsureSuccessAsync(HttpResponseMessage? response, CancellationToken cancellationToken = default)
     {
+        if (response == null)
+        {
+            throw new ScrapperApiException("Ошибка сервера");
+        }
+
         if (response.IsSuccessStatusCode)
         {
             return;

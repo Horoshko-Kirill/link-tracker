@@ -8,7 +8,7 @@ public interface IScrapperClient
 
     Task DeleteChat(long chatId, CancellationToken cancellationToken = default);
 
-    Task<ListLinksResponse> GetLinks(long chatId, CancellationToken cancellationToken = default);
+    Task<ListLinksResponse> GetLinks(long chatId, string? tag = null, CancellationToken cancellationToken = default);
 
     Task<LinkResponse> AddLink(long chatId, AddLinkRequest request, CancellationToken cancellationToken = default);
 
