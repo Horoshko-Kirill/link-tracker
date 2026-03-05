@@ -1,9 +1,11 @@
+using LinkTracker.Bot.Clients.Scrapper;
 using LinkTracker.Bot.Commands;
 using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.Configuration;
 using LinkTracker.Bot.Dispatching;
 using LinkTracker.Bot.Services;
 using LinkTracker.Bot.Telegram;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,13 @@ builder.Services.AddTransient<ICommand, HelpCommand>();
 builder.Services.AddTransient<ICommand, UnknownCommand>();
 
 builder.Services.AddTransient<ICommandDispatcher, CommandDispatcher>();
+
+builder.Services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
+{
+    var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;
+
+    client.BaseAddress = new Uri(options.BaseUrl);
+});
 
 builder.Services.AddHostedService<TelegramHostedService>();
 

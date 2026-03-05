@@ -19,17 +19,21 @@ public class CommandDispatcher : ICommandDispatcher
         return commands.First(e => string.IsNullOrEmpty(e.Name));
     }
 
-    public async Task DispatchAsync(string name, long chatId, CancellationToken cancellationToken = default)
+    public async Task DispatchAsync(string message, long chatId, CancellationToken cancellationToken = default)
     {
+        var parts = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        var name = parts[0];
+        var args = parts.Skip(1).ToArray();
 
         var command = _commands.FirstOrDefault(c => c.Name == name);
 
         if (command == null)
         {
-            await _unknownCommand.ExecuteAsync(chatId, cancellationToken);
+            await _unknownCommand.ExecuteAsync(chatId, Array.Empty<String>(), cancellationToken);
             return;
         }
 
-        await command.ExecuteAsync(chatId, cancellationToken);
+        await command.ExecuteAsync(chatId, args, cancellationToken);
     }
 }
