@@ -21,7 +21,7 @@ public class UntrackCommand : ICommand
 
     public string Description => "Прекратить отслеживание ссылки";
 
-    public async Task ExecuteAsync(long chatId, string[] args, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(long chatId, string[] args, CancellationToken cancellationToken = default)
     {
         if (args.Length == 0)
         {
