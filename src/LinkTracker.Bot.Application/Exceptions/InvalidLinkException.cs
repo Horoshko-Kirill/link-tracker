@@ -2,10 +2,6 @@
 
 public class InvalidLinkException : BotException
 {
-    public InvalidLinkException()
-    {
-    }
-
     public InvalidLinkException(string message) : base(message)
     {
     }

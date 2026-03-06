@@ -25,6 +25,9 @@ builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
 builder.Services.AddTransient<ICommand, StartCommand>();
 builder.Services.AddTransient<ICommand, HelpCommand>();
 builder.Services.AddTransient<ICommand, UnknownCommand>();
+builder.Services.AddTransient<ICommand, TrackCommand>();
+builder.Services.AddTransient<ICommand, UntrackCommand>();
+builder.Services.AddTransient<ICommand, ListCommand>();
 
 builder.Services.AddTransient<ICommandDispatcher, CommandDispatcher>();
 builder.Services.AddTransient<IMessageRoute, MessageRoute>();
