@@ -7,6 +7,8 @@ using LinkTracker.Bot.Dispatching;
 using LinkTracker.Bot.Services;
 using LinkTracker.Bot.Telegram;
 using Microsoft.Extensions.Options;
+using LinkTracker.Bot.Application.DI;
+using LinkTracker.Bot.Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,7 @@ builder.Services.AddTransient<ICommand, HelpCommand>();
 builder.Services.AddTransient<ICommand, UnknownCommand>();
 
 builder.Services.AddTransient<ICommandDispatcher, CommandDispatcher>();
+builder.Services.AddTransient<IMessageRoute, MessageRoute>();
 
 builder.Services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
 {
@@ -32,6 +35,9 @@ builder.Services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
 
     client.BaseAddress = new Uri(options.BaseUrl);
 });
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 
 builder.Services.AddHostedService<TelegramHostedService>();
 

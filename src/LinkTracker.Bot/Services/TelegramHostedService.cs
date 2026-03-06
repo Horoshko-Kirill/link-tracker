@@ -10,17 +10,17 @@ namespace LinkTracker.Bot.Services;
 public class TelegramHostedService : IHostedService
 {
     private readonly ITelegramClient _client;
-    private readonly ICommandDispatcher _dispatcher;
+    private readonly IMessageRoute _messageRoute;
     private readonly IEnumerable<ICommand> _commands;
 
     private CancellationTokenSource? _cts;
     public TelegramHostedService(
         ITelegramClient client,
-        ICommandDispatcher dispatcher,
+        IMessageRoute messageRoute,
         IEnumerable<ICommand> commands)
     {
         _client = client;
-        _dispatcher = dispatcher;
+        _messageRoute = messageRoute;
         _commands = commands;
     }
 
@@ -37,7 +37,7 @@ public class TelegramHostedService : IHostedService
                 return;
             }
 
-            await _dispatcher.DispatchAsync(update.Message.Text, update.Message.Chat.Id, _cts.Token);
+            await _messageRoute.HandleUpdateAsync(update.Message.Chat.Id, update.Message.Text, _cts.Token);
         }, _cts.Token);
     }
 
