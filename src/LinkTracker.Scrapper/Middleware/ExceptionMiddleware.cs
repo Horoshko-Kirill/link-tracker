@@ -44,6 +44,11 @@ public class ExceptionMiddleware
             _ => 500
         };
 
+        if (context.Response.StatusCode == 500)
+        {
+            response.ExceptionMessage = "Ошибка сервера";
+        }
+
         await context.Response.WriteAsJsonAsync(response);
     }
 }
