@@ -22,7 +22,7 @@ public class ProcessService : IProcessService
         _actionItemFactories = actionItemFactories;
     }
 
-    public async Task StartTrackProcessAsync(long chatId, string processType, CancellationToken cancellationToken = default)
+    public async Task StartProcessAsync(long chatId, string processType, CancellationToken cancellationToken = default)
     {
         var process = await _processRepository.GetActiveProcessAsync(chatId, cancellationToken);
 
@@ -56,6 +56,11 @@ public class ProcessService : IProcessService
         var actionItem = actionFactory.CreateInitialAction(process);
 
         await _actionItemRepository.AddAsync(actionItem, cancellationToken);
+    }
+
+    public async Task CancelProcessAsync(long chatId, CancellationToken cancellationToken = default)
+    {
+        await _processRepository.CancelAsync(chatId, cancellationToken);
     }
 
 }

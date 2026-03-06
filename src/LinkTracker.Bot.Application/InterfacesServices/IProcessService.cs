@@ -2,5 +2,6 @@
 
 public interface IProcessService
 {
-    public Task StartTrackProcessAsync(long chatId, string processType, CancellationToken cancellationToken = default);
+    public Task StartProcessAsync(long chatId, string processType, CancellationToken cancellationToken = default);
+    public Task CancelProcessAsync(long chatId, CancellationToken cancellationToken = default);
 }

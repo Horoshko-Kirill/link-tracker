@@ -9,6 +9,20 @@ namespace LinkTracker.Bot.Infrastructure.Repositories
         private readonly Dictionary<long, Process> _processes = new Dictionary<long, Process>();
         private long _idCounter = 1;
 
+        public Task CancelAsync(long chatId, CancellationToken cancellationToken = default)
+        {
+            var process = _processes.Values.FirstOrDefault(p => p.ChatId == chatId);
+
+            if (process == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            process.Status = ProcessStatus.Cancelled;
+
+            return Task.CompletedTask;
+        }
+
         public Task CompleteAsync(long chatId, CancellationToken cancellationToken = default)
         {
             var process = _processes.Values.FirstOrDefault(p => p.ChatId == chatId);
