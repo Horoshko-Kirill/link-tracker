@@ -1,8 +1,6 @@
-using LinkTracker.Scrapper.Application.InterfacesRepositories;
-using LinkTracker.Scrapper.Application.InterfacesServices;
-using LinkTracker.Scrapper.Application.Services;
-using LinkTracker.Scrapper.Infrastructure.Repositories;
 using LinkTracker.Scrapper.Middleware;
+using LinkTracker.Scrapper.Application.DI;
+using LinkTracker.Scrapper.Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +8,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<IChatRepository, InMemoryChatRepository>();
-builder.Services.AddSingleton<ILinkRepository, InMemoryLinkRepository>();
+builder.Services.AddApplication();
 
-builder.Services.AddScoped<IChatService, ChatService>();
-builder.Services.AddScoped<ILinkService, LinkService>();
+builder.Services.AddInfrastructure();
 
 builder.Services.AddSwaggerGen();
 
