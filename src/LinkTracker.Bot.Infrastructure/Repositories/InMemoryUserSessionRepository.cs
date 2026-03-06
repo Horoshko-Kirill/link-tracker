@@ -40,8 +40,7 @@ namespace LinkTracker.Bot.Infrastructure.Repositories
 
             if (oldUserSession == null)
             {
-                AddAsync(userSession, cancellationToken);
-                return Task.CompletedTask;
+                return AddAsync(userSession, cancellationToken);
             }
 
             _userSessions[oldUserSession.Id] = userSession; 
