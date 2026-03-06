@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LinkTracker.Bot.Application\LinkTracker.Bot.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
