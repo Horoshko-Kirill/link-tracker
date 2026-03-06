@@ -1,3 +1,4 @@
+using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Clients.Scrapper;
 using LinkTracker.Bot.Commands;
 using LinkTracker.Bot.Commands.Interfaces;

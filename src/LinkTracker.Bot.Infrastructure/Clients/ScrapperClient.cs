@@ -1,6 +1,7 @@
-﻿using LinkTracker.Bot.Handler;
+﻿using LinkTracker.Bot.Application.InterfacesClients;
+using LinkTracker.Bot.Handler;
 using LinkTracker.Scrapper.Contracts.Dto;
-using Telegram.Bot.Requests.Abstractions;
+using System.Net.Http.Json;
 
 namespace LinkTracker.Bot.Clients.Scrapper;
 

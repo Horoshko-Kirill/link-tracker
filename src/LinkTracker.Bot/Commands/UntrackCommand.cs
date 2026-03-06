@@ -1,4 +1,4 @@
-﻿using LinkTracker.Bot.Clients.Scrapper;
+﻿using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.Exceptions;
 using LinkTracker.Bot.Telegram;

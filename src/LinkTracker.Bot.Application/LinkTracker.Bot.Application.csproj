@@ -9,14 +9,11 @@
   <ItemGroup>
     <ProjectReference Include="..\LinkTracker.Bot.Contracts\LinkTracker.Bot.Contracts.csproj" />
     <ProjectReference Include="..\LinkTracker.Bot.Domain\LinkTracker.Bot.Domain.csproj" />
+    <ProjectReference Include="..\LinkTracker.Scrapper.Contracts\LinkTracker.Scrapper.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="InterfacesRepositories\" />
-    <Folder Include="InterfacesServices\" />
     <Folder Include="Mappers\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

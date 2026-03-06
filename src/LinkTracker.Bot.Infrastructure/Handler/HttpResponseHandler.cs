@@ -1,5 +1,6 @@
 ﻿using LinkTracker.Bot.Exceptions;
 using LinkTracker.Scrapper.Contracts.Dto;
+using System.Net.Http.Json;
 
 namespace LinkTracker.Bot.Handler;
 

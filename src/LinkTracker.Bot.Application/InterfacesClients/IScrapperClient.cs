@@ -1,6 +1,6 @@
 ﻿using LinkTracker.Scrapper.Contracts.Dto;
 
-namespace LinkTracker.Bot.Clients.Scrapper;
+namespace LinkTracker.Bot.Application.InterfacesClients;
 
 public interface IScrapperClient
 {

@@ -8,10 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LinkTracker.Bot.Application\LinkTracker.Bot.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Repositories\" />
+    <ProjectReference Include="..\LinkTracker.Scrapper.Contracts\LinkTracker.Scrapper.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
