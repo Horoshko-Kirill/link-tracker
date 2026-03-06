@@ -2,5 +2,5 @@
 
 public abstract class Entity
 {
-    long Id { get; set; }
+    public long Id { get; set; }
 }
