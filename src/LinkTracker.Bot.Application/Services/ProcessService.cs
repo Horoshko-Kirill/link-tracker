@@ -11,8 +11,6 @@ namespace LinkTracker.Bot.Application.Services;
 
 public class ProcessService : IProcessService
 {
-    private int MAX_STEPS = ProcessConstants.MaxSteps;
-
     private readonly IProcessRepository _processRepository;
     private readonly IActionItemRepository _actionItemRepository;
     private readonly IEnumerable<IActionItemFactory> _actionItemFactories;
