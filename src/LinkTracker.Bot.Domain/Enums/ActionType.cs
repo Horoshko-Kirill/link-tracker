@@ -5,5 +5,6 @@ public enum ActionType
     StartTrack,
     AwaitingLink,
     AwaitingTags,
+    AwaitingUntrackLink,
     Completed
 }

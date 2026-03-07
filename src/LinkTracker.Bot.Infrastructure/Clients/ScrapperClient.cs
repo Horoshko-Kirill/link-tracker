@@ -76,6 +76,7 @@ public class ScrapperClient : IScrapperClient
     {
         var httpRequest = new HttpRequestMessage(HttpMethod.Delete, "/links");
         httpRequest.Headers.Add("Tg-Chat-Id", chatId.ToString());
+        httpRequest.Content = JsonContent.Create(request);
 
         var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
 

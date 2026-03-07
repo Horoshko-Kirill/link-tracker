@@ -1,4 +1,5 @@
-﻿using LinkTracker.Bot.Application.InterfacesClients;
+﻿using LinkTracker.Bot.Application.Exceptions;
+using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.Exceptions;
 using LinkTracker.Bot.Telegram;
@@ -38,7 +39,7 @@ public class ListCommand : ICommand
                 await _scrapperClient.RegisterChatAsync(chatId, cancellationToken);
             }
 
-            var response = await _scrapperClient.GetLinksAsync(chatId);
+            var response = await _scrapperClient.GetLinksAsync(chatId, tag);
 
             var links = response.Links;
 
@@ -52,9 +53,13 @@ public class ListCommand : ICommand
 
             await _telegramClient.SendMessageAsync(chatId, message, cancellationToken);
         }
-        catch (Exception ex)
+        catch (BotException ex)
         {
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
+        }
+        catch (Exception)
+        {
+            await _telegramClient.SendMessageAsync(chatId, "Ошибка сервера", cancellationToken);
         }
 
     }

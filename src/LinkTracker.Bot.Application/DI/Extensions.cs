@@ -13,9 +13,11 @@ public static class Extensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddTransient<IActionItemFactory, TrackActionItemFactory>();
+        services.AddTransient<IActionItemFactory, UntrackActionItemFactory>();
 
         services.AddScoped<IActionHandler, LinkHandler>();
         services.AddScoped<IActionHandler, TagsHandler>();
+        services.AddScoped<IActionHandler, UntrackLinkHandler>();
 
         services.AddScoped<IProcessService, ProcessService>();
         services.AddScoped<IProcessOrchestrator, ProcessOrchestrator>();
