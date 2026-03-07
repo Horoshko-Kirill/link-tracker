@@ -21,6 +21,14 @@ public class ChatController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> ExistChat([FromRoute] long id, CancellationToken cancellationToken = default)
+    {
+        var response = await _chatService.ExistChatAsync(id, cancellationToken);
+
+        return Ok(response);
+    }
+
     [HttpDelete("{id:long}")]
     public async Task<IActionResult> DeleteChat([FromRoute] long id, CancellationToken cancellationToken = default)
     {

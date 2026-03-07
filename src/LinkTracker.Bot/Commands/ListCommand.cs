@@ -1,5 +1,6 @@
 ﻿using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Commands.Interfaces;
+using LinkTracker.Bot.Exceptions;
 using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;
@@ -28,18 +29,33 @@ public class ListCommand : ICommand
             tag = args[0];
         }
 
-        var response = await _scrapperClient.GetLinks(chatId, tag, cancellationToken);
-
-        var links = response.Links;
-
-        if (!links.Any())
+        try
         {
-            await _telegramClient.SendMessageAsync(chatId, "Список отслеживаемых ссылок пуст", cancellationToken);
-            return;
+            var existChat = await _scrapperClient.ChatExistAsync(chatId, cancellationToken);
+
+            if (!existChat.ExistChat)
+            {
+                await _scrapperClient.RegisterChatAsync(chatId, cancellationToken);
+            }
+
+            var response = await _scrapperClient.GetLinksAsync(chatId);
+
+            var links = response.Links;
+
+            if (!links.Any())
+            {
+                await _telegramClient.SendMessageAsync(chatId, "Список отслеживаемых ссылок пуст", cancellationToken);
+                return;
+            }
+
+            var message = string.Join("\n", links.Select(x => x.Url));
+
+            await _telegramClient.SendMessageAsync(chatId, message, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
 
-        var message = string.Join("\n", links.Select(x => x.Url));
-
-        await _telegramClient.SendMessageAsync(chatId, message, cancellationToken);
     }
 }

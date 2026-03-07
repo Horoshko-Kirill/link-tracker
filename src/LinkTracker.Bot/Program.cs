@@ -17,6 +17,9 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<BotOptions>(
     builder.Configuration.GetSection("Bot"));
 
+builder.Services.Configure<ScrapperOptions>(
+    builder.Configuration.GetSection("Scrapper"));
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
@@ -29,8 +32,8 @@ builder.Services.AddTransient<ICommand, TrackCommand>();
 builder.Services.AddTransient<ICommand, UntrackCommand>();
 builder.Services.AddTransient<ICommand, ListCommand>();
 
-builder.Services.AddTransient<ICommandDispatcher, CommandDispatcher>();
-builder.Services.AddTransient<IMessageRoute, MessageRoute>();
+builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+builder.Services.AddScoped<IMessageRoute, MessageRoute>();
 
 builder.Services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
 {

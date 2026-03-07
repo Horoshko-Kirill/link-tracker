@@ -10,9 +10,6 @@ public static class Extensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-
-        services.AddSingleton<IScrapperClient, ScrapperClient>();
-
         services.AddSingleton<IActionItemRepository, InMemoryActionItemRepository>();
         services.AddSingleton<IProcessRepository, InMemoryProcessRepository>();
 

@@ -13,7 +13,7 @@ public class ScrapperClient : IScrapperClient
     {
         _httpClient = httpClient;
     }
-    public async Task<LinkResponse> AddLink(long chatId, AddLinkRequest request, CancellationToken cancellationToken = default)
+    public async Task<LinkResponse> AddLinkAsync(long chatId, AddLinkRequest request, CancellationToken cancellationToken = default)
     {
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/links");
         httpRequest.Headers.Add("Tg-Chat-Id", chatId.ToString());
@@ -28,14 +28,25 @@ public class ScrapperClient : IScrapperClient
         return result!;
     }
 
-    public async Task DeleteChat(long chatId, CancellationToken cancellationToken = default)
+    public async Task<ExistChatResponse> ChatExistAsync(long chatId, CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync($"/tg-chat/{chatId}", cancellationToken);
+
+        await HttpResponseHandler.EnsureSuccessAsync(response, cancellationToken);
+
+        var result = await response.Content.ReadFromJsonAsync<ExistChatResponse>(cancellationToken: cancellationToken);
+
+        return result!;
+    }
+
+    public async Task DeleteChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.DeleteAsync($"/tg-chat/{chatId}", cancellationToken);
 
         await HttpResponseHandler.EnsureSuccessAsync(response, cancellationToken);
     }
 
-    public async Task<ListLinksResponse> GetLinks(long chatId, string? tag = null, CancellationToken cancellationToken = default)
+    public async Task<ListLinksResponse> GetLinksAsync(long chatId, string? tag = null, CancellationToken cancellationToken = default)
     {
         var httpRequest = new HttpRequestMessage(HttpMethod.Get, "/links");
         httpRequest.Headers.Add("Tg-Chat-Id", chatId.ToString());
@@ -54,14 +65,14 @@ public class ScrapperClient : IScrapperClient
         return result!;
     }
 
-    public async Task RegisterChat(long chatId, CancellationToken cancellationToken = default)
+    public async Task RegisterChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.PostAsync($"/tg-chat/{chatId}", null, cancellationToken);
 
         await HttpResponseHandler.EnsureSuccessAsync(response, cancellationToken);
     }
 
-    public async Task<LinkResponse> RemoveLink(long chatId, RemoveLinkRequest request, CancellationToken cancellationToken = default)
+    public async Task<LinkResponse> RemoveLinkAsync(long chatId, RemoveLinkRequest request, CancellationToken cancellationToken = default)
     {
         var httpRequest = new HttpRequestMessage(HttpMethod.Delete, "/links");
         httpRequest.Headers.Add("Tg-Chat-Id", chatId.ToString());

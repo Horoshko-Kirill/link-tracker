@@ -10,25 +10,27 @@ namespace LinkTracker.Bot.Services;
 public class TelegramHostedService : IHostedService
 {
     private readonly ITelegramClient _client;
-    private readonly IMessageRoute _messageRoute;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly IEnumerable<ICommand> _commands;
 
     private CancellationTokenSource? _cts;
     public TelegramHostedService(
         ITelegramClient client,
-        IMessageRoute messageRoute,
-        IEnumerable<ICommand> commands)
+        IServiceScopeFactory scopeFactory)
     {
         _client = client;
-        _messageRoute = messageRoute;
-        _commands = commands;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-        await _client.SetCommandsAsync(_commands, _cts.Token);
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var commands = scope.ServiceProvider.GetRequiredService<IEnumerable<ICommand>>();
+            await _client.SetCommandsAsync(commands, _cts.Token);
+        }
 
         _client.StartReceivingAsync(async (update) =>
         {
@@ -36,6 +38,10 @@ public class TelegramHostedService : IHostedService
             {
                 return;
             }
+
+            using var scope = _scopeFactory.CreateScope();
+
+            var _messageRoute = scope.ServiceProvider.GetRequiredService<IMessageRoute>();
 
             await _messageRoute.HandleUpdateAsync(update.Message.Chat.Id, update.Message.Text, _cts.Token);
         }, _cts.Token);

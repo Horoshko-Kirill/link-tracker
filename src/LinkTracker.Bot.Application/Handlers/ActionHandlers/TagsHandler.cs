@@ -43,7 +43,7 @@ public class TagsHandler : IActionHandler
             Url = link!
         };
 
-        await _scrapperClient.AddLink(process.ChatId, addLinkRequest, cancellationToken);
+        await _scrapperClient.AddLinkAsync(process.ChatId, addLinkRequest, cancellationToken);
 
         var action = new ActionItem
         {

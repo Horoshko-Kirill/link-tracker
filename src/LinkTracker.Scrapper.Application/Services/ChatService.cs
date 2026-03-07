@@ -1,6 +1,7 @@
 ﻿using LinkTracker.Scrapper.Application.Exceptions;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.InterfacesServices;
+using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Scrapper.Domain.Models;
 
 namespace LinkTracker.Scrapper.Application.Services;
@@ -23,6 +24,16 @@ public class ChatService : IChatService
         await _chatRepository.RemoveChatAsync(chatId, cancellation);
     }
 
+    public async Task<ExistChatResponse> ExistChatAsync(long chatId, CancellationToken cancellationToken = default)
+    {
+        var response = new ExistChatResponse
+        {
+            ExistChat = await _chatRepository.ChatExistAsync(chatId)
+        };
+
+        return response;
+    }
+
     public async Task RegisterChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
 
@@ -33,7 +44,7 @@ public class ChatService : IChatService
 
         if (await _chatRepository.ChatExistAsync(chatId))
         {
-            throw new ConflictException("Чат уже существует");
+            throw new ConflictException("Вы уже зарегистрированы. Используйте /help для списка команд");
         }
 
         var chat = new Chat

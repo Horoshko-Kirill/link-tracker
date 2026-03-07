@@ -9,11 +9,11 @@ public class MessageRoute : IMessageRoute
 {
 
     private readonly ICommandDispatcher _dispatcher;
-    private readonly ProcessOrchestrator _orchestrator;
+    private readonly IProcessOrchestrator _orchestrator;
     private readonly ITelegramClient _telegramClient;
     private readonly IProcessService _processService;
 
-    public MessageRoute(ICommandDispatcher dispatcher, ProcessOrchestrator orchestrator, ITelegramClient telegramClient, IProcessService processService)
+    public MessageRoute(ICommandDispatcher dispatcher, IProcessOrchestrator orchestrator, ITelegramClient telegramClient, IProcessService processService)
     {
         _dispatcher = dispatcher;
         _orchestrator = orchestrator;

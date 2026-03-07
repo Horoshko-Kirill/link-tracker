@@ -36,11 +36,19 @@ public class UntrackCommand : ICommand
 
         try
         {
-            await _scrapperClient.RemoveLink(chatId, request, cancellationToken);
+
+            var existChat = await _scrapperClient.ChatExistAsync(chatId, cancellationToken);
+
+            if (!existChat.ExistChat)
+            {
+                await _scrapperClient.RegisterChatAsync(chatId, cancellationToken);
+            }
+
+            await _scrapperClient.RemoveLinkAsync(chatId, request, cancellationToken);
 
             await _telegramClient.SendMessageAsync(chatId, "Ссылка удалена", cancellationToken);
         }
-        catch (ScrapperApiException ex)
+        catch (Exception ex)
         {
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
