@@ -1,5 +1,5 @@
 ﻿using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Constans;
+using LinkTracker.Bot.Constants;
 using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;

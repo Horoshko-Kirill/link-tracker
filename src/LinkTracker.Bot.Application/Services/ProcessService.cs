@@ -60,6 +60,13 @@ public class ProcessService : IProcessService
 
     public async Task CancelProcessAsync(long chatId, CancellationToken cancellationToken = default)
     {
+        var process = await _processRepository.GetActiveProcessAsync(chatId, cancellationToken);
+
+        if (process == null)
+        {
+            throw new ProcessNotFoundException("Активного диалога нет");
+        }
+
         await _processRepository.CancelAsync(chatId, cancellationToken);
     }
 

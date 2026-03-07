@@ -31,7 +31,7 @@ public class LinkService : ILinkService
 
         if (await _linkRepository.LinkExistAsync(chatId, request.Url, cancellationToken))
         {
-            throw new ConflictException("Ссылка уже отслеживается");
+            throw new ConflictException("Ссылка уже отслеживается, отмените операцию");
         }
 
         var link = LinkMapper.ToDomain(chatId, request);

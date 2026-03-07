@@ -27,7 +27,7 @@ public class UntrackLinkHandler : IActionHandler
     {
         if (!Uri.TryCreate(message, UriKind.Absolute, out _))
         {
-            throw new InvalidLinkException("Некорректная ссылка");
+            throw new InvalidLinkException("Некорректная ссылка, повторите попытку");
         }
 
         if (message == null)

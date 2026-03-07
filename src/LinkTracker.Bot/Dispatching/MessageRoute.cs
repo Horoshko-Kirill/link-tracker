@@ -26,8 +26,7 @@ public class MessageRoute : IMessageRoute
     {
         if (message.Trim().Equals("/cancel", StringComparison.OrdinalIgnoreCase))
         {
-            await _processService.CancelProcessAsync(chatId, cancellationToken);
-            await _telegramClient.SendMessageAsync(chatId, "Диалог отменён.", cancellationToken);
+            await _dispatcher.DispatchAsync(message, chatId, cancellationToken);
             return;
         }
 

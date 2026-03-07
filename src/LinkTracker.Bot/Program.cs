@@ -31,6 +31,7 @@ builder.Services.AddTransient<ICommand, UnknownCommand>();
 builder.Services.AddTransient<ICommand, TrackCommand>();
 builder.Services.AddTransient<ICommand, UntrackCommand>();
 builder.Services.AddTransient<ICommand, ListCommand>();
+builder.Services.AddTransient<ICommand, CancelCommand>();
 
 builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
 builder.Services.AddScoped<IMessageRoute, MessageRoute>();

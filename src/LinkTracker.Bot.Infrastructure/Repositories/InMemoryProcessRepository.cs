@@ -11,7 +11,7 @@ namespace LinkTracker.Bot.Infrastructure.Repositories
 
         public Task CancelAsync(long chatId, CancellationToken cancellationToken = default)
         {
-            var process = _processes.Values.FirstOrDefault(p => p.ChatId == chatId);
+            var process = _processes.Values.LastOrDefault(p => p.ChatId == chatId && p.Status == ProcessStatus.Active);
 
             if (process == null)
             {
@@ -25,7 +25,7 @@ namespace LinkTracker.Bot.Infrastructure.Repositories
 
         public Task CompleteAsync(long chatId, CancellationToken cancellationToken = default)
         {
-            var process = _processes.Values.FirstOrDefault(p => p.ChatId == chatId && p.Status == ProcessStatus.Active);
+            var process = _processes.Values.LastOrDefault(p => p.ChatId == chatId && p.Status == ProcessStatus.Active);
 
             if (process == null)
             {
