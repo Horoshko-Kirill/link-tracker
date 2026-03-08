@@ -1,6 +1,4 @@
-﻿using LinkTracker.Bot.Application.InterfacesClients;
-using LinkTracker.Bot.Application.InterfacesRepositories;
-using LinkTracker.Bot.Clients.Scrapper;
+﻿using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 

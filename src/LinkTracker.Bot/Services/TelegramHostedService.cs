@@ -16,10 +16,12 @@ public class TelegramHostedService : IHostedService
     private CancellationTokenSource? _cts;
     public TelegramHostedService(
         ITelegramClient client,
-        IServiceScopeFactory scopeFactory)
+        IServiceScopeFactory scopeFactory,
+        IEnumerable<ICommand> commands)
     {
         _client = client;
         _scopeFactory = scopeFactory;
+        _commands = commands;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)

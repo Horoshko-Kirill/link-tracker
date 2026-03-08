@@ -1,4 +1,6 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesRepositories;
+﻿using LinkTracker.Scrapper.Application.InterfacesClients;
+using LinkTracker.Scrapper.Application.InterfacesRepositories;
+using LinkTracker.Scrapper.Infrastructure.Clients;
 using LinkTracker.Scrapper.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +13,9 @@ public static class Extensions
 
         services.AddSingleton<IChatRepository, InMemoryChatRepository>();
         services.AddSingleton<ILinkRepository, InMemoryLinkRepository>();
+
+        services.AddSingleton<IGitHubClient, GitHubClient>();
+        services.AddSingleton<IStackOverflowClient, StackOverflowClient>();
 
         return services;
     }
