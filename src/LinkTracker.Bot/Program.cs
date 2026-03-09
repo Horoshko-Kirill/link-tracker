@@ -1,14 +1,15 @@
+using LinkTracker.Bot.Application.DI;
 using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Clients.Scrapper;
 using LinkTracker.Bot.Commands;
 using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.Configuration;
 using LinkTracker.Bot.Dispatching;
+using LinkTracker.Bot.Infrastructure.DI;
+using LinkTracker.Bot.Middleware;
 using LinkTracker.Bot.Services;
 using LinkTracker.Bot.Telegram;
 using Microsoft.Extensions.Options;
-using LinkTracker.Bot.Application.DI;
-using LinkTracker.Bot.Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.Configure<ScrapperOptions>(
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+
+builder.Services.AddControllers();
 
 builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
 
@@ -49,6 +52,8 @@ builder.Services.AddInfrastructure();
 builder.Services.AddHostedService<TelegramHostedService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
