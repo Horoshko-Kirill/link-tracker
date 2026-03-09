@@ -40,6 +40,10 @@ public class TrackCommand : ICommand
 
             await _telegramClient.SendMessageAsync(chatId, OutputHandlerConstants.AwaitingLinkConstant, cancellationToken);
         }
+        catch (ScrapperApiException ex)
+        {
+            await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
+        }
         catch (BotException ex)
         {
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
