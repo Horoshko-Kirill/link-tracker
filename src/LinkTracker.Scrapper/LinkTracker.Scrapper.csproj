@@ -16,7 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\LinkTracker.Scrapper.Application\LinkTracker.Scrapper.Application.csproj" />
     <ProjectReference Include="..\LinkTracker.Scrapper.Contracts\LinkTracker.Scrapper.Contracts.csproj" />
-    <ProjectReference Include="..\LinkTracker.Scrapper.Domain\LinkTracker.Scrapper.Domain.csproj" />
     <ProjectReference Include="..\LinkTracker.Scrapper.Infrastructure\LinkTracker.Scrapper.Infrastructure.csproj" />
   </ItemGroup>
 

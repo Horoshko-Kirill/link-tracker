@@ -1,36 +1,54 @@
-﻿using LinkTracker.Scrapper.Contracts.Dto;
+﻿using LinkTracker.Bot.Contracts.Dto;
+using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Scrapper.Domain.Models;
 
 namespace LinkTracker.Scrapper.Application.Mappers;
 
 public static class LinkMapper
 {
-    public static Link ToDomain(long chatId, AddLinkRequest addLinkRequest)
+    public static Link ToDomain(long chatId, AddLinkRequest request)
     {
         return new Link
         {
-            ChatId = chatId,
-            Url = addLinkRequest.Url,
-            Tags = addLinkRequest.Tags.Select(t => new Tag { Name = t }).ToList()
+            Url = request.Url,
+            Subscriptions =
+            {
+                new Subscription
+                {
+                    ChatId = chatId,
+                    Tags = request.Tags.Select(t => new Tag { Name = t }).ToList()
+                }
+            }
         };
     }
-
-    public static LinkResponse ToResponse(Link link)
+    public static LinkResponse ToResponse(Link link, long chatId)
     {
+
+         var sub = link.Subscriptions.First(s => s.ChatId == chatId);
+
         return new LinkResponse
         {
-            ChatId = link.ChatId,
+            ChatId = chatId,
             Url = link.Url,
-            Tags = link.Tags.Select(t => t.Name).ToList()
+            Tags = sub.Tags.Select(t => t.Name).ToList()
         };
     }
 
-    public static ListLinksResponse ToListResponse(List<Link> links)
+    public static ListLinksResponse ToListResponse(List<Link> links, long chatId)
     {
         return new ListLinksResponse
         {
-            Links = links.Select(t => ToResponse(t)).ToList(),
+            Links = links.Select(link => ToResponse(link, chatId)).ToList(),
+
             Size = links.Count
+        };
+    }
+
+    public static LinkUpdate ToUpdateRequest(List<Link> links)
+    {
+        return new LinkUpdate
+        {
+
         };
     }
 }

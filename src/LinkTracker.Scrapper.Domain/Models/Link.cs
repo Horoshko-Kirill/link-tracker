@@ -3,9 +3,7 @@
     public class Link : Entity
     {
         public string Url { get; set; } = null!;
-        public List<Tag> Tags { get; set; } = new List<Tag>();
-
-        public long ChatId { get; set; }
-        public Chat Chat { get; set; } = null!;
+        public DateTimeOffset LastChecked { get; set; }
+        public List<Subscription> Subscriptions { get; set; } = new List<Subscription>();
     }
 }

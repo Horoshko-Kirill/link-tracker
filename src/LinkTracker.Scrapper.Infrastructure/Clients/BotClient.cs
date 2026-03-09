@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 
 namespace LinkTracker.Scrapper.Infrastructure.Clients;
 
-public class BotClient : IBotClientAsync
+public class BotClient : IBotClient
 {
     private readonly HttpClient _httpClient;
 

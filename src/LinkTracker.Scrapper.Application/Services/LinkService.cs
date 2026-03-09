@@ -38,7 +38,7 @@ public class LinkService : ILinkService
 
         await _linkRepository.AddAsync(link); 
 
-        return LinkMapper.ToResponse(link);
+        return LinkMapper.ToResponse(link, chatId);
     }
 
     public async Task<ListLinksResponse> GetLinksAsync(long chatId, string? tag = null, CancellationToken cancellationToken = default)
@@ -55,7 +55,7 @@ public class LinkService : ILinkService
 
         var links = await _linkRepository.GetLinksByChatAsync(chatId, tag, cancellationToken);
 
-        return LinkMapper.ToListResponse(links);
+        return LinkMapper.ToListResponse(links, chatId);
     }
 
     public async Task<LinkResponse> RemoveLinkAsync(long chatId, RemoveLinkRequest request, CancellationToken cancellationToken = default)
@@ -77,9 +77,11 @@ public class LinkService : ILinkService
 
         var link = await _linkRepository.GetLinkAsync(chatId, request.Url, cancellationToken);
 
+        var response = LinkMapper.ToResponse(link!, chatId);
+
         await _linkRepository.RemoveLinkAsync(chatId, request.Url, cancellationToken);
 
-        return LinkMapper.ToResponse(link!);
+        return response;
         
     }
 }

@@ -1,5 +1,5 @@
 ﻿using LinkTracker.Scrapper.Application.InterfacesClients;
-using LinkTracker.Scrapper.Domain.ClientsModels;
+using LinkTracker.Scrapper.Domain.ClientsModels.GitHub;
 using System.Net.Http.Json;
 
 namespace LinkTracker.Scrapper.Infrastructure.Clients;
