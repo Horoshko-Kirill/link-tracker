@@ -44,11 +44,13 @@ public static class LinkMapper
         };
     }
 
-    public static LinkUpdate ToUpdateRequest(List<Link> links)
+    public static LinkUpdate ToUpdateRequest(Link link, DateTimeOffset update)
     {
         return new LinkUpdate
         {
-
+            Url = link.Url,
+            Description = update.ToString(),
+            ChatIds = link.Subscriptions.Select(s => s.ChatId).ToList()
         };
     }
 }

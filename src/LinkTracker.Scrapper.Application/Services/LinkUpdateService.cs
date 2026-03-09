@@ -1,6 +1,8 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesClients;
+﻿using LinkTracker.Bot.Contracts.Dto;
+using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.InterfacesServices;
+using LinkTracker.Scrapper.Application.Mappers;
 using LinkTracker.Scrapper.Application.Providers.Interfaces;
 
 namespace LinkTracker.Scrapper.Application.Services;
@@ -18,7 +20,7 @@ public class LinkUpdateService : ILinkUpdateService
         _botClient = botClient;
     }
 
-    public async Task CheckUpdatesAsync(CancellationToken cancellationToken)
+    public async Task CheckUpdatesAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -33,14 +35,25 @@ public class LinkUpdateService : ILinkUpdateService
                     continue;
                 }
 
-                var lastUpdate = provider.GetLastUpdateAsync(new Uri(link.Url), cancellationToken);
+                var lastUpdate = await provider.GetLastUpdateAsync(new Uri(link.Url), cancellationToken);
 
                 if (lastUpdate == null)
                 {
                     continue;
                 }
 
+                if (lastUpdate <= link.LastChecked)
+                {
+                    continue;
+                }
 
+                var update = LinkMapper.ToUpdateRequest(link, lastUpdate.Value);
+
+                await _botClient.PostUpdateAsync(update, cancellationToken);
+
+                link.LastChecked = lastUpdate.Value;
+
+                await _linkRepository.UpdateLinkAsync(link);
             }
         }
         catch (Exception)
