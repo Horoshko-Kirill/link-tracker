@@ -1,5 +1,5 @@
 ﻿using LinkTracker.Bot.Commands;
-using LinkTracker.Bot.Constans;
+using LinkTracker.Bot.Constants;
 using LinkTracker.Bot.Telegram;
 using NSubstitute;
 
@@ -18,7 +18,7 @@ public class HelpCommandTests
         var command = new HelpCommand(client);
         var chatId = 123;
 
-        await command.ExecuteAsync(chatId);
+        await command.ExecuteAsync(chatId, Array.Empty<String>());
 
         await client.Received(1).SendMessageAsync(chatId, HelpConstants.constants, Arg.Any<CancellationToken>());
     }

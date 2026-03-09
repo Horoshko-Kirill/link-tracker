@@ -13,6 +13,7 @@ public static class Extensions
 
         services.AddScoped<IChatService, ChatService>();
         services.AddScoped<ILinkService, LinkService>();
+        services.AddScoped<ILinkUpdateService, LinkUpdateService>();
 
         services.AddScoped<IUpdateProvider, GitHubUpdateProvider>();
         services.AddScoped<IUpdateProvider, StackOverflowUpdateProvider>();

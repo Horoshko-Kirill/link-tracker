@@ -2,6 +2,7 @@
 using LinkTracker.Bot.Dispatching;
 using LinkTracker.Bot.Services;
 using LinkTracker.Bot.Telegram;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
 namespace LinkTracker.Tests.LinkTracker.Bot;
@@ -16,15 +17,28 @@ public class TelegramServiceTests
     public async Task StartAsync_ShouldSetCommands()
     {
         var client = Substitute.For<ITelegramClient>();
-        var dispatcher = Substitute.For<ICommandDispatcher>();
+
         var start = Substitute.For<ICommand>();
         start.Name.Returns("/start");
 
         var commands = new List<ICommand> { start };
-        var service = new TelegramHostedService(client, dispatcher, commands);
+
+        var serviceProvider = Substitute.For<IServiceProvider>();
+        serviceProvider
+            .GetService(typeof(IEnumerable<ICommand>))
+            .Returns(commands);
+
+        var scope = Substitute.For<IServiceScope>();
+        scope.ServiceProvider.Returns(serviceProvider);
+
+        var scopeFactory = Substitute.For<IServiceScopeFactory>();
+        scopeFactory.CreateScope().Returns(scope);
+
+        var service = new TelegramHostedService(client, scopeFactory);
 
         await service.StartAsync(CancellationToken.None);
 
-        await client.Received(1).SetCommandsAsync(commands, Arg.Any<CancellationToken>());
+        await client.Received(1)
+            .SetCommandsAsync(commands, Arg.Any<CancellationToken>());
     }
 }

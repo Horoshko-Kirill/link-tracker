@@ -27,8 +27,8 @@ public class CommandDispatcherTests
 
         await dispatcher.DispatchAsync("/start", 123, CancellationToken.None);
 
-        await start.Received(1).ExecuteAsync(123, Arg.Any<CancellationToken>());
-        await unknown.DidNotReceive().ExecuteAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
+        await start.Received(1).ExecuteAsync(123, Array.Empty<String>(), Arg.Any<CancellationToken>());
+        await unknown.DidNotReceive().ExecuteAsync(Arg.Any<long>(), Array.Empty<String>(), Arg.Any<CancellationToken>());
     }
 
 
@@ -50,7 +50,7 @@ public class CommandDispatcherTests
 
         await dispatcher.DispatchAsync("/foobar", 123, CancellationToken.None);
 
-        await unknown.Received(1).ExecuteAsync(123, Arg.Any<CancellationToken>());
-        await start.DidNotReceive().ExecuteAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
+        await unknown.Received(1).ExecuteAsync(123, Array.Empty<String>(), Arg.Any<CancellationToken>());
+        await start.DidNotReceive().ExecuteAsync(Arg.Any<long>(), Array.Empty<String>(), Arg.Any<CancellationToken>());
     }
 }
