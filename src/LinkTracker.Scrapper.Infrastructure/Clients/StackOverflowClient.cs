@@ -10,11 +10,13 @@ public class StackOverflowClient : IStackOverflowClient
 
     public StackOverflowClient(HttpClient httpClient)
     {
-        _httpClient = httpClient; 
+        _httpClient = httpClient;
+        httpClient.BaseAddress = new Uri("https://api.stackexchange.com/2.3");
+        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("link-tracker-bot");
     }
     public async Task<DateTimeOffset?> GetLastUpdateAsync(long questionId, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync($"/2.3/questions/{questionId}?site=stackoverflow", cancellationToken);
+        var response = await _httpClient.GetAsync($"/questions/{questionId}?site=stackoverflow", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -29,6 +31,8 @@ public class StackOverflowClient : IStackOverflowClient
         {
             return null;
         }
+
+        Console.WriteLine(DateTimeOffset.FromUnixTimeSeconds(item.LastActivityDate));
 
         return DateTimeOffset.FromUnixTimeSeconds(item.LastActivityDate);
     }
