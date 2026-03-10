@@ -16,7 +16,7 @@ public class BotClient : IBotClient
     }
     public async Task PostUpdateAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
-        var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/links");
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/updates");
         httpRequest.Content = JsonContent.Create(linkUpdate);
 
         var response = await _httpClient.SendAsync(httpRequest, cancellationToken);

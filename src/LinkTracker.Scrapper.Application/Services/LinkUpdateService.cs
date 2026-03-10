@@ -56,8 +56,9 @@ public class LinkUpdateService : ILinkUpdateService
                 await _linkRepository.UpdateLinkAsync(link);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.StackTrace);
         }
     }
 }

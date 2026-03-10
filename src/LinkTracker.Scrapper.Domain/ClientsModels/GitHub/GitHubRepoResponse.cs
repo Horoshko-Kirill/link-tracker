@@ -4,6 +4,6 @@ namespace LinkTracker.Scrapper.Domain.ClientsModels.GitHub;
 
 public class GitHubRepoResponse
 {
-    [JsonPropertyName("updated_at")]
+    [JsonPropertyName("pushed_at")]
     public DateTimeOffset UpdatedAt { get; set; }
 }

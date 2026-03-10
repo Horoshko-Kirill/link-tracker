@@ -11,6 +11,7 @@ public class GitHubClient : IGitHubClient
     public GitHubClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
+        _httpClient.BaseAddress = new Uri("https://api.github.com");
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("link-tracker-bot");
     }
     public async Task<DateTimeOffset?> GetLastUpdateAsync(string owner, string repo, CancellationToken cancellationToken = default)

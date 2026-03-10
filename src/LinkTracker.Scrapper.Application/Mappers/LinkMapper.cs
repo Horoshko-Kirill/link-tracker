@@ -49,7 +49,7 @@ public static class LinkMapper
         return new LinkUpdate
         {
             Url = link.Url,
-            Description = update.ToString(),
+            Description = update.UtcDateTime.AddHours(3).ToString(),
             ChatIds = link.Subscriptions.Select(s => s.ChatId).ToList()
         };
     }
