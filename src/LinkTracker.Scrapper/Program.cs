@@ -2,6 +2,7 @@ using LinkTracker.Scrapper.Application.DI;
 using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Configuration;
 using LinkTracker.Scrapper.ExceptionInterceptor;
+using LinkTracker.Scrapper.Grpc;
 using LinkTracker.Scrapper.Infrastructure.Clients;
 using LinkTracker.Scrapper.Infrastructure.DI;
 using LinkTracker.Scrapper.Middleware;
@@ -43,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGrpcService<ScrapperGrpcLinkService>();
 
 app.MapControllers();
 
