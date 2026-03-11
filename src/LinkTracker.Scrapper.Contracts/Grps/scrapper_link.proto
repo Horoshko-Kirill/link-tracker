@@ -17,7 +17,6 @@ service ScrapperService
   rpc RemoveLink(RemoveLinkRequest) returns (LinkResponse);
 
   rpc GetLinks(GetLinksRequest) returns (ListLinksResponse);
-
 }
 
 message Empty {}

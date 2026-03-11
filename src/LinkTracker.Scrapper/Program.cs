@@ -1,6 +1,7 @@
 using LinkTracker.Scrapper.Application.DI;
 using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Configuration;
+using LinkTracker.Scrapper.ExceptionInterceptor;
 using LinkTracker.Scrapper.Infrastructure.Clients;
 using LinkTracker.Scrapper.Infrastructure.DI;
 using LinkTracker.Scrapper.Middleware;
@@ -26,6 +27,11 @@ builder.Services.AddHttpClient<IBotClient, BotClient>((sp, client) =>
     var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
 
     client.BaseAddress = new Uri(options.BaseUrl);
+});
+
+builder.Services.AddGrpc(options =>
+{
+    options.Interceptors.Add<GrpcExceptionInterceptor>();
 });
 
 var app = builder.Build();
