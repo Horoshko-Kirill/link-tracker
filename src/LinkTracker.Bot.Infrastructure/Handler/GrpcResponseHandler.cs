@@ -7,7 +7,7 @@ namespace LinkTracker.Bot.Infrastructure.Handler;
 
 public static class GrpcResponseHandler
 {
-    public static void Handle(RpcException ex)
+    public static Exception Handle(RpcException ex)
     {
         var metadata = ex.Trailers.GetValue("error");
 
@@ -15,9 +15,9 @@ public static class GrpcResponseHandler
         {
             var error = JsonSerializer.Deserialize<ApiErrorResponse>(metadata);
 
-            throw new ScrapperApiException(error?.ExceptionMessage ?? "Ошибка сервера");
+            return new ScrapperApiException(error?.ExceptionMessage ?? "Ошибка сервера");
         }
 
-        throw new ScrapperApiException("Ошибка сервера");
+        return new ScrapperApiException("Ошибка сервера");
     }
 }

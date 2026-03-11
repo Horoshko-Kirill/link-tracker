@@ -20,4 +20,8 @@
     <ProjectReference Include="..\LinkTracker.Scrapper.Contracts\LinkTracker.Scrapper.Contracts.csproj" />
   </ItemGroup>
 
+
+	<ItemGroup>
+		<Protobuf Include="..\LinkTracker.Scrapper.Contracts\Grpc\scrapper_link.proto" GrpcServices="Client" />
+	</ItemGroup>
 </Project>
