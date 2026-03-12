@@ -13,12 +13,14 @@ public class TrackCommand : ICommand
     private readonly ITelegramClient _telegramClient;
     private readonly IProcessService _processService;
     private readonly IScrapperClient _scrapperClient;
+    private readonly ILogger<TrackCommand> _logger;
 
-    public TrackCommand(ITelegramClient telegramClient, IProcessService processService, IScrapperClient scrapperClient)
+    public TrackCommand(ITelegramClient telegramClient, IProcessService processService, IScrapperClient scrapperClient, ILogger<TrackCommand> logger)
     {
         _telegramClient = telegramClient;
         _processService = processService;
         _scrapperClient = scrapperClient;
+        _logger = logger;
     }
 
     public string Name => "/track";
@@ -42,14 +44,17 @@ public class TrackCommand : ICommand
         }
         catch (ScrapperApiException ex)
         {
+            _logger.LogWarning("Track command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
         catch (BotException ex)
         {
+            _logger.LogWarning("Track command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Track command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, "Ошибка запуска процесса", cancellationToken);
         }
     }

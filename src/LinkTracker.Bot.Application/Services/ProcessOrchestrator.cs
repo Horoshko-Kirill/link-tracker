@@ -4,6 +4,7 @@ using LinkTracker.Bot.Application.Handlers.Interfaces;
 using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Application.InterfacesServices;
 using LinkTracker.Bot.Domain.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace LinkTracker.Bot.Application.Services;
 
@@ -14,7 +15,7 @@ public class ProcessOrchestrator : IProcessOrchestrator
     private readonly IActionItemRepository _actionRepository;
     private int MAX_STEPS = ProcessConstants.MaxSteps;
 
-    public ProcessOrchestrator(IEnumerable<IActionHandler> handlers, IProcessRepository processRepository, IActionItemRepository actionRepository)
+    public ProcessOrchestrator(IEnumerable<IActionHandler> handlers, IProcessRepository processRepository, IActionItemRepository actionRepository, ILogger<ProcessOrchestrator> logger)
     {
         _handlers = handlers;
         _processRepository = processRepository;

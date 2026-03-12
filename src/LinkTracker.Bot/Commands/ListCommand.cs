@@ -10,11 +10,13 @@ public class ListCommand : ICommand
 {
     private readonly ITelegramClient _telegramClient;
     private readonly IScrapperClient _scrapperClient;
+    private readonly ILogger<ListCommand> _logger;
 
-    public ListCommand(ITelegramClient telegramClient, IScrapperClient scrapperClient)
+    public ListCommand(ITelegramClient telegramClient, IScrapperClient scrapperClient, ILogger<ListCommand> logger)
     {
         _telegramClient = telegramClient;
         _scrapperClient = scrapperClient;
+        _logger = logger;
     }
 
     public string Name => "/list";
@@ -45,6 +47,7 @@ public class ListCommand : ICommand
 
             if (!links.Any())
             {
+                _logger.LogWarning("List command exception {chatId} : List of command empty", chatId);
                 await _telegramClient.SendMessageAsync(chatId, "Список отслеживаемых ссылок пуст", cancellationToken);
                 return;
             }
@@ -55,10 +58,12 @@ public class ListCommand : ICommand
         }
         catch (BotException ex)
         {
+            _logger.LogWarning("List command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("List command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, "Ошибка сервера", cancellationToken);
         }
 

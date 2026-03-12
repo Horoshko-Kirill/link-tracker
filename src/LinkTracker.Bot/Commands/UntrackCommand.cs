@@ -14,12 +14,14 @@ public class UntrackCommand : ICommand
     private readonly ITelegramClient _telegramClient;
     private readonly IProcessService _processService;
     private readonly IScrapperClient _scrapperClient;
+    private readonly ILogger<UntrackCommand> _logger;
 
-    public UntrackCommand(ITelegramClient telegramClient, IScrapperClient scrapperClient, IProcessService processService)
+    public UntrackCommand(ITelegramClient telegramClient, IScrapperClient scrapperClient, IProcessService processService, ILogger<UntrackCommand> logger)
     {
         _telegramClient = telegramClient;
         _scrapperClient = scrapperClient;
         _processService = processService;
+        _logger = logger;
     }
 
     public string Name => "/untrack";
@@ -42,10 +44,12 @@ public class UntrackCommand : ICommand
         }
         catch (BotException ex)
         {
+            _logger.LogWarning("Untrack command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Untrack command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, "Ошибка запуска процесса", cancellationToken);
         }
     }

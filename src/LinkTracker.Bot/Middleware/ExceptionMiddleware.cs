@@ -5,6 +5,7 @@ namespace LinkTracker.Bot.Middleware;
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionMiddleware> _logger;
 
     public ExceptionMiddleware(RequestDelegate next)
     {
@@ -19,6 +20,7 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogError("Bot exception {message}", ex.Message);
             await HandleException(context, ex);
         }
     }

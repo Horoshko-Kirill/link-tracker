@@ -5,6 +5,7 @@ using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Domain.Enums;
 using LinkTracker.Bot.Domain.Models;
 using LinkTracker.Scrapper.Contracts.Dto;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace LinkTracker.Bot.Application.Handlers.ActionHandlers;
@@ -15,7 +16,7 @@ public class TagsHandler : IActionHandler
     private readonly IProcessRepository _processRepository;
     private readonly IScrapperClient _scrapperClient;
 
-    public TagsHandler(IActionItemRepository actionItemRepository, IProcessRepository processRepository, IScrapperClient scrapperClient)
+    public TagsHandler(IActionItemRepository actionItemRepository, IProcessRepository processRepository, IScrapperClient scrapperClient, ILogger<TagsHandler> logger)
     {
         _actionItemRepository = actionItemRepository;
         _processRepository = processRepository;

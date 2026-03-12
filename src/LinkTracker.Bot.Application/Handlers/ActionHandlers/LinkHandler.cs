@@ -4,6 +4,7 @@ using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Domain.Enums;
 using LinkTracker.Bot.Domain.Models;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace LinkTracker.Bot.Application.Handlers.ActionHandlers;
 
@@ -11,7 +12,7 @@ public class LinkHandler : IActionHandler
 {
     private readonly IActionItemRepository _actionItemRepository;
     
-    public LinkHandler(IActionItemRepository actionItemRepository)
+    public LinkHandler(IActionItemRepository actionItemRepository, ILogger<LinkHandler> logger)
     {
         _actionItemRepository = actionItemRepository;
     }

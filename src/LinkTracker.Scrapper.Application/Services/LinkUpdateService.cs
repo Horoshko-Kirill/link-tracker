@@ -4,6 +4,7 @@ using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.InterfacesServices;
 using LinkTracker.Scrapper.Application.Mappers;
 using LinkTracker.Scrapper.Application.Providers.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace LinkTracker.Scrapper.Application.Services;
 
@@ -12,12 +13,14 @@ public class LinkUpdateService : ILinkUpdateService
     private readonly ILinkRepository _linkRepository;
     private readonly IEnumerable<IUpdateProvider> _providers;
     private readonly IBotClient _botClient;
+    private readonly ILogger<LinkUpdateService> _logger;
 
-    public LinkUpdateService(ILinkRepository linkRepository, IEnumerable<IUpdateProvider> providers, IBotClient botClient)
+    public LinkUpdateService(ILinkRepository linkRepository, IEnumerable<IUpdateProvider> providers, IBotClient botClient, ILogger<LinkUpdateService> logger)
     {
         _linkRepository = linkRepository;
         _providers = providers;
         _botClient = botClient;
+        _logger = logger;
     }
 
     public async Task CheckUpdatesAsync(CancellationToken cancellationToken = default)
@@ -58,7 +61,7 @@ public class LinkUpdateService : ILinkUpdateService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.StackTrace);
+            _logger.LogError("Scrapper update service : {message}", ex.Message);
         }
     }
 }

@@ -9,11 +9,13 @@ public class CancelCommand : ICommand
 {
     private readonly ITelegramClient _telegramClient;
     private readonly IProcessService _processService;
+    private readonly ILogger<CancelCommand> _logger;
 
-    public CancelCommand(ITelegramClient telegramClient, IProcessService processService)
+    public CancelCommand(ITelegramClient telegramClient, IProcessService processService, ILogger<CancelCommand> logger)
     {
         _telegramClient = telegramClient;
         _processService = processService;
+        _logger = logger;
     }
 
     public string Name => "/cancel";
@@ -26,14 +28,15 @@ public class CancelCommand : ICommand
         {
             await _processService.CancelProcessAsync(chatId, cancellationToken);
             await _telegramClient.SendMessageAsync(chatId, "Диалог отменён.", cancellationToken);
-
         }
         catch (BotException ex)
         {
+            _logger.LogWarning("Cancel command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Cancel command exception {chatId} : {message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, "Ошибка сервиса", cancellationToken);
         }
     }

@@ -7,6 +7,12 @@ namespace LinkTracker.Bot.ExceptionInterceptor;
 
 public class GrpcExceptionInterceptor : Interceptor
 {
+    private readonly ILogger<GrpcExceptionInterceptor> _logger;
+
+    public GrpcExceptionInterceptor(ILogger<GrpcExceptionInterceptor> logger)
+    {
+        _logger = logger;
+    }
     public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(TRequest request, ServerCallContext context, UnaryServerMethod<TRequest, TResponse> continuation)
     {
         try
@@ -28,6 +34,8 @@ public class GrpcExceptionInterceptor : Interceptor
             {
                 { "error", JsonSerializer.Serialize(error) }
             };
+
+            _logger.LogError("Grpc interceptor bot error {message}", ex.Message);
 
             throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }

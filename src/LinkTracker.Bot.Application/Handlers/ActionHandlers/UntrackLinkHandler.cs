@@ -5,6 +5,7 @@ using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Domain.Enums;
 using LinkTracker.Bot.Domain.Models;
 using LinkTracker.Scrapper.Contracts.Dto;
+using Microsoft.Extensions.Logging;
 
 namespace LinkTracker.Bot.Application.Handlers.ActionHandlers;
 
@@ -14,7 +15,7 @@ public class UntrackLinkHandler : IActionHandler
     private readonly IProcessRepository _processRepository;
     private readonly IScrapperClient _scrapperClient;
 
-    public UntrackLinkHandler(IActionItemRepository actionItemRepository, IProcessRepository processRepository, IScrapperClient scrapperClient)
+    public UntrackLinkHandler(IActionItemRepository actionItemRepository, IProcessRepository processRepository, IScrapperClient scrapperClient, ILogger<UntrackLinkHandler> logger)
     {
         _actionItemRepository = actionItemRepository;
         _processRepository = processRepository;

@@ -12,43 +12,49 @@ public class MessageRoute : IMessageRoute
     private readonly ICommandDispatcher _dispatcher;
     private readonly IProcessOrchestrator _orchestrator;
     private readonly ITelegramClient _telegramClient;
-    private readonly IProcessService _processService;
+    private readonly ILogger<MessageRoute> _logger;
 
-    public MessageRoute(ICommandDispatcher dispatcher, IProcessOrchestrator orchestrator, ITelegramClient telegramClient, IProcessService processService)
+    public MessageRoute(ICommandDispatcher dispatcher, IProcessOrchestrator orchestrator, ITelegramClient telegramClient, ILogger<MessageRoute> logger)
     {
         _dispatcher = dispatcher;
         _orchestrator = orchestrator;
         _telegramClient = telegramClient;
-        _processService = processService;
+        _logger = logger;
     }
 
     public async Task HandleUpdateAsync(long chatId, string message, CancellationToken cancellationToken = default)
     {
         if (message.Trim().Equals("/cancel", StringComparison.OrdinalIgnoreCase))
         {
+            _logger.LogInformation("Call /cancel command {chatId}", chatId);
             await _dispatcher.DispatchAsync(message, chatId, cancellationToken);
             return;
         }
 
         try
         {
+            _logger.LogInformation("Try process handler call {chatId}", chatId);
             var reply = await _orchestrator.HandleMessageAsync(chatId, message, cancellationToken);
             await _telegramClient.SendMessageAsync(chatId, reply, cancellationToken);
         }
-        catch (ProcessNotFoundException)
+        catch (ProcessNotFoundException ex)
         {
+            _logger.LogWarning("Process {chatId} : {message}", chatId, ex.Message);
             await _dispatcher.DispatchAsync(message, chatId, cancellationToken);
         }
         catch (ScrapperApiException ex)
         {
+            _logger.LogWarning("Error {chatId} : {ex.Message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
         catch (BotException ex)
         {
+            _logger.LogWarning("Error {chatId} : {ex.Message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, ex.Message, cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Error {chatId} : {ex.Message}", chatId, ex.Message);
             await _telegramClient.SendMessageAsync(chatId, "Ошибка сервера", cancellationToken);
         }
     }

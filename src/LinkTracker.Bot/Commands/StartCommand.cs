@@ -8,11 +8,13 @@ public class StartCommand : ICommand
 {
     private readonly ITelegramClient _client;
     private readonly IScrapperClient _scrapperClient;
+    private readonly ILogger<StartCommand> _logger;
 
-    public StartCommand(ITelegramClient client, IScrapperClient scrapperClient)
+    public StartCommand(ITelegramClient client, IScrapperClient scrapperClient, ILogger<StartCommand> logger)
     {
         _client = client;
         _scrapperClient = scrapperClient;
+        _logger = logger;
     }
     public string Name => "/start";
 
@@ -33,7 +35,8 @@ public class StartCommand : ICommand
         }
         catch (Exception ex)
         {
-            await _client.SendMessageAsync(chatId, ex.Message, cancellationToken);
+            _logger.LogError("Start command exception {chatId} : {message}", chatId, ex.Message);
+            await _client.SendMessageAsync(chatId, "Ошибка сервера", cancellationToken);
         }
     }
 }

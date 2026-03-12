@@ -8,6 +8,12 @@ namespace LinkTracker.Scrapper.ExceptionInterceptor;
 
 public class GrpcExceptionInterceptor : Interceptor
 {
+    public readonly ILogger<GrpcExceptionInterceptor> _logger;
+
+    public GrpcExceptionInterceptor(ILogger<GrpcExceptionInterceptor> logger)
+    {
+        _logger = logger;
+    }
     public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(TRequest request, ServerCallContext context, UnaryServerMethod<TRequest, TResponse> continuation)
     {
         try
@@ -38,6 +44,8 @@ public class GrpcExceptionInterceptor : Interceptor
             };
 
             var statusMessage = statusCode == 500 ? "Ошибка сервера" : ex.Message;
+
+            _logger.LogError("Grpc interceptor scrapper error {message}", ex.Message);
 
             throw new RpcException(new Status(StatusCode.Internal, statusMessage), metadata);
         }
