@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "LinkTracker.Bot.Contracts.Grpc";
+
+package bot;
+
+service BotUpdateService
+{
+	rpc PostUpdate(GrpcLinkUpdate) returns (GrpcEmpty);
+}
+
+message GrpcEmpty {}
+
+message GrpcLinkUpdate 
+{
+	string url = 1;
+	string description = 2;
+	repeated int64 chatIds = 3;
+}

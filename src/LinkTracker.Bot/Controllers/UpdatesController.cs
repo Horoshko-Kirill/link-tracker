@@ -16,7 +16,7 @@ public class UpdatesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostUpdateAsync([FromBody] LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> PostUpdate([FromBody] LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
         foreach(var chatId in linkUpdate.ChatIds)
         {
