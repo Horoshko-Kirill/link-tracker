@@ -6,6 +6,7 @@ using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.Configuration;
 using LinkTracker.Bot.Dispatching;
 using LinkTracker.Bot.ExceptionInterceptor;
+using LinkTracker.Bot.Grpc;
 using LinkTracker.Bot.Infrastructure.Clients;
 using LinkTracker.Bot.Infrastructure.DI;
 using LinkTracker.Bot.Middleware;
@@ -76,6 +77,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.MapGrpcService<BotGrpcUpdateService>();
 
 app.MapControllers();
 
