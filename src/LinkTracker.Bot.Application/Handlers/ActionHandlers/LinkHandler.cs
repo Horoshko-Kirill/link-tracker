@@ -12,7 +12,7 @@ public class LinkHandler : IActionHandler
 {
     private readonly IActionItemRepository _actionItemRepository;
     
-    public LinkHandler(IActionItemRepository actionItemRepository, ILogger<LinkHandler> logger)
+    public LinkHandler(IActionItemRepository actionItemRepository)
     {
         _actionItemRepository = actionItemRepository;
     }

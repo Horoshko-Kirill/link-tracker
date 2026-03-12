@@ -16,7 +16,7 @@ public class TagsHandler : IActionHandler
     private readonly IProcessRepository _processRepository;
     private readonly IScrapperClient _scrapperClient;
 
-    public TagsHandler(IActionItemRepository actionItemRepository, IProcessRepository processRepository, IScrapperClient scrapperClient, ILogger<TagsHandler> logger)
+    public TagsHandler(IActionItemRepository actionItemRepository, IProcessRepository processRepository, IScrapperClient scrapperClient)
     {
         _actionItemRepository = actionItemRepository;
         _processRepository = processRepository;

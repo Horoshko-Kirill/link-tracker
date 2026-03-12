@@ -2,6 +2,7 @@
 using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.Dispatching;
 using LinkTracker.Bot.Telegram;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace LinkTracker.Tests.LinkTracker.Bot;
@@ -22,8 +23,10 @@ public class CommandDispatcherTests
         var unknown = Substitute.For<ICommand>();
         unknown.Name.Returns(string.Empty);
 
+        var logger = Substitute.For<ILogger<CommandDispatcher>>();
+
         var commands = new List<ICommand> { start, unknown };
-        var dispatcher = new CommandDispatcher(commands);
+        var dispatcher = new CommandDispatcher(commands, logger);
 
         await dispatcher.DispatchAsync("/start", 123, CancellationToken.None);
 
@@ -45,8 +48,10 @@ public class CommandDispatcherTests
         var unknown = Substitute.For<ICommand>();
         unknown.Name.Returns(string.Empty);
 
+        var logger = Substitute.For<ILogger<CommandDispatcher>>();
+
         var commands = new List<ICommand> { start, unknown };
-        var dispatcher = new CommandDispatcher(commands);
+        var dispatcher = new CommandDispatcher(commands, logger);
 
         await dispatcher.DispatchAsync("/foobar", 123, CancellationToken.None);
 
