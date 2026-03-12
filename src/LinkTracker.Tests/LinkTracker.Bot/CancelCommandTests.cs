@@ -9,7 +9,7 @@ using NSubstitute;
 
 namespace LinkTracker.Tests.LinkTracker.Bot;
 
-public class CancelCommandTest
+public class CancelCommandTests
 {
     [Fact]
     public async Task ExecuteAsync_ShouldBeSendCancel()

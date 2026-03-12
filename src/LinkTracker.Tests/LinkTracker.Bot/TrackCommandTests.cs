@@ -9,7 +9,7 @@ using NSubstitute;
 
 namespace LinkTracker.Tests.LinkTracker.Bot;
 
-public class TrackCommandTest
+public class TrackCommandTests
 {
     [Fact]
     public async Task ExecuteAsync_ShouldBeAwaitingLinkConstant()
