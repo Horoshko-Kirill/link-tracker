@@ -5,6 +5,7 @@ using LinkTracker.Bot.Commands;
 using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.Configuration;
 using LinkTracker.Bot.Dispatching;
+using LinkTracker.Bot.ExceptionInterceptor;
 using LinkTracker.Bot.Infrastructure.Clients;
 using LinkTracker.Bot.Infrastructure.DI;
 using LinkTracker.Bot.Middleware;
@@ -59,6 +60,11 @@ builder.Services.AddSingleton<IScrapperClient, ScrapperGrpcClient>();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
+
+builder.Services.AddGrpc(options =>
+{
+    options.Interceptors.Add<GrpcExceptionInterceptor>();
+});
 
 builder.Services.AddHostedService<TelegramHostedService>();
 

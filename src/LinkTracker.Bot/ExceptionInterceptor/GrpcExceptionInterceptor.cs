@@ -1,10 +1,9 @@
 ﻿using Grpc.Core;
 using Grpc.Core.Interceptors;
-using LinkTracker.Scrapper.Application.Exceptions;
-using LinkTracker.Scrapper.Contracts.Dto;
+using LinkTracker.Bot.Contracts.Dto;
 using System.Text.Json;
 
-namespace LinkTracker.Scrapper.ExceptionInterceptor;
+namespace LinkTracker.Bot.ExceptionInterceptor;
 
 public class GrpcExceptionInterceptor : Interceptor
 {
@@ -17,19 +16,12 @@ public class GrpcExceptionInterceptor : Interceptor
         catch (Exception ex)
         {
 
-            var statusCode = ex switch
-            {
-                BadRequestException => 400,
-                ConflictException => 409,
-                NotFoundException => 404,
-                _ => 500
-            };
-
             var error = new ApiErrorResponse
             {
                 Code = ex.GetType().Name,
                 ExceptionName = ex.GetType().Name,
-                ExceptionMessage = statusCode == 500 ? "Ошибка сервера" : ex.Message,
+                ExceptionMessage = ex.Message,
+                StackTrace = ex.StackTrace?.Split('\n').ToList()
             };
 
             var metadata = new Metadata
@@ -37,9 +29,7 @@ public class GrpcExceptionInterceptor : Interceptor
                 { "error", JsonSerializer.Serialize(error) }
             };
 
-            var statusMessage = statusCode == 500 ? "Ошибка сервера" : ex.Message;
-
-            throw new RpcException(new Status(StatusCode.Internal, statusMessage), metadata);
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 }
