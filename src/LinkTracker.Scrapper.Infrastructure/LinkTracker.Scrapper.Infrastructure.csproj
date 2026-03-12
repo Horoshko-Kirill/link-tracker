@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.34.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.76.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.78.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Quartz" Version="3.16.1" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.16.1" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.16.1" />
@@ -15,5 +21,9 @@
   <ItemGroup>
     <ProjectReference Include="..\LinkTracker.Scrapper.Application\LinkTracker.Scrapper.Application.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="..\LinkTracker.Bot.Contracts\Grpc\bot_update.proto" GrpcServices="Client" />
+	</ItemGroup>
 
 </Project>

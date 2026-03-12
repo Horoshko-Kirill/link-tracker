@@ -1,4 +1,7 @@
-﻿using System.Text.Json;
+﻿using Grpc.Core;
+using LinkTracker.Bot.Contracts.Dto;
+using LinkTracker.Scrapper.Application.Exceptions;
+using System.Text.Json;
 
 namespace LinkTracker.Scrapper.Infrastructure.Handler;
 
@@ -12,9 +15,9 @@ public static class GrpcHandlerException
         {
             var error = JsonSerializer.Deserialize<ApiErrorResponse>(metadata);
 
-            return new ScrapperApiException(error?.ExceptionMessage ?? "Ошибка сервера");
+            return new BotApiException(error?.ExceptionMessage ?? "Ошибка сервера");
         }
 
-        return new ScrapperApiException("Ошибка сервера");
+        return new BotApiException("Ошибка сервера");
     }
 }

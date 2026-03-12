@@ -1,6 +1,8 @@
+using LinkTracker.Bot.Contracts.Grpc;
 using LinkTracker.Scrapper.Application.DI;
 using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Configuration;
+using LinkTracker.Scrapper.Contracts.Grpc;
 using LinkTracker.Scrapper.ExceptionInterceptor;
 using LinkTracker.Scrapper.Grpc;
 using LinkTracker.Scrapper.Infrastructure.Clients;
@@ -23,12 +25,21 @@ builder.Services.AddInfrastructure();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient<IBotClient, BotClient>((sp, client) =>
+/*builder.Services.AddHttpClient<IBotClient, BotClient>((sp, client) =>
 {
     var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
 
     client.BaseAddress = new Uri(options.BaseUrl);
+});*/
+
+builder.Services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
+{
+    var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
+
+    o.Address = new Uri(options.BaseUrl);
 });
+
+builder.Services.AddSingleton<IBotClient, BotGrpcClient>();
 
 builder.Services.AddGrpc(options =>
 {
