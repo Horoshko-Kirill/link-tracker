@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LinkTracker.Bot\LinkTracker.Bot.csproj" />
+      <ProjectReference Include="..\LinkTracker.Scrapper\LinkTracker.Scrapper.csproj" />
     </ItemGroup>
 
     <ItemGroup>
