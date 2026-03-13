@@ -43,21 +43,21 @@ builder.Services.AddTransient<ICommand, CancelCommand>();
 builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
 builder.Services.AddScoped<IMessageRoute, MessageRoute>();
 
-/* builder.Services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
+builder.Services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
 {
     var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;
 
     client.BaseAddress = new Uri(options.BaseUrl);
-}); */
+}); 
 
-builder.Services.AddGrpcClient<ScrapperLinkService.ScrapperLinkServiceClient>((sp, o) =>
+/*builder.Services.AddGrpcClient<ScrapperLinkService.ScrapperLinkServiceClient>((sp, o) =>
 {
     var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;
 
     o.Address = new Uri(options.BaseUrl);
 });
 
-builder.Services.AddSingleton<IScrapperClient, ScrapperGrpcClient>();
+builder.Services.AddSingleton<IScrapperClient, ScrapperGrpcClient>();*/
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();

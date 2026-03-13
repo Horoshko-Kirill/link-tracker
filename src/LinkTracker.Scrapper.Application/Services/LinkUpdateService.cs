@@ -1,5 +1,4 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
-using LinkTracker.Scrapper.Application.InterfacesClients;
+﻿using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.InterfacesServices;
 using LinkTracker.Scrapper.Application.Mappers;
