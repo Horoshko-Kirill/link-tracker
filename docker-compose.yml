@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+
+  bot:
+    build:
+      context: ./src/LinkTracker.Bot 
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TelegramBot__Token=${BOT_TOKEN} 
+
+  scrapper:
+    build:
+      context: ./src/LinkTracker.Scrapper
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
