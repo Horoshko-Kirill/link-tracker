@@ -27,4 +27,10 @@ public class UpdatesController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUpdate(CancellationToken cancellationToken = default)
+    {
+        return Ok();
+    }
 }

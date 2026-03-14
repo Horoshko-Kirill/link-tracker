@@ -17,6 +17,8 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddOpenApi();
 
 builder.Services.Configure<BotOptions>(
@@ -30,7 +32,20 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
+builder.Services.AddSingleton<ITelegramClient>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+
+    var useFake = Environment.GetEnvironmentVariable("UseFakeTelegramClient") == "true"
+    || config.GetValue<bool>("UseFakeTelegramClient");
+
+    return useFake
+        ? new FakeTelegramClient()
+        : new TelegramClient(
+            sp.GetRequiredService<IOptions<BotOptions>>(),
+            sp.GetRequiredService<ILogger<TelegramClient>>()
+        );
+});
 
 builder.Services.AddTransient<ICommand, StartCommand>();
 builder.Services.AddTransient<ICommand, HelpCommand>();

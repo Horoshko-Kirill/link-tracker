@@ -44,9 +44,14 @@ public class InMemoryChatRepository : IChatRepository
         return Task.FromResult(chat);
     }
 
-    public Task RemoveChatAsync(long id, CancellationToken cancellationToken = default)
+    public Task RemoveChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        _chats.Remove(id);
+        var chat = _chats.Values.FirstOrDefault(c => c.ChatId == chatId);
+        if (chat == null)
+        {
+            return Task.CompletedTask;
+        }
+        _chats.Remove(chat.Id);
         return Task.CompletedTask;
     }
 }
