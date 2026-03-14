@@ -60,9 +60,9 @@ integration_test:
   before_script:
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
+    - docker build -t link-tracker-scrapper -f src/LinkTracker.Scrapper/Dockerfile .
+    - docker build -t link-tracker-bot -f src/LinkTracker.Bot/Dockerfile .
     - docker run --rm -v "$CI_PROJECT_DIR:/src" -w /src mcr.microsoft.com/dotnet/sdk:10.0 dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
-    - docker info
-    - docker ps
 
 
   
