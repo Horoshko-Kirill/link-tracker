@@ -20,7 +20,7 @@ public class ChatTests
     public async Task RegisterChat_ReturnsOk()
     {
         var exception = await Record.ExceptionAsync(() =>
-            _scrapper.RegisterChatAsync(1));
+            _scrapper.RegisterChatAsync(101));
 
         Assert.Null(exception);
     }
@@ -30,7 +30,7 @@ public class ChatTests
     {
         await Assert.ThrowsAsync<ScrapperApiException>(async () =>
         {
-            await _scrapper.DeleteChatAsync(1);
+            await _scrapper.DeleteChatAsync(100);
         });
     }
 }
