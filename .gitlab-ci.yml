@@ -38,7 +38,7 @@ module_test:
     - dotnet test
 
 integration_test:
-  image: docker 
+  image: mcr.microsoft.com/dotnet/sdk:10.0
   stage: test
   needs: 
     - job: module_test
