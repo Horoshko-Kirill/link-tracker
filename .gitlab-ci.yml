@@ -60,6 +60,8 @@ integration_test:
   before_script:
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
-    - echo "Running tests..."
+    - dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj --no-build
+  tags:
+    - dind
 
   
