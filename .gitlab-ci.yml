@@ -38,7 +38,7 @@ module_test:
     - dotnet test src/LinkTracker.Tests.Unit/LinkTracker.Tests.Unit.csproj
 
 integration_test:
-  image: mcr.microsoft.com/dotnet/sdk:10.0
+  image: docker 
   stage: test
   needs: 
     - job: module_test
@@ -48,8 +48,10 @@ integration_test:
       allow_failure: false
     - when: never
   variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_CERT_PATH: ""
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
   tags:
     - dind
   services:
@@ -58,8 +60,8 @@ integration_test:
   before_script:
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
-    - dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
-  tags:
-    - dind
+    - docker run --rm -v "$CI_PROJECT_DIR:/src" -w /src mcr.microsoft.com/dotnet/sdk:10.0 \
+    - dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj --no-build
+
 
   
