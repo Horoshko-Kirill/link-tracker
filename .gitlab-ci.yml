@@ -38,7 +38,7 @@ module_test:
     - dotnet test src/LinkTracker.Tests.Unit/LinkTracker.Tests.Unit.csproj
 
 integration_test:
-  image: mcr.microsoft.com/dotnet/sdk:10.0
+  image: docker
   stage: test
   needs: 
     - job: module_test
