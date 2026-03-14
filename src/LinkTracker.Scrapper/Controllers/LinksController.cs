@@ -12,7 +12,7 @@ public class LinksController : ControllerBase
 
     public LinksController(ILinkService linkService)
     {
-        _linkService = linkService; 
+        _linkService = linkService;
     }
 
     [HttpGet]

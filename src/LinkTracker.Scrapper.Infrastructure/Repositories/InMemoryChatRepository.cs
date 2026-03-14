@@ -16,7 +16,7 @@ public class InMemoryChatRepository : IChatRepository
 
     public Task<bool> ChatExistAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        var chat = _chats.Values.FirstOrDefault(c  => c.ChatId == chatId);
+        var chat = _chats.Values.FirstOrDefault(c => c.ChatId == chatId);
 
         if (chat == null)
         {

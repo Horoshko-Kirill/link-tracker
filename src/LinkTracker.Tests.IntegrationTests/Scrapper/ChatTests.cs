@@ -7,7 +7,7 @@ using LinkTracker.Tests.IntegrationTests.Fixtures;
 namespace LinkTracker.Tests.IntegrationTests.Scrapper;
 
 [Collection("Integration")]
-public class ChatTests 
+public class ChatTests
 {
     private readonly ScrapperClient _scrapper;
     public ChatTests(TestEnvironment env)

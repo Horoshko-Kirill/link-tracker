@@ -12,13 +12,13 @@ public class UpdatesController : ControllerBase
 
     public UpdatesController(ITelegramClient telegramClient)
     {
-        _telegramClient = telegramClient; 
+        _telegramClient = telegramClient;
     }
 
     [HttpPost]
     public async Task<IActionResult> PostUpdate([FromBody] LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
-        foreach(var chatId in linkUpdate.ChatIds)
+        foreach (var chatId in linkUpdate.ChatIds)
         {
             var message = $"{linkUpdate.Url} : \n {linkUpdate.Description}";
 

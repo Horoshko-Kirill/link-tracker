@@ -13,7 +13,7 @@ public class InMemoryActionItemRepository : IActionItemRepository
         _actionsItems[action.Id] = action;
         return Task.CompletedTask;
     }
-    
+
     public Task<List<ActionItem>> GetAllAsync(long processId, CancellationToken cancellationToken = default)
     {
         var actionItems = _actionsItems.Values.Where(a => a.ProcessId == processId).ToList();

@@ -24,7 +24,7 @@ public static class LinkMapper
     public static LinkResponse ToResponse(Link link, long chatId)
     {
 
-         var sub = link.Subscriptions.First(s => s.ChatId == chatId);
+        var sub = link.Subscriptions.First(s => s.ChatId == chatId);
 
         return new LinkResponse
         {

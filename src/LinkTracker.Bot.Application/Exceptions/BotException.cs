@@ -2,7 +2,7 @@
 
 public abstract class BotException : Exception
 {
-    protected BotException(string message) : base(message) 
+    protected BotException(string message) : base(message)
     {
     }
 }

@@ -13,6 +13,6 @@ public interface IScrapperClient
     Task<LinkResponse> AddLinkAsync(long chatId, AddLinkRequest request, CancellationToken cancellationToken = default);
 
     Task<LinkResponse> RemoveLinkAsync(long chatId, RemoveLinkRequest request, CancellationToken cancellationToken = default);
-    
+
     Task<ExistChatResponse> ChatExistAsync(long chatId, CancellationToken cancellationToken = default);
 }

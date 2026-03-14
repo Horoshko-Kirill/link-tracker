@@ -63,7 +63,7 @@ builder.Services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
     var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;
 
     client.BaseAddress = new Uri(options.BaseUrl);
-}); 
+});
 
 /*builder.Services.AddGrpcClient<ScrapperLinkService.ScrapperLinkServiceClient>((sp, o) =>
 {

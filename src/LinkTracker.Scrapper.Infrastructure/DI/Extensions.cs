@@ -28,7 +28,7 @@ public static class Extensions
                 .ForJob(jobKey)
                 .WithIdentity("LinkUpdateJob-trigger")
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInMinutes(1) 
+                    .WithIntervalInMinutes(1)
                     .RepeatForever()
                 )
             );

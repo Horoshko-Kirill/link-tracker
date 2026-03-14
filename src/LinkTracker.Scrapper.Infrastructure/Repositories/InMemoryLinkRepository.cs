@@ -20,7 +20,7 @@ public class InMemoryLinkRepository : ILinkRepository
         }
         else
         {
-            foreach(var sub in entity.Subscriptions)
+            foreach (var sub in entity.Subscriptions)
             {
                 sub.LinkId = existing.Id;
                 existing.Subscriptions.Add(sub);

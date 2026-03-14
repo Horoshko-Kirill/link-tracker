@@ -12,7 +12,7 @@ public class BotClient : IBotClient
 
     public BotClient(HttpClient httpClient)
     {
-        _httpClient = httpClient; 
+        _httpClient = httpClient;
     }
     public async Task PostUpdateAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {

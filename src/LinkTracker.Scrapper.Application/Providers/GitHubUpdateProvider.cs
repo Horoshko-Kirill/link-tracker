@@ -9,7 +9,7 @@ public class GitHubUpdateProvider : IUpdateProvider
 
     public GitHubUpdateProvider(IGitHubClient gitHubClient)
     {
-        _gitHubClient = gitHubClient; 
+        _gitHubClient = gitHubClient;
     }
     public bool CanHandle(Uri url)
     {

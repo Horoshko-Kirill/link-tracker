@@ -23,7 +23,7 @@ public class ScrapperGrpcClient : IScrapperClient
             var response = await _client.AddLinkAsync(new GrpcAddLinkRequest
             {
                 ChatId = chatId,
-                Tags = { request.Tags } ,
+                Tags = { request.Tags },
                 Url = request.Url,
             }, cancellationToken: cancellationToken);
 

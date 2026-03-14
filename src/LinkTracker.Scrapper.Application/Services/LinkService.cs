@@ -36,7 +36,7 @@ public class LinkService : ILinkService
 
         var link = LinkMapper.ToDomain(chatId, request);
 
-        await _linkRepository.AddAsync(link); 
+        await _linkRepository.AddAsync(link);
 
         return LinkMapper.ToResponse(link, chatId);
     }
@@ -82,6 +82,6 @@ public class LinkService : ILinkService
         await _linkRepository.RemoveLinkAsync(chatId, request.Url, cancellationToken);
 
         return response;
-        
+
     }
 }
