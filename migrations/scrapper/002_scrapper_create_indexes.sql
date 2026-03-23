@@ -6,3 +6,9 @@ CREATE INDEX IF NOT EXISTS ix_scrapper_subscriptions_link_id
 
 CREATE INDEX IF NOT EXISTS ix_scrapper_tags_subscription_id
     ON scrapper_tags(subscription_id);
+
+CREATE INDEX IF NOT EXISTS ix_scrapper_links_last_checked
+    ON scrapper_links(last_checked);
+
+CREATE INDEX IF NOT EXISTS ix_scrapper_links_url
+    ON scrapper_links(url);

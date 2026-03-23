@@ -2,7 +2,7 @@
 
 namespace LinkTracker.Scrapper.Application.InterfacesRepositories;
 
-public interface ITagRepository : IRepository<Tag>
+public interface ITagRepository
 {
     Task RemoveTagAsync(long id, CancellationToken cancellationToken = default);
 }

@@ -2,7 +2,7 @@
 
 namespace LinkTracker.Scrapper.Application.InterfacesRepositories;
 
-public interface ILinkRepository : IRepository<Link>
+public interface ILinkRepository
 {
     Task RemoveLinkAsync(long chatId, string url, CancellationToken cancellationToken = default);
     Task<Link?> GetLinkAsync(long chatId, string url, CancellationToken cancellationToken = default);

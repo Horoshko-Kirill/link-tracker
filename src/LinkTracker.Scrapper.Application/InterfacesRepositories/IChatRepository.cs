@@ -2,7 +2,7 @@
 
 namespace LinkTracker.Scrapper.Application.InterfacesRepositories;
 
-public interface IChatRepository : IRepository<Chat>
+public interface IChatRepository
 {
     Task RemoveChatAsync(long chatId, CancellationToken cancellationToken = default);
     Task<Chat?> GetChatAsync(long id, CancellationToken cancellationToken = default);
