@@ -18,7 +18,7 @@ public class LinkServiceTests
 
         var chatId = 123;
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
         linkRepository.LinkExistAsync(chatId, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
 
         var linkService = new LinkService(linkRepository, chatRepository);
@@ -54,7 +54,7 @@ public class LinkServiceTests
         var linkRepository = Substitute.For<ILinkRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
         var linkService = new LinkService(linkRepository, chatRepository);
 
@@ -71,7 +71,7 @@ public class LinkServiceTests
         var linkRepository = Substitute.For<ILinkRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
         linkRepository.LinkExistAsync(chatId, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(true);
 
         var linkService = new LinkService(linkRepository, chatRepository);
@@ -90,7 +90,7 @@ public class LinkServiceTests
         var linkRepository = Substitute.For<ILinkRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
 
         var links = new List<Link>
         {
@@ -154,7 +154,7 @@ public class LinkServiceTests
         var linkRepository = Substitute.For<ILinkRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
         var linkService = new LinkService(linkRepository, chatRepository);
 
@@ -169,7 +169,7 @@ public class LinkServiceTests
         var linkRepository = Substitute.For<ILinkRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
         linkRepository.LinkExistAsync(chatId, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(true);
 
         var link = new Link
@@ -218,7 +218,7 @@ public class LinkServiceTests
         var linkRepository = Substitute.For<ILinkRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
         var linkService = new LinkService(linkRepository, chatRepository);
 
@@ -235,7 +235,7 @@ public class LinkServiceTests
         var linkRepository = Substitute.For<ILinkRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
 
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
         linkRepository.LinkExistAsync(chatId, Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
 
         var linkService = new LinkService(linkRepository, chatRepository);

@@ -15,12 +15,12 @@ public class ChatServiceTests
         long chatId = 123;
 
         var chatRepository = Substitute.For<IChatRepository>();
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
 
         var chatService = new ChatService(chatRepository);
         await chatService.DeleteChatAsync(chatId);
 
-        await chatRepository.Received(1).RemoveChatAsync(chatId, Arg.Any<CancellationToken>());
+        await chatRepository.Received(1).RemoveByChatIdAsync(chatId, Arg.Any<CancellationToken>());
     }
 
 
@@ -30,7 +30,7 @@ public class ChatServiceTests
         long chatId = 123;
 
         var chatRepository = Substitute.For<IChatRepository>();
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
         var chatService = new ChatService(chatRepository);
 
@@ -45,7 +45,7 @@ public class ChatServiceTests
         long chatId = 123;
 
         var chatRepository = Substitute.For<IChatRepository>();
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
         var chatService = new ChatService(chatRepository);
         await chatService.RegisterChatAsync(chatId);
@@ -70,7 +70,7 @@ public class ChatServiceTests
     {
         long chatId = 123;
         var chatRepository = Substitute.For<IChatRepository>();
-        chatRepository.ChatExistAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
+        chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
 
         var chatService = new ChatService(chatRepository);
 

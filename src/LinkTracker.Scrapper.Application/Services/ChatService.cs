@@ -16,19 +16,19 @@ public class ChatService : IChatService
     }
     public async Task DeleteChatAsync(long chatId, CancellationToken cancellation = default)
     {
-        if (!(await _chatRepository.ChatExistAsync(chatId)))
+        if (!(await _chatRepository.ChatExistByChatIdAsync(chatId)))
         {
             throw new NotFoundException("Чат не существует");
         }
 
-        await _chatRepository.RemoveChatAsync(chatId, cancellation);
+        await _chatRepository.RemoveByChatIdAsync(chatId, cancellation);
     }
 
     public async Task<ExistChatResponse> ExistChatAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var response = new ExistChatResponse
         {
-            ExistChat = await _chatRepository.ChatExistAsync(chatId)
+            ExistChat = await _chatRepository.ChatExistByChatIdAsync(chatId)
         };
 
         return response;
@@ -42,7 +42,7 @@ public class ChatService : IChatService
             throw new BadRequestException("Неверный id чата");
         }
 
-        if (await _chatRepository.ChatExistAsync(chatId))
+        if (await _chatRepository.ChatExistByChatIdAsync(chatId))
         {
             throw new ConflictException("Вы уже зарегистрированы. Используйте /help для списка команд");
         }

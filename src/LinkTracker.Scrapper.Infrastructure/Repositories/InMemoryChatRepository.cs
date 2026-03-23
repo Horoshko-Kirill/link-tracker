@@ -14,7 +14,7 @@ public class InMemoryChatRepository : IChatRepository
         return Task.CompletedTask;
     }
 
-    public Task<bool> ChatExistAsync(long chatId, CancellationToken cancellationToken = default)
+    public Task<bool> ChatExistByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var chat = _chats.Values.FirstOrDefault(c => c.ChatId == chatId);
 
@@ -44,7 +44,7 @@ public class InMemoryChatRepository : IChatRepository
         return Task.FromResult(chat);
     }
 
-    public Task RemoveChatAsync(long chatId, CancellationToken cancellationToken = default)
+    public Task RemoveByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var chat = _chats.Values.FirstOrDefault(c => c.ChatId == chatId);
         if (chat == null)

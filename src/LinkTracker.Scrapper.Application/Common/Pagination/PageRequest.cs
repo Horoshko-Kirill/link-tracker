@@ -2,13 +2,13 @@
 
 public class PageRequest
 {
-    public int Offset { get; }
+    public long LastId { get; }
     public int Size { get; }
-    public PageRequest(int offset, int size)
+    public PageRequest(long lastId, int size)
     {
-        if (offset < 0)
+        if (lastId < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(offset));
+            throw new ArgumentOutOfRangeException(nameof(lastId));
         }
 
         if (size <= 0)
@@ -16,7 +16,7 @@ public class PageRequest
             throw new ArgumentOutOfRangeException(nameof(size));
         }
 
-        Offset = offset;
+        LastId = lastId;
         Size = size;
     }
 }

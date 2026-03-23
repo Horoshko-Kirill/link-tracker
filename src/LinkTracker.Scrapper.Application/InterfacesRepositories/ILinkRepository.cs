@@ -1,13 +1,15 @@
-﻿using LinkTracker.Scrapper.Domain.Models;
+﻿using LinkTracker.Scrapper.Application.Common.Pagination;
+using LinkTracker.Scrapper.Domain.Models;
 
 namespace LinkTracker.Scrapper.Application.InterfacesRepositories;
 
 public interface ILinkRepository
 {
-    Task RemoveLinkAsync(long chatId, string url, CancellationToken cancellationToken = default);
-    Task<Link?> GetLinkAsync(long chatId, string url, CancellationToken cancellationToken = default);
-    Task<List<Link>> GetLinksByChatAsync(long chatId, string? tag = null, CancellationToken cancellationToken = default);
-    Task<bool> LinkExistAsync(long chatId, string url, CancellationToken cancellationToken = default);
+    Task AddLinkAsync(Link link, CancellationToken cancellationToken = default);
     Task UpdateLinkAsync(Link link, CancellationToken cancellationToken = default);
-    Task<List<Link>> GetAllLinksAsync(CancellationToken cancellationToken = default);
+    Task<bool> LinkExistByUrlAsync(string url, CancellationToken cancellationToken = default);
+    Task RemoveLinkAsync(long id, CancellationToken cancellationToken = default);
+    Task<Link?> GetByIdAsync(long id, CancellationToken cancellationToken = default);
+    Task<Link?> GetByUrlAsync(string url, CancellationToken cancellationToken = default);
+    Task<List<Link>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default);
 }

@@ -24,7 +24,7 @@ public class LinkService : ILinkService
             throw new BadRequestException("Неверный id чата");
         }
 
-        if (!(await _chatRepository.ChatExistAsync(chatId)))
+        if (!(await _chatRepository.ChatExistByChatIdAsync(chatId)))
         {
             throw new NotFoundException("Чат не существует");
         }
@@ -36,7 +36,7 @@ public class LinkService : ILinkService
 
         var link = LinkMapper.ToDomain(chatId, request);
 
-        //await _linkRepository.AddAsync(link);
+        await _linkRepository.AddAsync(link);
 
         return LinkMapper.ToResponse(link, chatId);
     }
@@ -48,7 +48,7 @@ public class LinkService : ILinkService
             throw new BadRequestException("Неверный id чата");
         }
 
-        if (!(await _chatRepository.ChatExistAsync(chatId)))
+        if (!(await _chatRepository.ChatExistByChatIdAsync(chatId)))
         {
             throw new NotFoundException("Чат не существует");
         }
@@ -65,7 +65,7 @@ public class LinkService : ILinkService
             throw new BadRequestException("Неверный id чата");
         }
 
-        if (!(await _chatRepository.ChatExistAsync(chatId)))
+        if (!(await _chatRepository.ChatExistByChatIdAsync(chatId)))
         {
             throw new NotFoundException("Чат не существует");
         }
