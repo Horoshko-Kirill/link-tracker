@@ -37,7 +37,7 @@ public class OrmLinkRepository : ILinkRepository
 
     public async Task<List<Link>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Links
+        return await _links
             .AsNoTracking()
             .Where(x => x.Id > pageRequest.LastId)
             .OrderBy(x => x.Id)
