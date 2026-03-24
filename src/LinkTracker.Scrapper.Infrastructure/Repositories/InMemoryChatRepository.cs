@@ -1,4 +1,5 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesRepositories;
+﻿using LinkTracker.Scrapper.Application.Common.Pagination;
+using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Domain.Models;
 
 namespace LinkTracker.Scrapper.Infrastructure.Repositories;
@@ -12,6 +13,11 @@ public class InMemoryChatRepository : IChatRepository
         entity.Id = _idCounter++;
         _chats[entity.Id] = entity;
         return Task.CompletedTask;
+    }
+
+    public Task AddChatAsync(Chat chat, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     public Task<bool> ChatExistByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
@@ -42,6 +48,11 @@ public class InMemoryChatRepository : IChatRepository
         var chat = _chats.Values.FirstOrDefault(c => c.ChatId == chatId);
 
         return Task.FromResult(chat);
+    }
+
+    public Task<List<Chat>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     public Task RemoveByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
