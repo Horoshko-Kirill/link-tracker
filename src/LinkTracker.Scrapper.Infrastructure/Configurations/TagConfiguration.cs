@@ -25,5 +25,10 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
 
         builder.HasIndex(x => new { x.SubscriptionId, x.Name })
             .IsUnique();
+
+        builder.HasOne(x => x.Subscription)
+            .WithMany(x => x.Tags)
+            .HasForeignKey(x => x.SubscriptionId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
