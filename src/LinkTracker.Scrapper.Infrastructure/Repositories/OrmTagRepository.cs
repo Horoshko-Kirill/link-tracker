@@ -3,7 +3,6 @@ using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Domain.Models;
 using LinkTracker.Scrapper.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace LinkTracker.Scrapper.Infrastructure.Repositories;
 
