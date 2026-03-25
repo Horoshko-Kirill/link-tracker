@@ -1,20 +1,44 @@
 ﻿using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Infrastructure.Clients;
+using LinkTracker.Scrapper.Infrastructure.Database;
+using LinkTracker.Scrapper.Infrastructure.Options;
 using LinkTracker.Scrapper.Infrastructure.Quartz.Jobs;
 using LinkTracker.Scrapper.Infrastructure.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
+using LinkTracker.Scrapper.Application.InterfacesCommon;
 
 namespace LinkTracker.Scrapper.Infrastructure.DI;
 
 public static class Extensions
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
 
-        services.AddSingleton<IChatRepository, InMemoryChatRepository>();
-        services.AddSingleton<ILinkRepository, InMemoryLinkRepository>();
+        services.Configure<DatabaseOptions>(configuration.GetSection(DatabaseOptions.SectionName));
+
+        services.AddDbContext<ScrapperDbContext>((sp, options) =>
+        {
+            var dbOptions = sp
+                .GetRequiredService<IOptions<DatabaseOptions>>()
+                .Value;
+
+            options.UseNpgsql(dbOptions.ConnectionString);
+        });
+
+        /*services.AddSingleton<IChatRepository, InMemoryChatRepository>();
+        services.AddSingleton<ILinkRepository, InMemoryLinkRepository>();*/
+
+        services.AddScoped<IChatRepository, OrmChatRepository>();
+        services.AddScoped<ILinkRepository, OrmLinkRepository>();
+        services.AddScoped<ISubscriptionRepository, OrmSubscriptionRepository>();
+        services.AddScoped<ITagRepository, OrmTagRepository>();
+
+        services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
         services.AddSingleton<IGitHubClient, GitHubClient>();
         services.AddSingleton<IStackOverflowClient, StackOverflowClient>();
