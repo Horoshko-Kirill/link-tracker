@@ -62,7 +62,6 @@ public class OrmLinkRepository : ILinkRepository
         }
 
         _links.Remove(link);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public Task UpdateLinkAsync(Link link, CancellationToken cancellationToken = default)

@@ -57,7 +57,6 @@ public class OrmTagRepository : ITagRepository
         }
 
         _tags.Remove(subscription);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task RemoveTagAsync(long id, CancellationToken cancellationToken = default)
@@ -70,6 +69,5 @@ public class OrmTagRepository : ITagRepository
         }
 
         _tags.Remove(subscription);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

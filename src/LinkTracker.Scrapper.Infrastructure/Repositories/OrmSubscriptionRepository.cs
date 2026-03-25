@@ -27,7 +27,7 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
     {
         return _subscriptions
             .AsNoTracking()
-            .AnyAsync(x => x.ChatId == chatId && x.Link.Url == url, cancellationToken);
+            .AnyAsync(x => x.Chat.ChatId == chatId && x.Link.Url == url, cancellationToken);
     }
 
     public Task<bool> ExistsForLinkAsync(long linkId, CancellationToken cancellationToken = default)
@@ -43,7 +43,7 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
             .AsNoTracking()
             .Include(x => x.Chat)
             .Include(x => x.Link)
-            .FirstOrDefaultAsync(x => x.ChatId == chatId && x.Link.Url == url, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Chat.ChatId == chatId && x.Link.Url == url, cancellationToken);
     }
 
     public Task<Subscription?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
@@ -78,7 +78,7 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
         var subscription = await _subscriptions
             .Include(x => x.Chat)
             .Include(x => x.Link)
-            .FirstOrDefaultAsync(x => x.ChatId == chatId && x.Link.Url == url, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Chat.ChatId == chatId && x.Link.Url == url, cancellationToken);
 
         if (subscription == null)
         {
@@ -86,6 +86,5 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
         }
 
         _subscriptions.Remove(subscription);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

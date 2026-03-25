@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using LinkTracker.Scrapper.Application.InterfacesCommon;
+using LinkTracker.Scrapper.Infrastructure.Database.Transaction;
 
 namespace LinkTracker.Scrapper.Infrastructure.DI;
 

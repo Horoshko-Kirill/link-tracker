@@ -62,6 +62,5 @@ public class OrmChatRepository : IChatRepository
         }
 
         _chats.Remove(chat);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
