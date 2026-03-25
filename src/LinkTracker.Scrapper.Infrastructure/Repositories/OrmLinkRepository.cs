@@ -15,29 +15,29 @@ public class OrmLinkRepository : ILinkRepository
         _dbContext = dbContext;
         _links = dbContext.Links;
     }
-    public async Task AddLinkAsync(Link link, CancellationToken cancellationToken = default)
+    public Task AddLinkAsync(Link link, CancellationToken cancellationToken = default)
     {
         _links.Add(link);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return Task.CompletedTask;
     }
 
-    public async Task<Link?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+    public Task<Link?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        return await _links
+        return _links
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.Id == id, cancellationToken);
     }
 
-    public async Task<Link?> GetByUrlAsync(string url, CancellationToken cancellationToken = default)
+    public Task<Link?> GetByUrlAsync(string url, CancellationToken cancellationToken = default)
     {
-        return await _links
+        return _links
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.Url == url, cancellationToken);
     }
 
-    public async Task<List<Link>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
+    public Task<List<Link>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        return await _links
+        return _links
             .AsNoTracking()
             .Where(x => x.Id > pageRequest.LastId)
             .OrderBy(x => x.Id)
@@ -45,9 +45,9 @@ public class OrmLinkRepository : ILinkRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> LinkExistByUrlAsync(string url, CancellationToken cancellationToken = default)
+    public Task<bool> LinkExistByUrlAsync(string url, CancellationToken cancellationToken = default)
     {
-        return await _links
+        return _links
             .AsNoTracking()
             .AnyAsync(x => x.Url == url, cancellationToken);
     }
@@ -65,9 +65,9 @@ public class OrmLinkRepository : ILinkRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateLinkAsync(Link link, CancellationToken cancellationToken = default)
+    public Task UpdateLinkAsync(Link link, CancellationToken cancellationToken = default)
     {
         _links.Update(link);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return Task.CompletedTask;
     }
 }

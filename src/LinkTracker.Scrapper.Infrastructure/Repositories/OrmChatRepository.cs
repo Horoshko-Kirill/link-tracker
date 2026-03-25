@@ -15,36 +15,36 @@ public class OrmChatRepository : IChatRepository
         _dbContext = dbContext;
         _chats = _dbContext.Chats;
     }
-    public async Task AddChatAsync(Chat chat, CancellationToken cancellationToken = default)
+    public Task AddChatAsync(Chat chat, CancellationToken cancellationToken = default)
     {
         _chats.Add(chat);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return Task.CompletedTask;
     }
 
-    public async Task<bool> ChatExistByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
+    public Task<bool> ChatExistByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        return await _chats
+        return _chats
             .AsNoTracking()
             .AnyAsync(x => x.ChatId == chatId, cancellationToken);
     }
 
-    public async Task<Chat?> GetChatAsync(long id, CancellationToken cancellationToken = default)
+    public Task<Chat?> GetChatAsync(long id, CancellationToken cancellationToken = default)
     {
-        return await _chats
+        return _chats
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<Chat?> GetChatByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
+    public Task<Chat?> GetChatByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        return await _chats
+        return _chats
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.ChatId == chatId, cancellationToken);
     }
 
-    public async Task<List<Chat>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
+    public Task<List<Chat>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        return await _chats
+        return _chats
            .AsNoTracking()
            .Where(x => x.Id > pageRequest.LastId)
            .OrderBy(x => x.Id)

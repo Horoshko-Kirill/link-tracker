@@ -17,10 +17,10 @@ public class OrmTagRepository : ITagRepository
         _tags = dbContext.Tags;
     }
 
-    public async Task AddTagAsync(Tag tag, CancellationToken cancellationToken = default)
+    public Task AddTagAsync(Tag tag, CancellationToken cancellationToken = default)
     {
         _tags.Add(tag);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return Task.CompletedTask;
     }
 
     public Task<bool> ExistAsync(long subscriptionId, string name, CancellationToken cancellationToken = default)
