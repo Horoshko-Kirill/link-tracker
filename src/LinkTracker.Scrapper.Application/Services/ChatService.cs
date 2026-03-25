@@ -1,4 +1,5 @@
 ﻿using LinkTracker.Scrapper.Application.Exceptions;
+using LinkTracker.Scrapper.Application.InterfacesCommon;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.InterfacesServices;
 using LinkTracker.Scrapper.Contracts.Dto;
@@ -9,10 +10,12 @@ namespace LinkTracker.Scrapper.Application.Services;
 public class ChatService : IChatService
 {
     private readonly IChatRepository _chatRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ChatService(IChatRepository chatRepository)
+    public ChatService(IChatRepository chatRepository, IUnitOfWork unitOfWork)
     {
         _chatRepository = chatRepository;
+        _unitOfWork = unitOfWork;
     }
     public async Task DeleteChatAsync(long chatId, CancellationToken cancellation = default)
     {
@@ -22,6 +25,7 @@ public class ChatService : IChatService
         }
 
         await _chatRepository.RemoveByChatIdAsync(chatId, cancellation);
+        await _unitOfWork.SaveChangesAsync(cancellation);
     }
 
     public async Task<ExistChatResponse> ExistChatAsync(long chatId, CancellationToken cancellationToken = default)
@@ -52,6 +56,7 @@ public class ChatService : IChatService
             ChatId = chatId
         };
 
-        await _chatRepository.AddAsync(chat, cancellationToken);
+        await _chatRepository.AddChatAsync(chat, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

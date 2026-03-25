@@ -43,6 +43,7 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
             .AsNoTracking()
             .Include(x => x.Chat)
             .Include(x => x.Link)
+            .Include(x => x.Tags)
             .FirstOrDefaultAsync(x => x.Chat.ChatId == chatId && x.Link.Url == url, cancellationToken);
     }
 
@@ -52,13 +53,17 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
             .AsNoTracking()
             .Include(x => x.Chat)
             .Include(x => x.Link)
+            .Include(x => x.Tags)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public Task<List<Link>> GetLinksByChatAsync(long chatId, string? tag, PageRequest pageRequest, CancellationToken cancellationToken = default)
+    public Task<List<Subscription>> GetSubscriptionsByChatAsync(long chatId, string? tag, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        IQueryable<Subscription> query = _dbContext.Subscriptions
+        IQueryable<Subscription> query = _subscriptions
            .AsNoTracking()
+           .Include(x => x.Link)
+           .Include(x => x.Tags)
+           .Include(x => x.Chat)
            .Where(x => x.Chat.ChatId == chatId);
 
         if (!string.IsNullOrWhiteSpace(tag))
@@ -67,10 +72,27 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
         }
 
         return query
-            .Where(x => x.LinkId > pageRequest.LastId)
-            .OrderBy(x => x.LinkId)
+            .AsNoTracking()
+            .Where(x => x.Id > pageRequest.LastId)
+            .OrderBy(x => x.Id)
             .Take(pageRequest.Size)
-            .Select(x => x.Link)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task<List<Subscription>> GetSubscriptionByLinkAsync(long linkId, PageRequest pageRequest, CancellationToken cancellationToken = default)
+    {
+        IQueryable<Subscription> query = _subscriptions
+            .AsNoTracking()
+            .Include(x => x.Link)
+            .Include(x => x.Tags)
+            .Include(x => x.Chat)
+            .Where(x => x.LinkId == linkId);
+
+        return query
+            .AsNoTracking()
+            .Where(x => x.Id > pageRequest.LastId)
+            .OrderBy(x => x.Id)
+            .Take(pageRequest.Size)
             .ToListAsync(cancellationToken);
     }
 
@@ -79,6 +101,7 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
         var subscription = await _subscriptions
             .Include(x => x.Chat)
             .Include(x => x.Link)
+            .Include(x => x.Tags)
             .FirstOrDefaultAsync(x => x.Chat.ChatId == chatId && x.Link.Url == url, cancellationToken);
 
         if (subscription == null)

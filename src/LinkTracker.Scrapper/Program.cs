@@ -19,9 +19,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
 
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddSwaggerGen();
 

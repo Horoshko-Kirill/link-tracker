@@ -13,7 +13,8 @@ public class LinkConfiguration : IEntityTypeConfiguration<Link>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
-            .ValueGeneratedOnAdd();
+            .ValueGeneratedOnAdd()
+            .HasColumnName("id");
 
         builder.Property(x => x.Url)
             .HasColumnName("url")

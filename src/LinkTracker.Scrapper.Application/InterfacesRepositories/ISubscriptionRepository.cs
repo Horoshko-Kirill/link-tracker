@@ -11,5 +11,6 @@ public interface ISubscriptionRepository
     Task<bool> ExistsAsync(long chatId, string url, CancellationToken cancellationToken = default);
     Task<bool> ExistsForLinkAsync(long linkId, CancellationToken cancellationToken = default);
     Task RemoveByChatIdAndUrlAsync(long chatId, string url, CancellationToken cancellationToken = default);
-    Task<List<Link>> GetLinksByChatAsync(long chatId, string? tag, PageRequest pageRequest, CancellationToken cancellationToken = default);
+    Task<List<Subscription>> GetSubscriptionByLinkAsync(long linkId, PageRequest pageRequest, CancellationToken cancellationToken = default);
+    Task<List<Subscription>> GetSubscriptionsByChatAsync(long chatId, string? tag, PageRequest pageRequest, CancellationToken cancellationToken = default);
 }
