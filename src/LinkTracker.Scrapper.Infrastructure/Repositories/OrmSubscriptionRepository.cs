@@ -59,7 +59,7 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
     {
         IQueryable<Subscription> query = _dbContext.Subscriptions
            .AsNoTracking()
-           .Where(x => x.Chat.ChatId == chatId && x.Id > pageRequest.LastId);
+           .Where(x => x.Chat.ChatId == chatId);
 
         if (!string.IsNullOrWhiteSpace(tag))
         {
@@ -67,7 +67,8 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
         }
 
         return query
-            .OrderBy(x => x.Id)
+            .Where(x => x.LinkId > pageRequest.LastId)
+            .OrderBy(x => x.LinkId)
             .Take(pageRequest.Size)
             .Select(x => x.Link)
             .ToListAsync(cancellationToken);
