@@ -5,7 +5,7 @@ using LinkTracker.Bot.Telegram;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
-namespace LinkTracker.Tests.LinkTracker.Bot;
+namespace LinkTracker.Tests.Unit.LinkTracker.Bot;
 
 public class CommandDispatcherTests
 {

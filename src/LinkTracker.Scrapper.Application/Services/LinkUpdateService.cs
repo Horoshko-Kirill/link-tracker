@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.Collections;
-using LinkTracker.Scrapper.Application.Common.Pagination;
+﻿using LinkTracker.Scrapper.Application.Common.Pagination;
 using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Application.InterfacesCommon;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
@@ -80,7 +79,7 @@ public class LinkUpdateService : ILinkUpdateService
                         continue;
                     }
 
-                    link.Subscriptions = await GetSubscriptionByLintIdAsync(link.Id, cancellationToken);
+                    link.Subscriptions = await GetSubscriptionByLinkIdAsync(link.Id, cancellationToken);
 
                     var update = LinkMapper.ToUpdateRequest(link, lastUpdate.Value);
 
@@ -92,7 +91,7 @@ public class LinkUpdateService : ILinkUpdateService
                     await _unitOfWork.SaveChangesAsync(cancellationToken); 
                 }
 
-                lastId = links[links.Count - 1].Id;
+                lastId = links[^1].Id;
             }
         }
         catch (Exception ex)
@@ -102,7 +101,7 @@ public class LinkUpdateService : ILinkUpdateService
 
     }
 
-    private async Task<List<Subscription>> GetSubscriptionByLintIdAsync(long linkId, CancellationToken cancellationToken = default)
+    private async Task<List<Subscription>> GetSubscriptionByLinkIdAsync(long linkId, CancellationToken cancellationToken = default)
     {
         long lastId = 0;
         int pageSize = _paginationOptions.PageSize;
@@ -121,7 +120,7 @@ public class LinkUpdateService : ILinkUpdateService
             }
 
             result.AddRange(subscriptions);
-            lastId = subscriptions[subscriptions.Count - 1].Id;
+            lastId = subscriptions[^1].Id;
         }
 
         return result;

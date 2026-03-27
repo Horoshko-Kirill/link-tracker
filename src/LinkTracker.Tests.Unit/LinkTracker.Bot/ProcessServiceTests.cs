@@ -6,7 +6,7 @@ using LinkTracker.Bot.Domain.Enums;
 using LinkTracker.Bot.Domain.Models;
 using NSubstitute;
 
-namespace LinkTracker.Tests.LinkTracker.Bot;
+namespace LinkTracker.Tests.Unit.LinkTracker.Bot;
 
 public class ProcessServiceTests
 {

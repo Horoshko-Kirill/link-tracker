@@ -4,7 +4,7 @@ using LinkTracker.Bot.Telegram;
 using LinkTracker.Scrapper.Contracts.Dto;
 using NSubstitute;
 
-namespace LinkTracker.Tests.LinkTracker.Bot;
+namespace LinkTracker.Tests.Unit.LinkTracker.Bot;
 
 public class UnknownCommandTests
 {

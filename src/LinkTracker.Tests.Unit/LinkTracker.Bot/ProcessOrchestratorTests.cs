@@ -7,7 +7,7 @@ using LinkTracker.Bot.Domain.Models;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
-namespace LinkTracker.Tests.LinkTracker.Bot;
+namespace LinkTracker.Tests.Unit.LinkTracker.Bot;
 
 public class ProcessOrchestratorTests
 {

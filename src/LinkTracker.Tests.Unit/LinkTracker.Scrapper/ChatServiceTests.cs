@@ -1,10 +1,11 @@
 ﻿using LinkTracker.Scrapper.Application.Exceptions;
+using LinkTracker.Scrapper.Application.InterfacesCommon;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.Services;
 using LinkTracker.Scrapper.Domain.Models;
 using NSubstitute;
 
-namespace LinkTracker.Tests.LinkTracker.Scrapper;
+namespace LinkTracker.Tests.Unit.LinkTracker.Scrapper;
 
 public class ChatServiceTests
 {
@@ -15,9 +16,11 @@ public class ChatServiceTests
         long chatId = 123;
 
         var chatRepository = Substitute.For<IChatRepository>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
 
-        var chatService = new ChatService(chatRepository);
+        var chatService = new ChatService(chatRepository, unitOfWork);
         await chatService.DeleteChatAsync(chatId);
 
         await chatRepository.Received(1).RemoveByChatIdAsync(chatId, Arg.Any<CancellationToken>());
@@ -30,9 +33,11 @@ public class ChatServiceTests
         long chatId = 123;
 
         var chatRepository = Substitute.For<IChatRepository>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
-        var chatService = new ChatService(chatRepository);
+        var chatService = new ChatService(chatRepository, unitOfWork);
 
 
         await Assert.ThrowsAsync<NotFoundException>(() => chatService.DeleteChatAsync(chatId));
@@ -45,12 +50,14 @@ public class ChatServiceTests
         long chatId = 123;
 
         var chatRepository = Substitute.For<IChatRepository>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
-        var chatService = new ChatService(chatRepository);
+        var chatService = new ChatService(chatRepository, unitOfWork);
         await chatService.RegisterChatAsync(chatId);
 
-        await chatRepository.Received(1).AddAsync(Arg.Any<Chat>(), Arg.Any<CancellationToken>());
+        await chatRepository.Received(1).AddChatAsync(Arg.Any<Chat>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -59,8 +66,9 @@ public class ChatServiceTests
         long chatId = 0;
 
         var chatRepository = Substitute.For<IChatRepository>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
 
-        var chatService = new ChatService(chatRepository);
+        var chatService = new ChatService(chatRepository, unitOfWork);
 
         await Assert.ThrowsAsync<BadRequestException>(() => chatService.RegisterChatAsync(chatId));
     }
@@ -70,9 +78,11 @@ public class ChatServiceTests
     {
         long chatId = 123;
         var chatRepository = Substitute.For<IChatRepository>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
 
-        var chatService = new ChatService(chatRepository);
+        var chatService = new ChatService(chatRepository, unitOfWork);
 
         await Assert.ThrowsAsync<ConflictException>(() => chatService.RegisterChatAsync(chatId));
     }
