@@ -123,14 +123,14 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
     }
 
     public Task<bool> ChatExistByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
-    {
-        const string sql = """
-                           select exists(
-                               select 1
-                               from scrapper_chats
-                               where chat_id = @chat_id
-                           );
-                           """;
+    { 
+        string sql = """
+                   select exists(
+                       select 1
+                       from scrapper_chats
+                       where chat_id = @chat_id
+                   );
+                   """;
 
         return QueryAsync(sql, async cmd =>
         {
