@@ -1,10 +1,10 @@
-﻿using LinkTracker.Scrapper.Migrator;
+﻿using System.Reflection;
+using LinkTracker.Scrapper.Migrator;
 using LinkTracker.Scrapper.Migrator.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 
 var builder = Host.CreateApplicationBuilder(args);
 
