@@ -130,17 +130,18 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
 
     public Task<List<Link>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        string sql = """
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000); 
+        
+        string sql = $"""
                      select id, url, last_checked from scrapper_links
                      where id > @lastId
                      order by id
-                     limit @size
+                     limit {limit}
                      """;
         
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
-            cmd.Parameters.AddWithValue("size", pageRequest.Size);
 
             var result = new List<Link>();
             

@@ -94,11 +94,13 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
 
     public Task<List<Chat>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        string sql = """
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000); 
+        
+        string sql = $"""
                      select id, chat_id from scrapper_chats
                      where id > @lastId
                      order by id
-                     limit @size
+                     limit {limit}
                      """;
         
         return QueryAsync(sql, async cmd =>

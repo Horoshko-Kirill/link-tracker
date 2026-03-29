@@ -72,18 +72,19 @@ public class SqlTagRepository : SqlRepositoryBase, ITagRepository
 
     public Task<List<Tag>> GetBySubscriptionIdAsync(long subscriptionId, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        string sql = """
-                     select id, name, subscription_id from scrapper_tags
-                     where subscription_id = @subscriptionId and id > @lastId
-                     order by id
-                     limit @size
-                     """;
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000);
+
+        string sql = $"""
+                      select id, name, subscription_id from scrapper_tags
+                      where subscription_id = @subscriptionId and id > @lastId
+                      order by id
+                      limit {limit}
+                      """;
 
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("subscriptionId", subscriptionId);
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
-            cmd.Parameters.AddWithValue("size", pageRequest.Size);
 
             var result = new List<Tag>();
             

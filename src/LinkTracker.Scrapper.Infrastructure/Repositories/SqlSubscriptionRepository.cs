@@ -218,29 +218,30 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
 
     public Task<List<Subscription>> GetSubscriptionByLinkAsync(long linkId, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        string sql = """
-                     select s.id, s.link_id, s.chat_id, 
-                            l.id, l.url, l.last_checked, 
-                            c.id, c.chat_id,
-                            t.id, t.name, t.subscription_id
-                     from (
-                         select *
-                         from scrapper_subscriptions
-                         where link_id = @linkId and id > @lastId
-                         order by id
-                         limit @size
-                     ) s
-                     join scrapper_chats c on c.id = s.chat_id
-                     join scrapper_links l on l.id = s.link_id
-                     left join scrapper_tags t on t.subscription_id = s.id
-                     order by s.id
-                     """;
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000);
+
+        string sql = $"""
+                      select s.id, s.link_id, s.chat_id, 
+                             l.id, l.url, l.last_checked, 
+                             c.id, c.chat_id,
+                             t.id, t.name, t.subscription_id
+                      from (
+                          select *
+                          from scrapper_subscriptions
+                          where link_id = @linkId and id > @lastId
+                          order by id
+                          limit {limit}
+                      ) s
+                      join scrapper_chats c on c.id = s.chat_id
+                      join scrapper_links l on l.id = s.link_id
+                      left join scrapper_tags t on t.subscription_id = s.id
+                      order by s.id
+                      """;
 
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("linkId", linkId);
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
-            cmd.Parameters.AddWithValue("size", pageRequest.Size);
             
             var subscriptions = new Dictionary<long, Subscription>();
             
@@ -292,7 +293,9 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
 
     public Task<List<Subscription>> GetSubscriptionsByChatAsync(long chatId, string? tag, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        string sql = """
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000); 
+        
+        string sql = $"""
                     select 
                         s.id, s.link_id, s.chat_id,
                         l.id, l.url, l.last_checked,
@@ -312,7 +315,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
                               )
                           )
                         order by s.id
-                        limit @size
+                        limit {limit}
                     ) s
                     join scrapper_chats c on c.id = s.chat_id
                     join scrapper_links l on l.id = s.link_id
@@ -324,8 +327,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
         {
             cmd.Parameters.AddWithValue("chatId", chatId);
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
-            cmd.Parameters.AddWithValue("size", pageRequest.Size);
-            cmd.Parameters.AddWithValue("tag", (object?)tag ?? DBNull.Value);
+            cmd.Parameters.Add("tag", NpgsqlTypes.NpgsqlDbType.Text).Value = (object?)tag ?? DBNull.Value;
 
             var subscriptions = new Dictionary<long, Subscription>();
 
