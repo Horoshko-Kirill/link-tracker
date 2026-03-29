@@ -34,15 +34,15 @@ public static class Extensions
         /*services.AddSingleton<IChatRepository, InMemoryChatRepository>();
         services.AddSingleton<ILinkRepository, InMemoryLinkRepository>();*/
 
-        /*services.AddScoped<IChatRepository, OrmChatRepository>();
+        services.AddScoped<IChatRepository, OrmChatRepository>();
         services.AddScoped<ILinkRepository, OrmLinkRepository>();
         services.AddScoped<ISubscriptionRepository, OrmSubscriptionRepository>();
-        services.AddScoped<ITagRepository, OrmTagRepository>();*/
+        services.AddScoped<ITagRepository, OrmTagRepository>();
         
-        services.AddScoped<IChatRepository, SqlChatRepository>();
+        /*services.AddScoped<IChatRepository, SqlChatRepository>();
         services.AddScoped<ILinkRepository, SqlLinkRepository>();
         services.AddScoped<ISubscriptionRepository, SqlSubscriptionRepository>();
-        services.AddScoped<ITagRepository, SqlTagRepository>();
+        services.AddScoped<ITagRepository, SqlTagRepository>();*/
 
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
