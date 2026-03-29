@@ -13,7 +13,7 @@ public class SqlRepositoryBase
         _dataSource = dataSource;
         _session = session;
     }
-    
+
     protected async Task ExecuteAsync(
         string sql,
         Func<NpgsqlCommand, Task> handler,
