@@ -76,7 +76,7 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
         
         return QueryAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("chat_id", chatId);
+            cmd.Parameters.AddWithValue("chatId", chatId);
             
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
@@ -105,8 +105,7 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
         
         return QueryAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("last_id", pageRequest.LastId);
-            cmd.Parameters.AddWithValue("size", pageRequest.Size);
+            cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
 
             var result = new List<Chat>();
 
@@ -136,7 +135,7 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
 
         return QueryAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("chat_id", chatId);
+            cmd.Parameters.AddWithValue("chatId", chatId);
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
             return Convert.ToBoolean(result);
         }, cancellationToken);
