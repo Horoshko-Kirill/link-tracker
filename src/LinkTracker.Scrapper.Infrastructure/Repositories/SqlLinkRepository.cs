@@ -8,7 +8,7 @@ namespace LinkTracker.Scrapper.Infrastructure.Repositories;
 
 public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
 {
-    protected SqlLinkRepository(NpgsqlDataSource dataSource, SqlSession session) : base(dataSource, session)
+    public SqlLinkRepository(NpgsqlDataSource dataSource, SqlSession session) : base(dataSource, session)
     {
     }
     public Task AddLinkAsync(Link link, CancellationToken cancellationToken = default)
@@ -21,8 +21,8 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
 
         return ExecuteAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("@url", link.Url);
-            cmd.Parameters.AddWithValue("@last_checked", link.LastChecked);
+            cmd.Parameters.AddWithValue("url", link.Url);
+            cmd.Parameters.AddWithValue("last_checked", link.LastChecked);
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
             link.Id = Convert.ToInt64(result);
         }, cancellationToken);
@@ -38,9 +38,9 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
                      """;
         return ExecuteAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("@id", link.Id);
-            cmd.Parameters.AddWithValue("@url", link.Url);
-            cmd.Parameters.AddWithValue("@last_checked", link.LastChecked);
+            cmd.Parameters.AddWithValue("id", link.Id);
+            cmd.Parameters.AddWithValue("url", link.Url);
+            cmd.Parameters.AddWithValue("last_checked", link.LastChecked);
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }, cancellationToken);
     }
@@ -70,7 +70,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
                      """;
         return ExecuteAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("id", id);
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }, cancellationToken);
     }
@@ -84,7 +84,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
 
         return QueryAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("id", id);
             
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
@@ -96,7 +96,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
             {
                 Id = reader.GetInt64(0),
                 Url = reader.GetString(1),
-                LastChecked = reader.GetDateTime(2)
+                LastChecked = reader.GetFieldValue<DateTimeOffset>(2)
             };
 
         }, cancellationToken);
@@ -111,7 +111,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
 
         return QueryAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("@url", url);
+            cmd.Parameters.AddWithValue("url", url);
             
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
@@ -123,7 +123,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
             {
                 Id = reader.GetInt64(0),
                 Url = reader.GetString(1),
-                LastChecked = reader.GetDateTime(2)
+                LastChecked = reader.GetFieldValue<DateTimeOffset>(2)
             };
         }, cancellationToken);
     }
@@ -139,8 +139,8 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
         
         return QueryAsync(sql, async cmd =>
         {
-            cmd.Parameters.AddWithValue("@lastId", pageRequest.LastId);
-            cmd.Parameters.AddWithValue("@size", pageRequest.Size);
+            cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
+            cmd.Parameters.AddWithValue("size", pageRequest.Size);
 
             var result = new List<Link>();
             
@@ -151,7 +151,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
                 {
                     Id = reader.GetInt64(0),
                     Url = reader.GetString(1),
-                    LastChecked = reader.GetDateTime(2)
+                    LastChecked = reader.GetFieldValue<DateTimeOffset>(2)
                 });
             }
             

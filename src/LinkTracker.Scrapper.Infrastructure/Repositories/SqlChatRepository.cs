@@ -8,7 +8,7 @@ namespace LinkTracker.Scrapper.Infrastructure.Repositories;
 
 public class SqlChatRepository : SqlRepositoryBase, IChatRepository
 {
-    protected SqlChatRepository(NpgsqlDataSource dataSource, SqlSession session) : base(dataSource, session)
+    public SqlChatRepository(NpgsqlDataSource dataSource, SqlSession session) : base(dataSource, session)
     {
     }
 
