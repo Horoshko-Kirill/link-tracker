@@ -1,4 +1,5 @@
-﻿using LinkTracker.Bot.Application.InterfacesRepositories;
+﻿using LinkTracker.Bot.Application.Common.Pagination;
+using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Domain.Models;
 
 namespace LinkTracker.Bot.Infrastructure.Repositories;
@@ -14,7 +15,7 @@ public class InMemoryActionItemRepository : IActionItemRepository
         return Task.CompletedTask;
     }
 
-    public Task<List<ActionItem>> GetAllAsync(long processId, CancellationToken cancellationToken = default)
+    public Task<List<ActionItem>> GetPageAsync(long processId, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
         var actionItems = _actionsItems.Values.Where(a => a.ProcessId == processId).ToList();
         return Task.FromResult(actionItems);

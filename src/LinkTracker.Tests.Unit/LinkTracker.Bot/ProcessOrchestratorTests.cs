@@ -1,4 +1,6 @@
-﻿using LinkTracker.Bot.Application.Handlers.ActionHandlers;
+﻿using Google.Protobuf.WellKnownTypes;
+using LinkTracker.Bot.Application.Common.Pagination;
+using LinkTracker.Bot.Application.Handlers.ActionHandlers;
 using LinkTracker.Bot.Application.Handlers.Interfaces;
 using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Application.Services;
@@ -38,7 +40,7 @@ public class ProcessOrchestratorTests
         long chatId = 123;
 
         processRepository.GetActiveProcessAsync(chatId, Arg.Any<CancellationToken>()).Returns(process);
-        actionRepository.GetAllAsync(process.Id, Arg.Any<CancellationToken>()).Returns(new List<ActionItem> { actionItem });
+        actionRepository.GetPageAsync(process.Id, Arg.Any<PageRequest>(), Arg.Any<CancellationToken>()).Returns(new List<ActionItem> { actionItem });
         actionRepository.GetLastAsync(process.Id, Arg.Any<CancellationToken>()).Returns(actionItem);
 
         var orchestrator = new ProcessOrchestrator(handlers, processRepository, actionRepository, logger);

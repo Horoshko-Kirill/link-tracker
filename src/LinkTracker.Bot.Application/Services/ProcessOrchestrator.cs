@@ -1,4 +1,5 @@
-﻿using LinkTracker.Bot.Application.Constants;
+﻿using LinkTracker.Bot.Application.Common.Pagination;
+using LinkTracker.Bot.Application.Constants;
 using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Bot.Application.Handlers.Interfaces;
 using LinkTracker.Bot.Application.InterfacesRepositories;
@@ -30,7 +31,9 @@ public class ProcessOrchestrator : IProcessOrchestrator
             throw new ProcessNotFoundException("Нет активного процесса для данного чата");
         }
 
-        var actions = await _actionRepository.GetAllAsync(process.Id, cancellationToken);
+        var pageRequest = new PageRequest(1, 1);
+
+        var actions = await _actionRepository.GetPageAsync(process.Id, pageRequest, cancellationToken);
         if (actions.Count > MAX_STEPS)
         {
             throw new ProcessLimitExceededException("Превышено количество запросов в диалоге введите /cancel для отмены операции");
