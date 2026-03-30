@@ -1,3 +1,6 @@
+CREATE UNIQUE INDEX ux_scrapper_subscriptions_chat_link
+    ON scrapper_subscriptions(chat_id, link_id);
+
 CREATE INDEX IF NOT EXISTS ix_scrapper_subscriptions_chat_id
     ON scrapper_subscriptions(chat_id);
 

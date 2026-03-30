@@ -28,9 +28,4 @@
 	<ItemGroup>
 		<Protobuf Include="..\LinkTracker.Scrapper.Contracts\Grpc\scrapper_link.proto" GrpcServices="Client" />
 	</ItemGroup>
-
-
-	<ItemGroup>
-	  <Folder Include="Configurations\" />
-	</ItemGroup>
 </Project>

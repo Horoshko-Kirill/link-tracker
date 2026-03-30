@@ -24,6 +24,9 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
             .HasColumnName("link_id")
             .IsRequired();
 
+        builder.HasIndex(x => x.ChatId);
+        builder.HasIndex(x => x.LinkId);
+        
         builder.HasIndex(x => new { x.ChatId, x.LinkId })
             .IsUnique();
 
