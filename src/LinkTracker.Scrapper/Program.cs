@@ -1,19 +1,17 @@
-using LinkTracker.Bot.Contracts.Grpc;
 using LinkTracker.Scrapper.Application.DI;
-using LinkTracker.Scrapper.Application.InterfacesClients;
-using LinkTracker.Scrapper.Configuration;
-using LinkTracker.Scrapper.Contracts.Grpc;
-using LinkTracker.Scrapper.ExceptionInterceptor;
+using LinkTracker.Scrapper.DI;
 using LinkTracker.Scrapper.Grpc;
-using LinkTracker.Scrapper.Infrastructure.Clients;
 using LinkTracker.Scrapper.Infrastructure.DI;
 using LinkTracker.Scrapper.Middleware;
-using Microsoft.Extensions.Options;
+using LinkTracker.Scrapper.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<BotOptions>(
-    builder.Configuration.GetSection("TelegramBot"));
+    builder.Configuration.GetSection(BotOptions.SectionName));
+
+builder.Services.Configure<ClientOptions>(
+    builder.Configuration.GetSection(ClientOptions.SectionName));
 
 builder.Services.AddOpenApi();
 
@@ -25,26 +23,11 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient<IBotClient, BotClient>((sp, client) =>
-{
-    var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
+builder.Services.AddGrpc();
 
-    client.BaseAddress = new Uri(options.BaseUrl);
-});
+var clientOptions = builder.Configuration.GetSection(ClientOptions.SectionName).Get<ClientOptions>();
 
-/*builder.Services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
-{
-    var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
-
-    o.Address = new Uri(options.BaseUrl);
-});
-
-builder.Services.AddSingleton<IBotClient, BotGrpcClient>();*/
-
-builder.Services.AddGrpc(options =>
-{
-    options.Interceptors.Add<GrpcExceptionInterceptor>();
-});
+builder.Services.AddClient(clientOptions);
 
 var app = builder.Build();
 

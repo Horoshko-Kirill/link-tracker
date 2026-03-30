@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using LinkTracker.Bot.Application.InterfacesClients;
-using LinkTracker.Bot.Exceptions;
 using LinkTracker.Bot.Infrastructure.Handler;
 using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Scrapper.Contracts.Grpc;

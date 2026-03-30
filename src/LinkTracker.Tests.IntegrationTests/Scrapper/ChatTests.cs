@@ -1,5 +1,5 @@
-﻿using LinkTracker.Bot.Clients.Scrapper;
-using LinkTracker.Bot.Exceptions;
+﻿using LinkTracker.Bot.Application.Exceptions;
+using LinkTracker.Bot.Infrastructure.Clients;
 using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Tests.IntegrationTests.Clients;
 using LinkTracker.Tests.IntegrationTests.Fixtures;

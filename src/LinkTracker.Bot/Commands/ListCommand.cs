@@ -1,7 +1,6 @@
 ﻿using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Exceptions;
 using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;

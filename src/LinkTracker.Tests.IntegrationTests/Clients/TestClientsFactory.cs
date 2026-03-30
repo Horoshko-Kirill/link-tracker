@@ -1,4 +1,4 @@
-﻿using LinkTracker.Bot.Clients.Scrapper;
+﻿using LinkTracker.Bot.Infrastructure.Clients;
 using LinkTracker.Scrapper.Infrastructure.Clients;
 using LinkTracker.Tests.IntegrationTests.Fixtures;
 

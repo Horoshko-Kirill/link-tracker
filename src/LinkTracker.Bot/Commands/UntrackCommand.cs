@@ -3,7 +3,6 @@ using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Application.InterfacesServices;
 using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Exceptions;
 using LinkTracker.Bot.Telegram;
 using LinkTracker.Scrapper.Contracts.Dto;
 

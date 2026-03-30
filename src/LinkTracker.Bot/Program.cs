@@ -1,15 +1,14 @@
 using LinkTracker.Bot.Application.DI;
 using LinkTracker.Bot.Application.InterfacesClients;
-using LinkTracker.Bot.Clients.Scrapper;
 using LinkTracker.Bot.Commands;
 using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Configuration;
 using LinkTracker.Bot.Dispatching;
 using LinkTracker.Bot.ExceptionInterceptor;
 using LinkTracker.Bot.Grpc;
 using LinkTracker.Bot.Infrastructure.Clients;
 using LinkTracker.Bot.Infrastructure.DI;
 using LinkTracker.Bot.Middleware;
+using LinkTracker.Bot.Options;
 using LinkTracker.Bot.Services;
 using LinkTracker.Bot.Telegram;
 using LinkTracker.Scrapper.Contracts.Grpc;
@@ -22,10 +21,10 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddOpenApi();
 
 builder.Services.Configure<BotOptions>(
-    builder.Configuration.GetSection("Bot"));
+    builder.Configuration.GetSection(BotOptions.SectionName));
 
 builder.Services.Configure<ScrapperOptions>(
-    builder.Configuration.GetSection("Scrapper"));
+    builder.Configuration.GetSection(ScrapperOptions.SectionName));
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

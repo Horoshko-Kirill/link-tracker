@@ -1,4 +1,4 @@
-﻿namespace LinkTracker.Bot.Exceptions;
+﻿namespace LinkTracker.Bot.Application.Exceptions;
 
 public class ScrapperApiException : Exception
 {

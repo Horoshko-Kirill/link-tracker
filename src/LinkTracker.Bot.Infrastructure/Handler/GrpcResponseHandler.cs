@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
-using LinkTracker.Bot.Exceptions;
 using LinkTracker.Scrapper.Contracts.Dto;
 using System.Text.Json;
+using LinkTracker.Bot.Application.Exceptions;
 
 namespace LinkTracker.Bot.Infrastructure.Handler;
 

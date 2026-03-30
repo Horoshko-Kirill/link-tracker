@@ -1,8 +1,8 @@
-﻿using LinkTracker.Bot.Exceptions;
+﻿using System.Net.Http.Json;
+using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Scrapper.Contracts.Dto;
-using System.Net.Http.Json;
 
-namespace LinkTracker.Bot.Handler;
+namespace LinkTracker.Bot.Infrastructure.Handler;
 
 public static class HttpResponseHandler
 {

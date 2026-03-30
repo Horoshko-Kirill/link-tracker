@@ -1,9 +1,9 @@
-﻿using LinkTracker.Bot.Application.InterfacesClients;
-using LinkTracker.Bot.Handler;
+﻿using System.Net.Http.Json;
+using LinkTracker.Bot.Application.InterfacesClients;
+using LinkTracker.Bot.Infrastructure.Handler;
 using LinkTracker.Scrapper.Contracts.Dto;
-using System.Net.Http.Json;
 
-namespace LinkTracker.Bot.Clients.Scrapper;
+namespace LinkTracker.Bot.Infrastructure.Clients;
 
 public class ScrapperClient : IScrapperClient
 {

@@ -1,5 +1,5 @@
 ﻿using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Configuration;
+using LinkTracker.Bot.Options;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
