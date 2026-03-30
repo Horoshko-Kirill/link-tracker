@@ -47,8 +47,8 @@ var clientOptions = builder.Configuration.GetSection(ClientOptions.SectionName).
 
 builder.Services.AddClient(clientOptions);
 
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHostedService<TelegramHostedService>();
 

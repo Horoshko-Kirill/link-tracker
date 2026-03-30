@@ -26,14 +26,16 @@ public class OrmActionItemRepository : IActionItemRepository
     {
         return _actionItems
             .AsNoTracking()
-            .LastOrDefaultAsync(a => a.ProcessId == processId, cancellationToken);
+            .Where(a => a.ProcessId == processId)
+            .OrderByDescending(a => a.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task<List<ActionItem>> GetPageAsync(long processId, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
         return _actionItems
             .AsNoTracking()
-            .Where(a => a.Id > pageRequest.LastId)
+            .Where(a => a.ProcessId == processId && a.Id > pageRequest.LastId)
             .OrderBy(a => a.Id)
             .Take(pageRequest.Size)
             .ToListAsync(cancellationToken);

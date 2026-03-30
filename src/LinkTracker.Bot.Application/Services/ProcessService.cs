@@ -1,7 +1,6 @@
-﻿using LinkTracker.Bot.Application.Constants;
-using LinkTracker.Bot.Application.Exceptions;
+﻿using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Bot.Application.Factories.Interfaces;
-using LinkTracker.Bot.Application.InterfacesClients;
+using LinkTracker.Bot.Application.InterfacesCommon;
 using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Application.InterfacesServices;
 using LinkTracker.Bot.Domain.Enums;
@@ -14,12 +13,18 @@ public class ProcessService : IProcessService
     private readonly IProcessRepository _processRepository;
     private readonly IActionItemRepository _actionItemRepository;
     private readonly IEnumerable<IActionItemFactory> _actionItemFactories;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ProcessService(IProcessRepository processRepository, IActionItemRepository actionItemRepository, IEnumerable<IActionItemFactory> actionItemFactories)
+    public ProcessService(
+        IProcessRepository processRepository,
+        IActionItemRepository actionItemRepository,
+        IEnumerable<IActionItemFactory> actionItemFactories,
+        IUnitOfWork unitOfWork)
     {
         _processRepository = processRepository;
         _actionItemRepository = actionItemRepository;
         _actionItemFactories = actionItemFactories;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task StartProcessAsync(long chatId, string processType, CancellationToken cancellationToken = default)
@@ -30,32 +35,43 @@ public class ProcessService : IProcessService
         {
             throw new ProcessAlreadyExistsException("Диалог уже существует");
         }
+        
+        await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        process = new Process
+        try
         {
-            ChatId = chatId,
-            Status = ProcessStatus.Active
-        };
+            process = new Process { ChatId = chatId, Status = ProcessStatus.Active };
 
-        await _processRepository.CreateAsync(process, cancellationToken);
+            await _processRepository.CreateAsync(process, cancellationToken);
+            
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        process = await _processRepository.GetActiveProcessAsync(chatId, cancellationToken);
+            process = await _processRepository.GetActiveProcessAsync(chatId, cancellationToken);
 
-        if (process == null)
-        {
-            throw new ProcessNotFoundException("Ошибка создания диалога");
+            if (process == null)
+            {
+                throw new ProcessNotFoundException("Ошибка создания диалога");
+            }
+
+            var actionFactory = _actionItemFactories.FirstOrDefault(f => f.ProcessType == processType);
+
+            if (actionFactory == null)
+            {
+                throw new ActionFactoryException("Ошибка сервера");
+            }
+
+            var actionItem = actionFactory.CreateInitialAction(process);
+
+            await _actionItemRepository.AddAsync(actionItem, cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
         }
-
-        var actionFactory = _actionItemFactories.FirstOrDefault(f => f.ProcessType == processType);
-
-        if (actionFactory == null)
+        catch (Exception ex)
         {
-            throw new ActionFactoryException("Ошибка сервера");
+            await transaction.RollbackAsync(cancellationToken);
+            throw new TransactionException(ex.Message);
         }
-
-        var actionItem = actionFactory.CreateInitialAction(process);
-
-        await _actionItemRepository.AddAsync(actionItem, cancellationToken);
     }
 
     public async Task CancelProcessAsync(long chatId, CancellationToken cancellationToken = default)
@@ -68,6 +84,8 @@ public class ProcessService : IProcessService
         }
 
         await _processRepository.CancelAsync(chatId, cancellationToken);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
 }

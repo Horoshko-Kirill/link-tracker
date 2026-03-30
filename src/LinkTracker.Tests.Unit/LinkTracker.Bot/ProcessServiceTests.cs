@@ -1,5 +1,6 @@
 ﻿using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Bot.Application.Factories.Interfaces;
+using LinkTracker.Bot.Application.InterfacesCommon;
 using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Application.Services;
 using LinkTracker.Bot.Domain.Enums;
@@ -19,6 +20,8 @@ public class ProcessServiceTests
         var processRepository = Substitute.For<IProcessRepository>();
         var actionItemRepository = Substitute.For<IActionItemRepository>();
         var actionItemFactory = Substitute.For<IActionItemFactory>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        var transaction = Substitute.For<IBotTransaction>();
 
         var process = new Process
         {
@@ -35,12 +38,15 @@ public class ProcessServiceTests
         processRepository.GetActiveProcessAsync(chatId, Arg.Any<CancellationToken>())
             .Returns((Process?)null, process);
 
+        unitOfWork.BeginTransactionAsync(Arg.Any<CancellationToken>())
+            .Returns(transaction);
+        
         actionItemFactory.ProcessType.Returns(processType);
         actionItemFactory.CreateInitialAction(process).Returns(actionItem);
 
         var actionItemFactories = new List<IActionItemFactory> { actionItemFactory };
 
-        var processService = new ProcessService(processRepository, actionItemRepository, actionItemFactories);
+        var processService = new ProcessService(processRepository, actionItemRepository, actionItemFactories, unitOfWork);
 
         await processService.StartProcessAsync(chatId, processType);
 
@@ -60,6 +66,8 @@ public class ProcessServiceTests
         var processRepository = Substitute.For<IProcessRepository>();
         var actionItemRepository = Substitute.For<IActionItemRepository>();
         var actionItemFactories = Substitute.For<IEnumerable<IActionItemFactory>>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        var transaction = Substitute.For<IBotTransaction>();
 
         var existProcess = new Process
         {
@@ -70,8 +78,11 @@ public class ProcessServiceTests
 
         processRepository.GetActiveProcessAsync(chatId, Arg.Any<CancellationToken>())
             .Returns(existProcess);
+        
+        unitOfWork.BeginTransactionAsync(Arg.Any<CancellationToken>())
+            .Returns(transaction);
 
-        var processService = new ProcessService(processRepository, actionItemRepository, actionItemFactories);
+        var processService = new ProcessService(processRepository, actionItemRepository, actionItemFactories, unitOfWork);
 
         await Assert.ThrowsAsync<ProcessAlreadyExistsException>(() => processService.StartProcessAsync(chatId, processType));
     }
@@ -81,6 +92,8 @@ public class ProcessServiceTests
     {
         long chatId = 123;
         string processType = "Track";
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        var transaction = Substitute.For<IBotTransaction>();
 
         var processRepository = Substitute.For<IProcessRepository>();
         var actionItemRepository = Substitute.For<IActionItemRepository>();
@@ -95,9 +108,14 @@ public class ProcessServiceTests
 
         processRepository.GetActiveProcessAsync(chatId, Arg.Any<CancellationToken>())
             .Returns((Process?)null, (Process?)null);
+        
+        unitOfWork.BeginTransactionAsync(Arg.Any<CancellationToken>())
+            .Returns(transaction);
+        
+        transaction.RollbackAsync(Arg.Any<CancellationToken>()).Returns(Task.CompletedTask);
 
-        var processService = new ProcessService(processRepository, actionItemRepository, actionItemFactories);
+        var processService = new ProcessService(processRepository, actionItemRepository, actionItemFactories, unitOfWork);
 
-        await Assert.ThrowsAsync<ProcessNotFoundException>(() => processService.StartProcessAsync(chatId, processType));
+        await Assert.ThrowsAsync<TransactionException>(() => processService.StartProcessAsync(chatId, processType));
     }
 }

@@ -1,16 +1,21 @@
-﻿using LinkTracker.Bot.Application.InterfacesRepositories;
-using LinkTracker.Bot.Infrastructure.Repositories;
+﻿using LinkTracker.Bot.Infrastructure.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LinkTracker.Bot.Infrastructure.DI;
 
 public static class Extensions
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IActionItemRepository, InMemoryActionItemRepository>();
-        services.AddSingleton<IProcessRepository, InMemoryProcessRepository>();
+        services.Configure<DatabaseOptions>(configuration.GetSection(DatabaseOptions.SectionName));
 
+        var dbOptions = configuration
+            .GetSection(DatabaseOptions.SectionName)
+            .Get<DatabaseOptions>();
+        
+        services.AddRepository(dbOptions);
+        
         return services;
     }
 }

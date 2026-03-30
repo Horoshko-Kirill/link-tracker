@@ -4,8 +4,11 @@ using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Bot.Application.Handlers.Interfaces;
 using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Application.InterfacesServices;
+using LinkTracker.Bot.Application.Options;
 using LinkTracker.Bot.Domain.Enums;
+using LinkTracker.Bot.Domain.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace LinkTracker.Bot.Application.Services;
 
@@ -15,12 +18,19 @@ public class ProcessOrchestrator : IProcessOrchestrator
     private readonly IProcessRepository _processRepository;
     private readonly IActionItemRepository _actionRepository;
     private int MAX_STEPS = ProcessConstants.MaxSteps;
+    private readonly PaginationOptions _paginationOptions;
 
-    public ProcessOrchestrator(IEnumerable<IActionHandler> handlers, IProcessRepository processRepository, IActionItemRepository actionRepository, ILogger<ProcessOrchestrator> logger)
+    public ProcessOrchestrator(
+        IEnumerable<IActionHandler> handlers, 
+        IProcessRepository processRepository,
+        IActionItemRepository actionRepository,
+        ILogger<ProcessOrchestrator> logger,
+        IOptions<PaginationOptions> paginationOptions)
     {
         _handlers = handlers;
         _processRepository = processRepository;
         _actionRepository = actionRepository;
+        _paginationOptions = paginationOptions.Value;
     }
 
     public async Task<string> HandleMessageAsync(long chatId, string? message, CancellationToken cancellationToken = default)
@@ -30,10 +40,27 @@ public class ProcessOrchestrator : IProcessOrchestrator
         {
             throw new ProcessNotFoundException("Нет активного процесса для данного чата");
         }
+        
+        var actions = new List<ActionItem>();
+        long lastId = 0;
+        int pageSize = _paginationOptions.PageSize;
 
-        var pageRequest = new PageRequest(1, 1);
+        while(true)
+        {
+            var pageRequest = new PageRequest(lastId, pageSize);
 
-        var actions = await _actionRepository.GetPageAsync(process.Id, pageRequest, cancellationToken);
+            var responses = await _actionRepository.GetPageAsync(process.Id, pageRequest, cancellationToken);
+
+            if (responses.Count == 0)
+            {
+                break;
+            }
+
+            actions.AddRange(responses);
+
+            lastId = responses[^1].Id;
+        }
+        
         if (actions.Count > MAX_STEPS)
         {
             throw new ProcessLimitExceededException("Превышено количество запросов в диалоге введите /cancel для отмены операции");

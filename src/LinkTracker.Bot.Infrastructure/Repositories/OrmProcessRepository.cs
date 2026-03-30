@@ -18,7 +18,10 @@ public class OrmProcessRepository : IProcessRepository
     }
     public Task<Process?> GetActiveProcessAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return _processes
+            .Where(x => x.ChatId == chatId && x.Status == ProcessStatus.Active)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task CreateAsync(Process process, CancellationToken cancellationToken = default)
@@ -27,35 +30,33 @@ public class OrmProcessRepository : IProcessRepository
         return Task.CompletedTask;
     }
 
-    public Task CompleteAsync(long chatId, CancellationToken cancellationToken = default)
+    public async Task CompleteAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        var process = _processes.LastOrDefault(x => x.ChatId == chatId && x.Status == ProcessStatus.Active);
+        var process = await _processes
+            .Where(x => x.ChatId == chatId && x.Status == ProcessStatus.Active)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
         
         if (process == null)
         {
-            return Task.CompletedTask;
+            return;
         }
         
         process.Status = ProcessStatus.Completed;
-        
-        _processes.Update(process);
-        
-        return Task.CompletedTask;
     }
 
-    public Task CancelAsync(long chatId, CancellationToken cancellationToken = default)
+    public async Task CancelAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        var process = _processes.LastOrDefault(x => x.ChatId == chatId && x.Status == ProcessStatus.Active);
+        var process = await _processes
+            .Where(x => x.ChatId == chatId && x.Status == ProcessStatus.Active)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
         
         if (process == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         process.Status = ProcessStatus.Cancelled;
-        
-        _processes.Update(process);
-        
-        return Task.CompletedTask;
     }
 }
