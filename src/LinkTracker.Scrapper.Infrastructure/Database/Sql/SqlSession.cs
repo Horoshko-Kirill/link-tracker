@@ -4,7 +4,6 @@ namespace LinkTracker.Scrapper.Infrastructure.Database.Sql;
 
 public class SqlSession
 {
-    public Guid DebugId { get; } = Guid.NewGuid();
     public NpgsqlConnection?  Connection { get; set; }
     public NpgsqlTransaction? Transaction { get; set; }
     public bool HasTransaction => Connection != null && Transaction != null;
