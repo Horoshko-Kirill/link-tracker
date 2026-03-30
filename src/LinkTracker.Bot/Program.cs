@@ -28,20 +28,7 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<ITelegramClient>(sp =>
-{
-    var config = sp.GetRequiredService<IConfiguration>();
-
-    var useFake = Environment.GetEnvironmentVariable("UseFakeTelegramClient") == "true"
-    || config.GetValue<bool>("UseFakeTelegramClient");
-
-    return useFake
-        ? new FakeTelegramClient()
-        : new TelegramClient(
-            sp.GetRequiredService<IOptions<BotOptions>>(),
-            sp.GetRequiredService<ILogger<TelegramClient>>()
-        );
-});
+builder.Services.AddTelegramClient();
 
 builder.Services.AddTransient<ICommand, StartCommand>();
 builder.Services.AddTransient<ICommand, HelpCommand>();
