@@ -22,6 +22,7 @@ public class ActionItemConfiguration : IEntityTypeConfiguration<ActionItem>
         
         builder.Property(x => x.ActionType)
             .HasColumnName("action_type")
+            .HasConversion<string>() 
             .IsRequired();
         
         builder.Property(x => x.PayloadJson)
