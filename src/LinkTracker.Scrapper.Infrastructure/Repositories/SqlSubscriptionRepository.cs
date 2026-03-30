@@ -293,7 +293,12 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
 
     public Task<List<Subscription>> GetSubscriptionsByChatAsync(long chatId, string? tag, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        int limit = Math.Clamp(pageRequest.Size, 1, 1000); 
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000);
+
+        if (string.IsNullOrWhiteSpace(tag))
+        {
+            tag = null;
+        }
         
         string sql = $"""
                     select 
@@ -370,7 +375,6 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
                     });
                 }
             }
-
             return subscriptions.Values.ToList();
         }, cancellationToken);
     }
