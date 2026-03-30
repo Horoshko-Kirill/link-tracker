@@ -10,25 +10,26 @@ namespace LinkTracker.Bot.Services;
 public class TelegramHostedService : IHostedService
 {
     private readonly ITelegramClient _client;
-    private readonly ICommandDispatcher _dispatcher;
-    private readonly IEnumerable<ICommand> _commands;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     private CancellationTokenSource? _cts;
     public TelegramHostedService(
         ITelegramClient client,
-        ICommandDispatcher dispatcher,
-        IEnumerable<ICommand> commands)
+        IServiceScopeFactory scopeFactory)
     {
         _client = client;
-        _dispatcher = dispatcher;
-        _commands = commands;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-        await _client.SetCommandsAsync(_commands, _cts.Token);
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var commands = scope.ServiceProvider.GetRequiredService<IEnumerable<ICommand>>();
+            await _client.SetCommandsAsync(commands, _cts.Token);
+        }
 
         _client.StartReceivingAsync(async (update) =>
         {
@@ -37,7 +38,11 @@ public class TelegramHostedService : IHostedService
                 return;
             }
 
-            await _dispatcher.DispatchAsync(update.Message.Text, update.Message.Chat.Id, _cts.Token);
+            using var scope = _scopeFactory.CreateScope();
+
+            var _messageRoute = scope.ServiceProvider.GetRequiredService<IMessageRoute>();
+
+            await _messageRoute.HandleUpdateAsync(update.Message.Chat.Id, update.Message.Text, _cts.Token);
         }, _cts.Token);
     }
 

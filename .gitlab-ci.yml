@@ -35,31 +35,36 @@ module_test:
       allow_failure: false
     - when: never
   script:
-    - dotnet test
+    - dotnet test src/LinkTracker.Tests.Unit/LinkTracker.Tests.Unit.csproj
 
 integration_test:
-  image: docker 
+  image: mcr.microsoft.com/dotnet/sdk:10.0
   stage: test
-  needs: 
+  needs:
     - job: module_test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master"
       when: always
       allow_failure: false
     - when: never
-  variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
   tags:
     - dind
   services:
     - name: docker:29.0.1-dind
       alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
   before_script:
+    - apt-get update
+    - apt-get install -y docker.io
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
-    - echo "Running tests..."
+    - docker build -t link-tracker-scrapper -f src/LinkTracker.Scrapper/Dockerfile .
+    - docker build -t link-tracker-bot -f src/LinkTracker.Bot/Dockerfile .
+    - dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
+
 
   

@@ -1,41 +1,63 @@
+using LinkTracker.Bot.Contracts.Grpc;
+using LinkTracker.Scrapper.Application.DI;
+using LinkTracker.Scrapper.Application.InterfacesClients;
+using LinkTracker.Scrapper.Configuration;
+using LinkTracker.Scrapper.Contracts.Grpc;
+using LinkTracker.Scrapper.ExceptionInterceptor;
+using LinkTracker.Scrapper.Grpc;
+using LinkTracker.Scrapper.Infrastructure.Clients;
+using LinkTracker.Scrapper.Infrastructure.DI;
+using LinkTracker.Scrapper.Middleware;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.Configure<BotOptions>(
+    builder.Configuration.GetSection("TelegramBot"));
+
 builder.Services.AddOpenApi();
+
+builder.Services.AddControllers();
+
+builder.Services.AddApplication();
+
+builder.Services.AddInfrastructure();
+
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpClient<IBotClient, BotClient>((sp, client) =>
+{
+    var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
+
+    client.BaseAddress = new Uri(options.BaseUrl);
+});
+
+/*builder.Services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
+{
+    var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
+
+    o.Address = new Uri(options.BaseUrl);
+});
+
+builder.Services.AddSingleton<IBotClient, BotGrpcClient>();*/
+
+builder.Services.AddGrpc(options =>
+{
+    options.Interceptors.Add<GrpcExceptionInterceptor>();
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.MapGrpcService<ScrapperGrpcLinkService>();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

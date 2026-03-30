@@ -8,5 +8,5 @@ public interface ICommand
     string Name { get; }
 
     string Description { get; }
-    Task ExecuteAsync(long chatId, CancellationToken cancellationToken);
+    Task ExecuteAsync(long chatId, string[] args, CancellationToken cancellationToken);
 }

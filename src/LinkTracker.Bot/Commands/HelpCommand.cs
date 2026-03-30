@@ -1,5 +1,5 @@
 ﻿using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Constans;
+using LinkTracker.Bot.Constants;
 using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Commands;
@@ -19,7 +19,7 @@ public class HelpCommand : ICommand
 
     public string Description => "Список команд";
 
-    public async Task ExecuteAsync(long chatId, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(long chatId, string[] args, CancellationToken cancellationToken = default)
     {
         var message = HelpConstants.constants;
 

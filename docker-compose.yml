@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+
+  bot:
+    build:
+      context: . 
+      dockerfile: src/LinkTracker.Bot/Dockerfile
+    ports:
+      - "7175:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - Bot__Token=${BOT_TOKEN} 
+      - Scrapper__BaseUrl=http://scrapper:80
+    networks:
+      - linktracker-network
+
+  scrapper:
+    build:
+      context: .
+      dockerfile: src/LinkTracker.Scrapper/Dockerfile
+    ports:
+      - "7197:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - TelegramBot__BaseUrl=http://bot:80
+    networks:
+      - linktracker-network
+
+networks:
+  linktracker-network:
+    driver: bridge

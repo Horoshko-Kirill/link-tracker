@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+option csharp_namespace = "LinkTracker.Scrapper.Contracts.Grpc";
+
+package scrapper;
+
+service ScrapperLinkService
+{
+  rpc RegisterChat(GrpcRegisterChatRequest) returns (GrpcEmpty);
+
+  rpc DeleteChat(GrpcDeleteChatRequest) returns (GrpcEmpty);
+
+  rpc ExistChat(GrpcExistChatRequest) returns (GrpcExistChatResponse);
+
+  rpc AddLink(GrpcAddLinkRequest) returns (GrpcLinkResponse);
+
+  rpc RemoveLink(GrpcRemoveLinkRequest) returns (GrpcLinkResponse);
+
+  rpc GetLinks(GrpcGetLinksRequest) returns (GrpcListLinksResponse);
+}
+
+message GrpcEmpty {}
+
+message GrpcRegisterChatRequest {
+  int64 chatId = 1;
+}
+
+message GrpcDeleteChatRequest {
+  int64 chatId = 1;
+}
+
+message GrpcExistChatRequest {
+  int64 chatId = 1;
+}
+
+message GrpcExistChatResponse {
+  bool existChat = 1;
+}
+
+message GrpcAddLinkRequest {
+  int64 chatId = 1;
+  string url = 2;
+  repeated string tags = 3;
+}
+
+message GrpcRemoveLinkRequest {
+  int64 chatId = 1;
+  string url = 2;
+}
+
+message GrpcGetLinksRequest {
+  int64 chatId = 1;
+  string tag = 2;
+}
+
+message GrpcLinkResponse {
+  int64 chatId = 1;
+  string url = 2;
+  repeated string tags = 3;
+}
+
+message GrpcListLinksResponse {
+  repeated GrpcLinkResponse links = 1;
+  int32 size = 2;
+}

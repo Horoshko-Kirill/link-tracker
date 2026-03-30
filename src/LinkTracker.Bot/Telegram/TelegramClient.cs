@@ -37,6 +37,8 @@ public class TelegramClient : ITelegramClient
                 Description = e.Description
             });
 
+        _logger.LogInformation("Bot's command set");
+
         await _client.SetMyCommands(botCommands);
     }
 
