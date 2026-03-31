@@ -9,7 +9,7 @@ namespace LinkTracker.Bot.Infrastructure.Repositories;
 
 public class SqlActionItemRepository : SqlRepositoryBase, IActionItemRepository
 {
-    protected SqlActionItemRepository(NpgsqlDataSource dataSource, SqlSession session) : base(dataSource, session)
+    public SqlActionItemRepository(NpgsqlDataSource dataSource, SqlSession session) : base(dataSource, session)
     {
     }
 
@@ -20,7 +20,7 @@ public class SqlActionItemRepository : SqlRepositoryBase, IActionItemRepository
                      values (@process_id, @action_type, @payload_json, @created_at)
                      returning id
                      """;
-
+        
         return ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("process_id", action.ProcessId);
