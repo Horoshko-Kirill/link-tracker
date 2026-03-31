@@ -1,11 +1,13 @@
 ﻿using LinkTracker.Bot.Application.InterfacesCommon;
 using LinkTracker.Bot.Application.InterfacesRepositories;
 using LinkTracker.Bot.Infrastructure.Database;
+using LinkTracker.Bot.Infrastructure.Database.Sql;
 using LinkTracker.Bot.Infrastructure.Database.Transaction;
 using LinkTracker.Bot.Infrastructure.Options;
 using LinkTracker.Bot.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 
 namespace LinkTracker.Bot.Infrastructure.DI;
 
@@ -16,7 +18,7 @@ public static class RepositoryExtensions
         switch (databaseOptions.AccessType)
         {
             case "Sql":
-                /*services.AddSingleton(_ =>
+                services.AddSingleton(_ =>
                 {
                     var builder = new NpgsqlDataSourceBuilder(databaseOptions.ConnectionString);
                     return builder.Build();
@@ -24,13 +26,11 @@ public static class RepositoryExtensions
                 
                 services.AddScoped<SqlSession>();
                 
-                services.AddScoped<IChatRepository, SqlChatRepository>();
-                services.AddScoped<ILinkRepository, SqlLinkRepository>();
-                services.AddScoped<ISubscriptionRepository, SqlSubscriptionRepository>();
-                services.AddScoped<ITagRepository, SqlTagRepository>();
+                services.AddScoped<IActionItemRepository, SqlActionItemRepository>();
+                services.AddScoped<IProcessRepository, SqlProcessRepository>();
                 
                 services.AddScoped<IUnitOfWork, SqlUnitOfWork>();
-                break;*/
+                break;
             case "Orm":
                 services.AddDbContext<BotDbContext>(options =>
                 {
