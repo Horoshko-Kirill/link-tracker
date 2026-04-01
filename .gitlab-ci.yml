@@ -64,6 +64,8 @@ integration_test:
   script:
     - docker build -t link-tracker-scrapper -f src/LinkTracker.Scrapper/Dockerfile .
     - docker build -t link-tracker-bot -f src/LinkTracker.Bot/Dockerfile .
+    - docker build -t link-tracker-bot.migrator -f src/LinkTracker.Bot.Migrator/Dockerfile .
+    - docker build -t link-tracker-scrapper.migrator -f src/LinkTracker.Scrapper.Migrator/Dockerfile .
     - dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
 
 
