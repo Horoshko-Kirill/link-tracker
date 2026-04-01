@@ -17,7 +17,7 @@ public class ChatServiceTests
 
         var chatRepository = Substitute.For<IChatRepository>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
-        
+
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
 
         var chatService = new ChatService(chatRepository, unitOfWork);
@@ -34,7 +34,7 @@ public class ChatServiceTests
 
         var chatRepository = Substitute.For<IChatRepository>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
-        
+
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
         var chatService = new ChatService(chatRepository, unitOfWork);
@@ -51,7 +51,7 @@ public class ChatServiceTests
 
         var chatRepository = Substitute.For<IChatRepository>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
-        
+
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(false);
 
         var chatService = new ChatService(chatRepository, unitOfWork);
@@ -79,7 +79,7 @@ public class ChatServiceTests
         long chatId = 123;
         var chatRepository = Substitute.For<IChatRepository>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
-        
+
         chatRepository.ChatExistByChatIdAsync(chatId, Arg.Any<CancellationToken>()).Returns(true);
 
         var chatService = new ChatService(chatRepository, unitOfWork);

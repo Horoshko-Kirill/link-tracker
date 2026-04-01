@@ -20,7 +20,7 @@ public class SqlActionItemRepository : SqlRepositoryBase, IActionItemRepository
                      values (@process_id, @action_type, @payload_json, @created_at)
                      returning id
                      """;
-        
+
         return ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("process_id", action.ProcessId);
@@ -45,7 +45,7 @@ public class SqlActionItemRepository : SqlRepositoryBase, IActionItemRepository
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("processId", processId);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
@@ -65,8 +65,8 @@ public class SqlActionItemRepository : SqlRepositoryBase, IActionItemRepository
 
     public Task<List<ActionItem>> GetPageAsync(long processId, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        int limit = Math.Clamp(pageRequest.Size, 1, 1000); 
-        
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000);
+
         string sql = $"""
                      select id, process_id, action_type, payload_json, created_at
                      from bot_action_items
@@ -74,14 +74,14 @@ public class SqlActionItemRepository : SqlRepositoryBase, IActionItemRepository
                      order by id
                      limit {limit}
                      """;
-        
+
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("processId", processId);
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
 
             var result = new List<ActionItem>();
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
@@ -94,8 +94,8 @@ public class SqlActionItemRepository : SqlRepositoryBase, IActionItemRepository
                     CreatedAt = DateTime.SpecifyKind(reader.GetDateTime(4), DateTimeKind.Utc)
                 });
             }
-            
+
             return result;
-        },  cancellationToken);
+        }, cancellationToken);
     }
 }

@@ -15,7 +15,7 @@ public class EfUnitOfWork : IUnitOfWork
     {
         IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
 
-       return new EfScrapperTransaction(transaction);
+        return new EfScrapperTransaction(transaction);
     }
 
     public Task SaveChangesAsync(CancellationToken cancellationToken = default)

@@ -40,7 +40,7 @@ public class ProcessServiceTests
 
         unitOfWork.BeginTransactionAsync(Arg.Any<CancellationToken>())
             .Returns(transaction);
-        
+
         actionItemFactory.ProcessType.Returns(processType);
         actionItemFactory.CreateInitialAction(process).Returns(actionItem);
 
@@ -78,7 +78,7 @@ public class ProcessServiceTests
 
         processRepository.GetActiveProcessAsync(chatId, Arg.Any<CancellationToken>())
             .Returns(existProcess);
-        
+
         unitOfWork.BeginTransactionAsync(Arg.Any<CancellationToken>())
             .Returns(transaction);
 
@@ -108,10 +108,10 @@ public class ProcessServiceTests
 
         processRepository.GetActiveProcessAsync(chatId, Arg.Any<CancellationToken>())
             .Returns((Process?)null, (Process?)null);
-        
+
         unitOfWork.BeginTransactionAsync(Arg.Any<CancellationToken>())
             .Returns(transaction);
-        
+
         transaction.RollbackAsync(Arg.Any<CancellationToken>()).Returns(Task.CompletedTask);
 
         var processService = new ProcessService(processRepository, actionItemRepository, actionItemFactories, unitOfWork);

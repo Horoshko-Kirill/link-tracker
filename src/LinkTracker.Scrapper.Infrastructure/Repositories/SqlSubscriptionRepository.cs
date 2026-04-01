@@ -62,11 +62,11 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
                                  join scrapper_links l on l.id = s.link_id
                                  where s.id = @id
                                  """;
-        
+
         var subscription = await QueryAsync(subscriptionSql, async cmd =>
         {
             cmd.Parameters.AddWithValue("id", id);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
@@ -87,7 +87,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
                 Chat = new Chat
                 {
                     Id = reader.GetInt64(6),
-                    ChatId =  reader.GetInt64(7),
+                    ChatId = reader.GetInt64(7),
                 }
             };
         }, cancellationToken);
@@ -96,7 +96,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
         {
             return null;
         }
-        
+
         subscription.Tags = await GetTagsBySubscriptionIdAsync(subscription.Id, cancellationToken);
 
         return subscription;
@@ -111,12 +111,12 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
                                  join scrapper_links l on l.id = s.link_id
                                  where c.chat_id = @chat_id and l.url = @url
                                  """;
-        
+
         var subscription = await QueryAsync(subscriptionSql, async cmd =>
         {
             cmd.Parameters.AddWithValue("chat_id", chatId);
             cmd.Parameters.AddWithValue("url", url);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
@@ -137,7 +137,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
                 Chat = new Chat
                 {
                     Id = reader.GetInt64(6),
-                    ChatId =  reader.GetInt64(7),
+                    ChatId = reader.GetInt64(7),
                 }
             };
         }, cancellationToken);
@@ -146,7 +146,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
         {
             return null;
         }
-        
+
         subscription.Tags = await GetTagsBySubscriptionIdAsync(subscription.Id, cancellationToken);
 
         return subscription;
@@ -242,51 +242,51 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
         {
             cmd.Parameters.AddWithValue("linkId", linkId);
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
-            
+
             var subscriptions = new Dictionary<long, Subscription>();
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
-               var subscriptionId = reader.GetInt64(0);
+                var subscriptionId = reader.GetInt64(0);
 
-               if (!subscriptions.TryGetValue(subscriptionId, out var subscription))
-               {
-                   subscription = new Subscription
-                   {
-                       Id = reader.GetInt64(0),
-                       LinkId = reader.GetInt64(1),
-                       ChatId = reader.GetInt64(2),
-                       Link = new Link
-                       {
-                           Id = reader.GetInt64(3),
-                           Url = reader.GetString(4),
-                           LastChecked = reader.GetFieldValue<DateTimeOffset>(5)
-                       },
-                       Chat = new Chat
-                       {
-                           Id = reader.GetInt64(6),
-                           ChatId = reader.GetInt64(7)
-                       },
-                       Tags = new List<Tag>()
-                   };
+                if (!subscriptions.TryGetValue(subscriptionId, out var subscription))
+                {
+                    subscription = new Subscription
+                    {
+                        Id = reader.GetInt64(0),
+                        LinkId = reader.GetInt64(1),
+                        ChatId = reader.GetInt64(2),
+                        Link = new Link
+                        {
+                            Id = reader.GetInt64(3),
+                            Url = reader.GetString(4),
+                            LastChecked = reader.GetFieldValue<DateTimeOffset>(5)
+                        },
+                        Chat = new Chat
+                        {
+                            Id = reader.GetInt64(6),
+                            ChatId = reader.GetInt64(7)
+                        },
+                        Tags = new List<Tag>()
+                    };
 
-                   subscriptions.Add(subscriptionId, subscription);
-               }
-               
-               if (!reader.IsDBNull(8))
-               {
-                   var tag = new Tag
-                   {
-                       Id = reader.GetInt64(8),
-                       Name = reader.GetString(9),
-                       SubscriptionId = reader.GetInt64(10)
-                   };
+                    subscriptions.Add(subscriptionId, subscription);
+                }
 
-                   subscription.Tags.Add(tag);
-               }
+                if (!reader.IsDBNull(8))
+                {
+                    var tag = new Tag
+                    {
+                        Id = reader.GetInt64(8),
+                        Name = reader.GetString(9),
+                        SubscriptionId = reader.GetInt64(10)
+                    };
+
+                    subscription.Tags.Add(tag);
+                }
             }
-            
+
             return subscriptions.Values.ToList();
         }, cancellationToken);
     }
@@ -299,7 +299,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
         {
             tag = null;
         }
-        
+
         string sql = $"""
                     select 
                         s.id, s.link_id, s.chat_id,
@@ -378,20 +378,20 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
             return subscriptions.Values.ToList();
         }, cancellationToken);
     }
-    
+
     private async Task<List<Tag>> GetTagsBySubscriptionIdAsync(long subscriptionId, CancellationToken cancellationToken = default)
     {
         string tagSql = """
                         select id, name, subscription_id from scrapper_tags
                         where subscription_id = @subscriptionId
                         """;
-        
+
         var tags = await QueryAsync(tagSql, async cmd =>
         {
             cmd.Parameters.AddWithValue("subscriptionId", subscriptionId);
 
             var result = new List<Tag>();
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
@@ -402,7 +402,7 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
                     SubscriptionId = reader.GetInt64(2),
                 });
             }
-            
+
             return result;
         }, cancellationToken);
 

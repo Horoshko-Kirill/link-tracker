@@ -40,5 +40,5 @@ public class OrmActionItemRepository : IActionItemRepository
             .Take(pageRequest.Size)
             .ToListAsync(cancellationToken);
     }
-    
+
 }

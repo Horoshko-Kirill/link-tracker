@@ -24,8 +24,8 @@ public class LinkUpdateService : ILinkUpdateService
 
     public LinkUpdateService(
         ILinkRepository linkRepository,
-        IEnumerable<IUpdateProvider> providers, 
-        IBotClient botClient, 
+        IEnumerable<IUpdateProvider> providers,
+        IBotClient botClient,
         ILogger<LinkUpdateService> logger,
         IOptions<PaginationOptions> paginationOptions,
         ISubscriptionRepository subscriptionRepository,
@@ -88,7 +88,7 @@ public class LinkUpdateService : ILinkUpdateService
                     link.LastChecked = lastUpdate.Value;
 
                     await _linkRepository.UpdateLinkAsync(link);
-                    await _unitOfWork.SaveChangesAsync(cancellationToken); 
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
                 }
 
                 lastId = links[^1].Id;

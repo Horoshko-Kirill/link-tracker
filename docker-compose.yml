@@ -16,6 +16,9 @@ services:
       - Scrapper__BaseUrl=http://scrapper:80
       - Database__ConnectionString=Host=linktracker.db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - Database__AccessType=${POSTGRES_ACCESS_TYPE_Bot}
+      - KESTREL__PORT=80
+      - ClientType__Type=${PROTOCOL_TYPE_Scrapper}
+      - KESTREL__TYPE=${PROTOCOL_TYPE_Bot}
     depends_on:
       bot.migrator:
         condition: service_completed_successfully
@@ -35,6 +38,9 @@ services:
       - TelegramBot__BaseUrl=http://bot:80
       - Database__ConnectionString=Host=linktracker.db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - Database__AccessType=${POSTGRES_ACCESS_TYPE_Scrapper}
+      - KESTREL__PORT=80
+      - ClientType__Type=${PROTOCOL_TYPE_Bot}
+      - KESTREL__TYPE=${PROTOCOL_TYPE_Scrapper}
     depends_on:
       scrapper.migrator:
         condition: service_completed_successfully

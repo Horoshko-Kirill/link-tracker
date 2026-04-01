@@ -12,13 +12,13 @@ public class SqlScrapperTransaction : IScrapperTransaction
     {
         _session = session;
     }
-    public  Task CommitAsync(CancellationToken cancellationToken = default)
+    public Task CommitAsync(CancellationToken cancellationToken = default)
     {
         if (_session.Transaction == null)
         {
             throw new TransactionExceptions("No active transaction");
         }
-        
+
         return _session.Transaction.CommitAsync(cancellationToken);
     }
 
@@ -28,10 +28,10 @@ public class SqlScrapperTransaction : IScrapperTransaction
         {
             throw new TransactionExceptions("No active transaction");
         }
-        
+
         return _session.Transaction.RollbackAsync(cancellationToken);
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         if (_session.Transaction != null)
@@ -43,7 +43,7 @@ public class SqlScrapperTransaction : IScrapperTransaction
         {
             await _session.Connection.DisposeAsync();
         }
-        
+
         _session.Clear();
     }
 }

@@ -15,7 +15,7 @@ namespace LinkTracker.Tests.Unit.LinkTracker.Scrapper;
 
 public class LinkUpdateServiceTests
 {
-   [Fact]
+    [Fact]
     public async Task CheckUpdatesAsync_ShouldSendUpdate_AndUpdateLastChecked()
     {
         var linkRepository = Substitute.For<ILinkRepository>();
@@ -66,16 +66,16 @@ public class LinkUpdateServiceTests
         provider.CanHandle(Arg.Any<Uri>()).Returns(true);
         provider.GetLastUpdateAsync(Arg.Any<Uri>(), Arg.Any<CancellationToken>())
             .Returns(newLastUpdate);
-        
-        linkRepository.GetPageAsync(Arg.Any<PageRequest>(),Arg.Any<CancellationToken>())
-            .Returns(new List<Link> { link }, new List<Link>()); 
-        
+
+        linkRepository.GetPageAsync(Arg.Any<PageRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new List<Link> { link }, new List<Link>());
+
         subscriptionRepository.GetSubscriptionByLinkAsync(linkId, Arg.Any<PageRequest>(), Arg.Any<CancellationToken>())
-            .Returns(subscriptions, new List<Subscription>()); 
+            .Returns(subscriptions, new List<Subscription>());
 
         botClient.PostUpdateAsync(Arg.Any<LinkUpdate>(), Arg.Any<CancellationToken>())
             .Returns(Task.CompletedTask);
-        
+
         var providers = new List<IUpdateProvider> { provider };
 
         var service = new LinkUpdateService(
@@ -93,7 +93,7 @@ public class LinkUpdateServiceTests
             .PostUpdateAsync(
                 Arg.Is<LinkUpdate>(u =>
                     u.Url == url &&
-                    u.ChatIds.Contains(chatId)), 
+                    u.ChatIds.Contains(chatId)),
                 Arg.Any<CancellationToken>());
 
         await linkRepository.Received(1)

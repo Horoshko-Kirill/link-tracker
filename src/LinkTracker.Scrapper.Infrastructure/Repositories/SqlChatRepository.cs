@@ -19,7 +19,7 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
                      values (@chat_id)
                      returning id;
                      """;
-        
+
         await ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("chat_id", chat.ChatId);
@@ -52,19 +52,19 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("id", id);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
                 return null;
             }
-            
+
             return new Chat
             {
                 Id = reader.GetInt64(0),
                 ChatId = reader.GetInt64(1)
             };
-        }, cancellationToken); 
+        }, cancellationToken);
     }
 
     public Task<Chat?> GetChatByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
@@ -73,36 +73,36 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
                      select id, chat_id from scrapper_chats
                      where chat_id = @chatId
                      """;
-        
+
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("chatId", chatId);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
                 return null;
             }
-            
+
             return new Chat
             {
                 Id = reader.GetInt64(0),
                 ChatId = reader.GetInt64(1)
             };
-        }, cancellationToken); 
+        }, cancellationToken);
     }
 
     public Task<List<Chat>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        int limit = Math.Clamp(pageRequest.Size, 1, 1000); 
-        
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000);
+
         string sql = $"""
                      select id, chat_id from scrapper_chats
                      where id > @lastId
                      order by id
                      limit {limit}
                      """;
-        
+
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
@@ -124,7 +124,7 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
     }
 
     public Task<bool> ChatExistByChatIdAsync(long chatId, CancellationToken cancellationToken = default)
-    { 
+    {
         string sql = """
                    select exists(
                        select 1

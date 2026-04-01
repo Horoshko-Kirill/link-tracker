@@ -8,7 +8,7 @@ public static class TelegramExtensions
 {
     public static IServiceCollection AddTelegramClient(this IServiceCollection services)
     {
-        
+
         services.AddSingleton<ITelegramClient>(sp =>
         {
             var config = sp.GetRequiredService<IConfiguration>();
@@ -23,7 +23,7 @@ public static class TelegramExtensions
                     sp.GetRequiredService<ILogger<TelegramClient>>()
                 );
         });
-        
+
         return services;
     }
 }

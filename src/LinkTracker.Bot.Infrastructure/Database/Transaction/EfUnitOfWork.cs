@@ -11,7 +11,7 @@ public class EfUnitOfWork : IUnitOfWork
     {
         _dbContext = dbContext;
     }
-    
+
     public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return _dbContext.SaveChangesAsync(cancellationToken);
@@ -20,7 +20,7 @@ public class EfUnitOfWork : IUnitOfWork
     public async Task<IBotTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
-        
+
         return new EfBotTransaction(transaction);
     }
 }

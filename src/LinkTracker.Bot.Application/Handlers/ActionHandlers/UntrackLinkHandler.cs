@@ -54,7 +54,7 @@ public class UntrackLinkHandler : IActionHandler
             ActionType = ActionType.Completed,
             ProcessId = process.Id,
         };
-        
+
         await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
@@ -62,7 +62,7 @@ public class UntrackLinkHandler : IActionHandler
             await _actionItemRepository.AddAsync(action, cancellationToken);
 
             await _processRepository.CompleteAsync(process.ChatId, cancellationToken);
-            
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
         }

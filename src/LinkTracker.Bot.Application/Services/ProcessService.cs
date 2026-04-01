@@ -35,7 +35,7 @@ public class ProcessService : IProcessService
         {
             throw new ProcessAlreadyExistsException("Диалог уже существует");
         }
-        
+
         await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
@@ -43,7 +43,7 @@ public class ProcessService : IProcessService
             process = new Process { ChatId = chatId, Status = ProcessStatus.Active };
 
             await _processRepository.CreateAsync(process, cancellationToken);
-            
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             process = await _processRepository.GetActiveProcessAsync(chatId, cancellationToken);
@@ -84,7 +84,7 @@ public class ProcessService : IProcessService
         }
 
         await _processRepository.CancelAsync(chatId, cancellationToken);
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 

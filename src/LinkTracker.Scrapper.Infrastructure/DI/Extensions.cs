@@ -27,7 +27,7 @@ public static class Extensions
             .Get<DatabaseOptions>();
 
         services.AddRepository(dbOptions);
-        
+
         services.AddSingleton<IGitHubClient, GitHubClient>();
         services.AddSingleton<IStackOverflowClient, StackOverflowClient>();
 

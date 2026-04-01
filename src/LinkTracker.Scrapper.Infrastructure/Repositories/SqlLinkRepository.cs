@@ -85,7 +85,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("id", id);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
@@ -112,7 +112,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("url", url);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
@@ -130,21 +130,21 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
 
     public Task<List<Link>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
-        int limit = Math.Clamp(pageRequest.Size, 1, 1000); 
-        
+        int limit = Math.Clamp(pageRequest.Size, 1, 1000);
+
         string sql = $"""
                      select id, url, last_checked from scrapper_links
                      where id > @lastId
                      order by id
                      limit {limit}
                      """;
-        
+
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
 
             var result = new List<Link>();
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
@@ -155,7 +155,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
                     LastChecked = reader.GetFieldValue<DateTimeOffset>(2)
                 });
             }
-            
+
             return result;
         }, cancellationToken);
     }

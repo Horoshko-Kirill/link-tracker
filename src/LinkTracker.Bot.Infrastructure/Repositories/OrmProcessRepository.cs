@@ -36,12 +36,12 @@ public class OrmProcessRepository : IProcessRepository
             .Where(x => x.ChatId == chatId && x.Status == ProcessStatus.Active)
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken);
-        
+
         if (process == null)
         {
             return;
         }
-        
+
         process.Status = ProcessStatus.Completed;
     }
 
@@ -51,7 +51,7 @@ public class OrmProcessRepository : IProcessRepository
             .Where(x => x.ChatId == chatId && x.Status == ProcessStatus.Active)
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken);
-        
+
         if (process == null)
         {
             return;

@@ -1,3 +1,4 @@
+using System.Net;
 using LinkTracker.Scrapper.Application.DI;
 using LinkTracker.Scrapper.DI;
 using LinkTracker.Scrapper.Grpc;
@@ -14,6 +15,9 @@ builder.Services.Configure<BotOptions>(
 builder.Services.Configure<ClientOptions>(
     builder.Configuration.GetSection(ClientOptions.SectionName));
 
+builder.Services.Configure<KestrelOptions>(
+    builder.Configuration.GetSection(KestrelOptions.SectionName));
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
@@ -26,9 +30,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddGrpc();
 
+builder.WebHost.ConfigureKestrelWithProtocol();
+
 var clientOptions = builder.Configuration.GetSection(ClientOptions.SectionName).Get<ClientOptions>();
 
-builder.Services.AddClient(clientOptions);
+builder.Services.AddClient(builder.Configuration);
 
 var app = builder.Build();
 

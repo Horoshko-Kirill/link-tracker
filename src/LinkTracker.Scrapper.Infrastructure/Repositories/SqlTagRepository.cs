@@ -19,7 +19,7 @@ public class SqlTagRepository : SqlRepositoryBase, ITagRepository
                      values (@name, @subscription_id)
                      returning id
                      """;
-        
+
         return ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("name", tag.Name);
@@ -35,7 +35,7 @@ public class SqlTagRepository : SqlRepositoryBase, ITagRepository
                      delete from  scrapper_tags
                      where id = @id
                      """;
-        
+
         return ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("id", id);
@@ -59,14 +59,14 @@ public class SqlTagRepository : SqlRepositoryBase, ITagRepository
             {
                 return null;
             }
-            
+
             return new Tag
             {
                 Id = reader.GetInt64(0),
                 Name = reader.GetString(1),
                 SubscriptionId = reader.GetInt64(2),
             };
-            
+
         }, cancellationToken);
     }
 
@@ -87,7 +87,7 @@ public class SqlTagRepository : SqlRepositoryBase, ITagRepository
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
 
             var result = new List<Tag>();
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             while (await reader.ReadAsync(cancellationToken))
             {
@@ -98,7 +98,7 @@ public class SqlTagRepository : SqlRepositoryBase, ITagRepository
                     SubscriptionId = reader.GetInt64(2),
                 });
             }
-            
+
             return result;
         }, cancellationToken);
     }
@@ -128,12 +128,12 @@ public class SqlTagRepository : SqlRepositoryBase, ITagRepository
                      delete from scrapper_tags
                      where subscription_id = @subscriptionId and name = @name
                      """;
-        
+
         return ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("subscriptionId", subscriptionId);
             cmd.Parameters.AddWithValue("name", name);
-            
+
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }, cancellationToken);
     }

@@ -109,7 +109,7 @@ public class LinkService : ILinkService
         long lastId = 0;
         int pageSize = _paginationOptions.PageSize;
 
-        while(true)
+        while (true)
         {
             var pageRequest = new PageRequest(lastId, pageSize);
 

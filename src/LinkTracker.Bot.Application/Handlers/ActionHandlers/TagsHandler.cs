@@ -19,8 +19,8 @@ public class TagsHandler : IActionHandler
     private readonly IUnitOfWork _unitOfWork;
 
     public TagsHandler(
-        IActionItemRepository actionItemRepository, 
-        IProcessRepository processRepository, 
+        IActionItemRepository actionItemRepository,
+        IProcessRepository processRepository,
         IScrapperClient scrapperClient,
         IUnitOfWork unitOfWork)
     {
@@ -50,7 +50,7 @@ public class TagsHandler : IActionHandler
             Tags = tags,
             Url = link!
         };
-        
+
         await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
@@ -63,14 +63,14 @@ public class TagsHandler : IActionHandler
             await _actionItemRepository.AddAsync(action, cancellationToken);
 
             await _processRepository.CompleteAsync(process.ChatId, cancellationToken);
-            
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            await _scrapperClient.RemoveLinkAsync(process.ChatId, new RemoveLinkRequest {Url = addLinkRequest.Url}, cancellationToken);
+            await _scrapperClient.RemoveLinkAsync(process.ChatId, new RemoveLinkRequest { Url = addLinkRequest.Url }, cancellationToken);
             throw new TransactionException(ex.Message);
         }
     }

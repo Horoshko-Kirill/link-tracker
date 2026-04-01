@@ -11,28 +11,28 @@ public class ActionItemConfiguration : IEntityTypeConfiguration<ActionItem>
         builder.ToTable("bot_action_items");
 
         builder.HasKey(x => x.Id);
-        
+
         builder.Property(x => x.Id)
             .ValueGeneratedOnAdd()
             .HasColumnName("id");
-        
+
         builder.Property(x => x.ProcessId)
             .HasColumnName("process_id")
             .IsRequired();
-        
+
         builder.Property(x => x.ActionType)
             .HasColumnName("action_type")
-            .HasConversion<string>() 
+            .HasConversion<string>()
             .IsRequired();
-        
+
         builder.Property(x => x.PayloadJson)
             .HasColumnName("payload_json")
             .IsRequired();
-        
+
         builder.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
             .IsRequired();
-        
+
         builder.HasOne<Process>()
             .WithMany()
             .HasForeignKey(x => x.ProcessId)

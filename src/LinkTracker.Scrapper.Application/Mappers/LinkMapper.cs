@@ -67,5 +67,5 @@ public static class LinkMapper
         };
     }
 
-    
+
 }

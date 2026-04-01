@@ -46,17 +46,17 @@ namespace LinkTracker.Tests.IntegrationTests.Database
         {
             await using var conn = new NpgsqlConnection(_connectionString);
             await conn.OpenAsync();
-            
+
             await using var insertCmd = new NpgsqlCommand(
                 "INSERT INTO scrapper_chats(chat_id) VALUES (@chatId)", conn);
             insertCmd.Parameters.AddWithValue("chatId", 124);
             await insertCmd.ExecuteNonQueryAsync();
-            
+
             await using var deleteCmd = new NpgsqlCommand(
                 "DELETE FROM scrapper_chats WHERE chat_id = @chatId", conn);
             deleteCmd.Parameters.AddWithValue("chatId", 124);
             await deleteCmd.ExecuteNonQueryAsync();
-            
+
             await using var checkCmd = new NpgsqlCommand(
                 "SELECT chat_id FROM scrapper_chats WHERE chat_id = @chatId", conn);
             checkCmd.Parameters.AddWithValue("chatId", 124);
@@ -80,7 +80,7 @@ namespace LinkTracker.Tests.IntegrationTests.Database
                 "INSERT INTO scrapper_chats(chat_id) VALUES (@chatId)", conn);
             insertCmd.Parameters.AddWithValue("chatId", 125);
             await insertCmd.ExecuteNonQueryAsync();
-            
+
             await using var duplicateCmd = new NpgsqlCommand(
                 "INSERT INTO scrapper_chats(chat_id) VALUES (@chatId)", conn);
             duplicateCmd.Parameters.AddWithValue("chatId", 125);

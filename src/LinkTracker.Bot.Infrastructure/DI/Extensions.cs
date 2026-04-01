@@ -13,9 +13,9 @@ public static class Extensions
         var dbOptions = configuration
             .GetSection(DatabaseOptions.SectionName)
             .Get<DatabaseOptions>();
-        
+
         services.AddRepository(dbOptions);
-        
+
         return services;
     }
 }

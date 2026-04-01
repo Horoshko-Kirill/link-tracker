@@ -25,13 +25,13 @@ public class SqlUnitOfWork : IUnitOfWork
         {
             throw new TransactionException("Transaction already started");
         }
-        
+
         var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
         var transaction = await connection.BeginTransactionAsync(cancellationToken);
 
         _session.Connection = connection;
         _session.Transaction = transaction;
-        
+
         return new SqlBotTransaction(_session);
     }
 }

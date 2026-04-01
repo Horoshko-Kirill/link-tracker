@@ -69,8 +69,12 @@ namespace LinkTracker.Tests.IntegrationTests.Fixtures
                 .WithNetworkAliases("scrapper")
                 .WithPortBinding(80, true)
                 .WithEnvironment("ASPNETCORE_URLS", "http://+:80")
+                .WithEnvironment("TelegramBot__BaseUrl", "http://bot:80")
                 .WithEnvironment("Database__ConnectionString",
                     "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
+                .WithEnvironment("KESTREL__PORT", "80")
+                .WithEnvironment("ClientType__Type", "Http")
+                .WithEnvironment("KESTREL__Type", "Http")
                 .Build();
 
             await Scrapper.StartAsync();
@@ -86,6 +90,9 @@ namespace LinkTracker.Tests.IntegrationTests.Fixtures
                 .WithEnvironment("Bot__Token", "Tests")
                 .WithEnvironment("Database__ConnectionString",
                     "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
+                .WithEnvironment("KESTREL__PORT", "80")
+                .WithEnvironment("ClientType__Type", "Http")
+                .WithEnvironment("KESTREL__Type", "Http")
                 .WithWaitStrategy(
                     Wait.ForUnixContainer()
                         .UntilHttpRequestIsSucceeded(r => r

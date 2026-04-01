@@ -27,13 +27,13 @@ public class SqlProcessRepository : SqlRepositoryBase, IProcessRepository
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("chat_id", chatId);
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
                 return null;
             }
-            
+
             return new Process
             {
                 Id = reader.GetInt64(0),
@@ -41,7 +41,7 @@ public class SqlProcessRepository : SqlRepositoryBase, IProcessRepository
                 Status = Enum.Parse<ProcessStatus>(reader.GetString(2)),
                 CreatedAt = DateTime.SpecifyKind(reader.GetDateTime(3), DateTimeKind.Utc)
             };
-            
+
         }, cancellationToken);
     }
 
@@ -52,7 +52,7 @@ public class SqlProcessRepository : SqlRepositoryBase, IProcessRepository
                      values (@chat_id, @status, @created_at)
                      returning id
                      """;
-        
+
         return ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("chat_id", process.ChatId);

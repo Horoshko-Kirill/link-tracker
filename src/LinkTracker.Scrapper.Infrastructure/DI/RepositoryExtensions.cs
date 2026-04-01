@@ -23,14 +23,14 @@ public static class RepositoryExtensions
                     var builder = new NpgsqlDataSourceBuilder(databaseOptions.ConnectionString);
                     return builder.Build();
                 });
-                
+
                 services.AddScoped<SqlSession>();
-                
+
                 services.AddScoped<IChatRepository, SqlChatRepository>();
                 services.AddScoped<ILinkRepository, SqlLinkRepository>();
                 services.AddScoped<ISubscriptionRepository, SqlSubscriptionRepository>();
                 services.AddScoped<ITagRepository, SqlTagRepository>();
-                
+
                 services.AddScoped<IUnitOfWork, SqlUnitOfWork>();
                 break;
             case "Orm":
@@ -38,12 +38,12 @@ public static class RepositoryExtensions
                 {
                     options.UseNpgsql(databaseOptions.ConnectionString);
                 });
-                
+
                 services.AddScoped<IChatRepository, OrmChatRepository>();
                 services.AddScoped<ILinkRepository, OrmLinkRepository>();
                 services.AddScoped<ISubscriptionRepository, OrmSubscriptionRepository>();
                 services.AddScoped<ITagRepository, OrmTagRepository>();
-                
+
                 services.AddScoped<IUnitOfWork, EfUnitOfWork>();
                 break;
         }

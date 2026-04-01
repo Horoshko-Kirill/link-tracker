@@ -11,7 +11,7 @@ public class SqlBotTransaction : IBotTransaction
     {
         _session = session;
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         if (_session.Transaction != null)
@@ -23,7 +23,7 @@ public class SqlBotTransaction : IBotTransaction
         {
             await _session.Connection.DisposeAsync();
         }
-        
+
         _session.Clear();
     }
 
@@ -33,7 +33,7 @@ public class SqlBotTransaction : IBotTransaction
         {
             throw new TransactionException("No active transaction");
         }
-        
+
         return _session.Transaction.CommitAsync(cancellationToken);
     }
 
@@ -43,7 +43,7 @@ public class SqlBotTransaction : IBotTransaction
         {
             throw new TransactionException("No active transaction");
         }
-        
+
         return _session.Transaction.RollbackAsync(cancellationToken);
     }
 }

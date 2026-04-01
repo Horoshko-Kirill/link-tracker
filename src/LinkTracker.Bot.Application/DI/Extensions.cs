@@ -15,7 +15,7 @@ public static class Extensions
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<PaginationOptions>(configuration.GetSection(PaginationOptions.SectionName));
-        
+
         services.AddTransient<IActionItemFactory, TrackActionItemFactory>();
         services.AddTransient<IActionItemFactory, UntrackActionItemFactory>();
 

@@ -26,7 +26,7 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
 
         builder.HasIndex(x => x.ChatId);
         builder.HasIndex(x => x.LinkId);
-        
+
         builder.HasIndex(x => new { x.ChatId, x.LinkId })
             .IsUnique();
 

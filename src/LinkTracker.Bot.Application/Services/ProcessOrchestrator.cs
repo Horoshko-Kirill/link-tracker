@@ -21,7 +21,7 @@ public class ProcessOrchestrator : IProcessOrchestrator
     private readonly PaginationOptions _paginationOptions;
 
     public ProcessOrchestrator(
-        IEnumerable<IActionHandler> handlers, 
+        IEnumerable<IActionHandler> handlers,
         IProcessRepository processRepository,
         IActionItemRepository actionRepository,
         ILogger<ProcessOrchestrator> logger,
@@ -40,12 +40,12 @@ public class ProcessOrchestrator : IProcessOrchestrator
         {
             throw new ProcessNotFoundException("Нет активного процесса для данного чата");
         }
-        
+
         var actions = new List<ActionItem>();
         long lastId = 0;
         int pageSize = _paginationOptions.PageSize;
 
-        while(true)
+        while (true)
         {
             var pageRequest = new PageRequest(lastId, pageSize);
 
@@ -60,7 +60,7 @@ public class ProcessOrchestrator : IProcessOrchestrator
 
             lastId = responses[^1].Id;
         }
-        
+
         if (actions.Count > MAX_STEPS)
         {
             throw new ProcessLimitExceededException("Превышено количество запросов в диалоге введите /cancel для отмены операции");

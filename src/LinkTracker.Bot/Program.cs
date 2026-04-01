@@ -8,9 +8,6 @@ using LinkTracker.Bot.Infrastructure.DI;
 using LinkTracker.Bot.Middleware;
 using LinkTracker.Bot.Options;
 using LinkTracker.Bot.Services;
-using LinkTracker.Bot.Telegram;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +20,9 @@ builder.Services.Configure<BotOptions>(
 
 builder.Services.Configure<ScrapperOptions>(
     builder.Configuration.GetSection(ScrapperOptions.SectionName));
+
+builder.Services.Configure<KestrelOptions>(
+    builder.Configuration.GetSection(KestrelOptions.SectionName));
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -44,9 +44,9 @@ builder.Services.AddScoped<IMessageRoute, MessageRoute>();
 
 builder.Services.AddGrpc();
 
-var clientOptions = builder.Configuration.GetSection(ClientOptions.SectionName).Get<ClientOptions>();
+builder.WebHost.ConfigureKestrelWithProtocol();
 
-builder.Services.AddClient(clientOptions);
+builder.Services.AddClient(builder.Configuration);
 
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
