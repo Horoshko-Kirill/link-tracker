@@ -1,5 +1,5 @@
 ﻿using DbUp;
-using LinkTracker.Scrapper.Infrastructure.Options;
+using LinkTracker.Scrapper.Migrator.Options;
 using LinkTracker.Scrapper.Migrator.Utils;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

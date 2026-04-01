@@ -17,8 +17,4 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LinkTracker.Bot.Infrastructure\LinkTracker.Bot.Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

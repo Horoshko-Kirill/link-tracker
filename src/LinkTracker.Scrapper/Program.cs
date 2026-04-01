@@ -4,6 +4,7 @@ using LinkTracker.Scrapper.Grpc;
 using LinkTracker.Scrapper.Infrastructure.DI;
 using LinkTracker.Scrapper.Middleware;
 using LinkTracker.Scrapper.Options;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 

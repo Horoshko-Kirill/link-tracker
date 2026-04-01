@@ -6,6 +6,7 @@ services:
     build:
       context: . 
       dockerfile: src/LinkTracker.Bot/Dockerfile
+    container_name: bot.api
     ports:
       - "7175:80"
     environment:
@@ -13,6 +14,11 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - Bot__Token=${BOT_TOKEN} 
       - Scrapper__BaseUrl=http://scrapper:80
+      - Database__ConnectionString=Host=linktracker.db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - Database__AccessType=${POSTGRES_ACCESS_TYPE_Bot}
+    depends_on:
+      bot.migrator:
+        condition: service_completed_successfully
     networks:
       - linktracker-network
 
@@ -20,15 +26,74 @@ services:
     build:
       context: .
       dockerfile: src/LinkTracker.Scrapper/Dockerfile
+    container_name: scrapper.api
     ports:
       - "7197:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - TelegramBot__BaseUrl=http://bot:80
+      - Database__ConnectionString=Host=linktracker.db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - Database__AccessType=${POSTGRES_ACCESS_TYPE_Scrapper}
+    depends_on:
+      scrapper.migrator:
+        condition: service_completed_successfully
+    networks:
+      - linktracker-network
+
+  bot.migrator:
+    build:
+      context: .
+      dockerfile: src/LinkTracker.Bot.Migrator/Dockerfile
+    container_name: bot.migrator
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Database__ConnectionString=Host=linktracker.db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      linktracker.db:
+        condition: service_healthy
+    networks:
+      - linktracker-network
+    restart: "no"
+  
+  scrapper.migrator:
+    build:
+      context: .
+      dockerfile: src/LinkTracker.Scrapper.Migrator/Dockerfile
+    container_name: scrapper.migrator
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Database__ConnectionString=Host=linktracker.db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      linktracker.db:
+        condition: service_healthy
+    networks:
+      - linktracker-network
+    restart: "no"
+
+  linktracker.db:
+    image: postgres:16
+    container_name: linktracker.db
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - linktracker-network
 
 networks:
   linktracker-network:
     driver: bridge
+
+volumes:
+  postgres_data:

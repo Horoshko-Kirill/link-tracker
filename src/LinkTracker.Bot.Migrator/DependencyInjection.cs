@@ -1,4 +1,4 @@
-﻿using LinkTracker.Bot.Infrastructure.Options;
+﻿using LinkTracker.Bot.Migrator.Options;
 using LinkTracker.Bot.Migrator.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

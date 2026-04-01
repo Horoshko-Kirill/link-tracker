@@ -1,6 +1,5 @@
-﻿using LinkTracker.Scrapper.Infrastructure.Options;
+﻿using LinkTracker.Scrapper.Migrator.Options;
 using LinkTracker.Scrapper.Migrator.Services;
-using LinkTracker.Scrapper.Migrator.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
