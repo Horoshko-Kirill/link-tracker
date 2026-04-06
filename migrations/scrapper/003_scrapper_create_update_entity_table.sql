@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS scrapper_update_event (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     detected_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_scrapper_update_event_link
-        FOREIGN KEY (link_id) REFERENCES scrapper_links(id) ON DELETE CASCADE,
+        FOREIGN KEY (link_id) REFERENCES scrapper_links(id) ON DELETE CASCADE
 );
