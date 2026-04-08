@@ -1,6 +1,8 @@
 ﻿using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Domain.ClientsModels.GitHub;
 using System.Net.Http.Json;
+using LinkTracker.Scrapper.Contracts.Dto;
+using LinkTracker.Scrapper.Domain.Enum;
 
 namespace LinkTracker.Scrapper.Infrastructure.Clients;
 
@@ -14,7 +16,7 @@ public class GitHubClient : IGitHubClient
         _httpClient.BaseAddress = new Uri("https://api.github.com");
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("link-tracker-bot");
     }
-    public async Task<DateTimeOffset?> GetLastUpdateAsync(string owner, string repo, CancellationToken cancellationToken = default)
+    public async Task<UpdateEventDto?> GetLastUpdateAsync(string owner, string repo, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync($"/repos/{owner}/{repo}", cancellationToken);
 
@@ -23,8 +25,16 @@ public class GitHubClient : IGitHubClient
             return null;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<GitHubRepoResponse>(cancellationToken: cancellationToken);
-
-        return result?.UpdatedAt;
+        var result = await response.Content.ReadFromJsonAsync<GitHubResponse>(cancellationToken: cancellationToken);
+        
+        if (result == null)
+        {
+            return null;
+        }
+        
+        return new UpdateEventDto
+        {
+            EventType = GitHubUpdateType.
+        }
     }
 }

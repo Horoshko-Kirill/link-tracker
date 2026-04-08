@@ -1,5 +1,6 @@
 ﻿using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Application.Providers.Interfaces;
+using LinkTracker.Scrapper.Contracts.Dto;
 
 namespace LinkTracker.Scrapper.Application.Providers;
 
@@ -17,7 +18,7 @@ public class StackOverflowUpdateProvider : IUpdateProvider
         return url.Host.Contains("stackoverflow.com");
     }
 
-    public async Task<DateTimeOffset?> GetLastUpdateAsync(Uri url, CancellationToken cancellationToken = default)
+    public async Task<UpdateEventDto> GetLastUpdateAsync(Uri url, CancellationToken cancellationToken = default)
     {
         var parts = url.AbsolutePath.Split("/", StringSplitOptions.RemoveEmptyEntries);
 

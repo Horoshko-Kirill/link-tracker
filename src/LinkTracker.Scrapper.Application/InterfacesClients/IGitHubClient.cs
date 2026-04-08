@@ -1,6 +1,8 @@
-﻿namespace LinkTracker.Scrapper.Application.InterfacesClients;
+﻿using LinkTracker.Scrapper.Contracts.Dto;
+
+namespace LinkTracker.Scrapper.Application.InterfacesClients;
 
 public interface IGitHubClient
 {
-    public Task<DateTimeOffset?> GetLastUpdateAsync(string owner, string repo, CancellationToken cancellationToken = default);
+    public Task<UpdateEventDto?> GetLastUpdateAsync(string owner, string repo, CancellationToken cancellationToken = default);
 }

@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS scrapper_update_event (
     preview TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     detected_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    status INT NOT NULL DEFAULT 0,
+    sent_at TIMESTAMPTZ NULL,
     CONSTRAINT fk_scrapper_update_event_link
         FOREIGN KEY (link_id) REFERENCES scrapper_links(id) ON DELETE CASCADE
 );

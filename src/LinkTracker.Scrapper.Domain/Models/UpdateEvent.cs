@@ -1,4 +1,6 @@
-﻿namespace LinkTracker.Scrapper.Domain.Models;
+﻿using LinkTracker.Scrapper.Domain.Enum;
+
+namespace LinkTracker.Scrapper.Domain.Models;
 
 public class UpdateEvent : Entity
 {
@@ -11,4 +13,6 @@ public class UpdateEvent : Entity
     public DateTimeOffset CreatedAt { get; set; }
     public string Preview { get; set; } = String.Empty;
     public DateTimeOffset DetectedAt { get; set; }
+    public UpdateEventStatus Status { get; set; } = UpdateEventStatus.Pending;
+    public DateTimeOffset? SentAt { get; set; }
 }
