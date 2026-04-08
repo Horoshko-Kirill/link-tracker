@@ -1,8 +1,8 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesClients;
-using LinkTracker.Scrapper.Domain.ClientsModels.GitHub;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
+using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Contracts.Dto;
-using LinkTracker.Scrapper.Domain.Enum;
+using LinkTracker.Scrapper.Contracts.Dto.GitHub;
+using LinkTracker.Scrapper.Infrastructure.Mappers;
 
 namespace LinkTracker.Scrapper.Infrastructure.Clients;
 
@@ -16,25 +16,135 @@ public class GitHubClient : IGitHubClient
         _httpClient.BaseAddress = new Uri("https://api.github.com");
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("link-tracker-bot");
     }
-    public async Task<UpdateEventDto?> GetLastUpdateAsync(string owner, string repo, CancellationToken cancellationToken = default)
+    
+    public async Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(
+        string owner,
+        string repo,
+        DateTimeOffset from,
+        CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync($"/repos/{owner}/{repo}", cancellationToken);
+        var issuesTask = GetAllNewIssuesAsync(owner, repo, from, cancellationToken);
+        var pullsTask = GetAllNewPullRequestsAsync(owner, repo, from, cancellationToken);
+
+        await Task.WhenAll(issuesTask, pullsTask);
+
+        var result = new List<UpdateEventDto>();
+        result.AddRange(await issuesTask);
+        result.AddRange(await pullsTask);
+
+        return result
+            .OrderBy(x => x.CreatedAt)
+            .ToList();
+    }
+
+    private async Task<List<UpdateEventDto>> GetAllNewIssuesAsync(
+        string owner,
+        string repo,
+        DateTimeOffset from,
+        CancellationToken cancellationToken)
+    {
+        var result = new List<UpdateEventDto>();
+        var page = 1;
+
+        while (true)
+        {
+            var items = await GetIssuesPageAsync(owner, repo, page, cancellationToken);
+            if (items.Count == 0)
+            {
+                break;
+            }
+
+            var freshItems = items
+                .Where(x => x.CreatedAt > from)
+                .ToList();
+
+            result.AddRange(freshItems.Select(GitHubMapper.MapIssue));
+
+            if (freshItems.Count == 0)
+            {
+                break;
+            }
+
+            page++;
+        }
+
+        return result;
+    }
+
+    private async Task<List<UpdateEventDto>> GetAllNewPullRequestsAsync(
+        string owner,
+        string repo,
+        DateTimeOffset from,
+        CancellationToken cancellationToken)
+    {
+        var result = new List<UpdateEventDto>();
+        var page = 1;
+
+        while (true)
+        {
+            var items = await GetPullRequestsPageAsync(owner, repo, page, cancellationToken);
+            if (items.Count == 0)
+            {
+                break;
+            }
+
+            var freshItems = items
+                .Where(x => x.CreatedAt > from)
+                .ToList();
+
+            result.AddRange(freshItems.Select(GitHubMapper.MapPullRequest));
+
+            if (freshItems.Count == 0)
+            {
+                break;
+            }
+
+            page++;
+        }
+
+        return result;
+    }
+
+    private async Task<List<GitHubIssueResponse>> GetIssuesPageAsync(
+        string owner,
+        string repo,
+        int page,
+        CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.GetAsync(
+            $"/repos/{owner}/{repo}/issues?state=all&sort=created&direction=desc&per_page=100&page={page}",
+            cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
-            return null;
+            return [];
         }
 
-        var result = await response.Content.ReadFromJsonAsync<GitHubResponse>(cancellationToken: cancellationToken);
-        
-        if (result == null)
-        {
-            return null;
-        }
-        
-        return new UpdateEventDto
-        {
-            EventType = GitHubUpdateType.
-        }
+        var result = await response.Content.ReadFromJsonAsync<List<GitHubIssueResponse>>(
+            cancellationToken: cancellationToken);
+
+        return result ?? [];
     }
+
+    private async Task<List<GitHubPullRequestResponse>> GetPullRequestsPageAsync(
+        string owner,
+        string repo,
+        int page,
+        CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.GetAsync(
+            $"/repos/{owner}/{repo}/pulls?state=all&sort=created&direction=desc&per_page=100&page={page}",
+            cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return [];
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<List<GitHubPullRequestResponse>>(
+            cancellationToken: cancellationToken);
+
+        return result ?? [];
+    }
+
 }

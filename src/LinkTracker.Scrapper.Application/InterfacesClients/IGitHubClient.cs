@@ -4,5 +4,5 @@ namespace LinkTracker.Scrapper.Application.InterfacesClients;
 
 public interface IGitHubClient
 {
-    public Task<UpdateEventDto?> GetLastUpdateAsync(string owner, string repo, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(string owner, string repo, DateTimeOffset from, CancellationToken cancellationToken = default);
 }
