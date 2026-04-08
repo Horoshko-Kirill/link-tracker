@@ -17,20 +17,19 @@ public class GitHubUpdateProvider : IUpdateProvider
         return url.Host.Contains("github.com");
     }
 
-    public async Task<UpdateEventDto> GetLastUpdateAsync(Uri url, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(Uri url, DateTimeOffset from, CancellationToken cancellationToken = default)
     {
         var parts = url.AbsolutePath.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length < 2)
         {
-            return null;
+            return [];
         }
 
         var owner = parts[0];
         var repo = parts[1];
-
-        var updateData = await _gitHubClient.GetLastUpdateAsync(owner, repo, cancellationToken);
-
-        return updateData;
+        
+        return await _gitHubClient.GetNewEventsAsync(owner, repo, from, cancellationToken);
     }
+    
 }

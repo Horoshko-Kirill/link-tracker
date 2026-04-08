@@ -18,19 +18,17 @@ public class StackOverflowUpdateProvider : IUpdateProvider
         return url.Host.Contains("stackoverflow.com");
     }
 
-    public async Task<UpdateEventDto> GetLastUpdateAsync(Uri url, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(Uri url, DateTimeOffset from, CancellationToken cancellationToken = default)
     {
         var parts = url.AbsolutePath.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length < 3)
         {
-            return null;
+            return [];
         }
 
         var id = long.Parse(parts[1]);
-
-        var updateDate = await _stackOverflowClient.GetLastUpdateAsync(id, cancellationToken);
-
-        return updateDate;
+        
+        return await _stackOverflowClient.GetNewEventsAsync(id, from, cancellationToken);
     }
 }

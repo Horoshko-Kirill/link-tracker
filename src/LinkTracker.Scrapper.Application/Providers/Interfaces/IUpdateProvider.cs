@@ -7,5 +7,5 @@ public interface IUpdateProvider
 {
     bool CanHandle(Uri url);
 
-    Task<UpdateEventDto> GetLastUpdateAsync(Uri url, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(Uri url, DateTimeOffset from, CancellationToken cancellationToken = default);
 }
