@@ -1,4 +1,6 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesRepositories;
+﻿using LinkTracker.Scrapper.Application.Common.Pagination;
+using LinkTracker.Scrapper.Application.InterfacesRepositories;
+using LinkTracker.Scrapper.Domain.Enum;
 using LinkTracker.Scrapper.Domain.Models;
 using LinkTracker.Scrapper.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +11,6 @@ public class OrmUpdateEventRepository : IUpdateEventRepository
 {
     private readonly ScrapperDbContext _dbContext;
     private readonly DbSet<UpdateEvent> _updateEvents;
-    
     public OrmUpdateEventRepository(ScrapperDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -32,5 +33,21 @@ public class OrmUpdateEventRepository : IUpdateEventRepository
         }
         
         _updateEvents.Remove(updateEvent);
+    }
+
+    public Task<List<UpdateEvent>> GetPendingUpdateEventAsync(PageRequest pageRequest, CancellationToken cancellationToken)
+    {
+        return _updateEvents
+            .AsNoTracking()
+            .Where(x => x.Status == UpdateEventStatus.Pending && x.Id > pageRequest.LastId)
+            .OrderBy(x => x.Id)
+            .Take(pageRequest.Size)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task UpdateEventAsync(UpdateEvent updateEvent, CancellationToken cancellationToken)
+    {
+        _updateEvents.Update(updateEvent);
+        return Task.CompletedTask;
     }
 }

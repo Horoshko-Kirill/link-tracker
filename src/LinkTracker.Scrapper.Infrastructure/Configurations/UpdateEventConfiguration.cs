@@ -48,6 +48,14 @@ public class UpdateEventConfiguration : IEntityTypeConfiguration<UpdateEvent>
             .HasColumnName("detected_at")
             .IsRequired();
         
+        builder.Property(x => x.Status)
+            .HasColumnName("status")
+            .HasConversion<int>()
+            .IsRequired();
+
+        builder.Property(x => x.SentAt)
+            .HasColumnName("sent_at");
+        
         builder.HasOne(x => x.Link)
             .WithMany()
             .HasForeignKey(x => x.LinkId);
