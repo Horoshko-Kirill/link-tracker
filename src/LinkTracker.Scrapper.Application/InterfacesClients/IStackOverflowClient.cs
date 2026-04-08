@@ -4,5 +4,5 @@ namespace LinkTracker.Scrapper.Application.InterfacesClients;
 
 public interface IStackOverflowClient
 {
-    public Task<UpdateEventDto?> GetLastUpdateAsync(long questionId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(long questionId, DateTimeOffset from, CancellationToken cancellationToken = default);
 }
