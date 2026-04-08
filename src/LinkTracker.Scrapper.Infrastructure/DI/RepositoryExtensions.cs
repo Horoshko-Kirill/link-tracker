@@ -30,6 +30,7 @@ public static class RepositoryExtensions
                 services.AddScoped<ILinkRepository, SqlLinkRepository>();
                 services.AddScoped<ISubscriptionRepository, SqlSubscriptionRepository>();
                 services.AddScoped<ITagRepository, SqlTagRepository>();
+                services.AddScoped<IUpdateEventRepository, SqlUpdateEventRepository>();
 
                 services.AddScoped<IUnitOfWork, SqlUnitOfWork>();
                 break;
@@ -43,6 +44,7 @@ public static class RepositoryExtensions
                 services.AddScoped<ILinkRepository, OrmLinkRepository>();
                 services.AddScoped<ISubscriptionRepository, OrmSubscriptionRepository>();
                 services.AddScoped<ITagRepository, OrmTagRepository>();
+                services.AddScoped<IUpdateEventRepository, OrmUpdateEventRepository>();
 
                 services.AddScoped<IUnitOfWork, EfUnitOfWork>();
                 break;
