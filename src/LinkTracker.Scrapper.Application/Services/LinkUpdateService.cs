@@ -6,7 +6,6 @@ using LinkTracker.Scrapper.Application.InterfacesServices;
 using LinkTracker.Scrapper.Application.Mappers;
 using LinkTracker.Scrapper.Application.Options;
 using LinkTracker.Scrapper.Application.Providers.Interfaces;
-using LinkTracker.Scrapper.Domain.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -15,9 +14,8 @@ namespace LinkTracker.Scrapper.Application.Services;
 public class LinkUpdateService : ILinkUpdateService
 {
     private readonly ILinkRepository _linkRepository;
-    private readonly ISubscriptionRepository _subscriptionRepository;
+    private readonly IUpdateEventRepository _updateEventRepository;
     private readonly IEnumerable<IUpdateProvider> _providers;
-    private readonly IBotClient _botClient;
     private readonly IUnitOfWork _unitOfWork;
     private readonly PaginationOptions _paginationOptions;
     private readonly ILogger<LinkUpdateService> _logger;
@@ -25,18 +23,16 @@ public class LinkUpdateService : ILinkUpdateService
     public LinkUpdateService(
         ILinkRepository linkRepository,
         IEnumerable<IUpdateProvider> providers,
-        IBotClient botClient,
         ILogger<LinkUpdateService> logger,
         IOptions<PaginationOptions> paginationOptions,
-        ISubscriptionRepository subscriptionRepository,
+        IUpdateEventRepository updateEventRepository,
         IUnitOfWork unitOfWork)
     {
         _linkRepository = linkRepository;
         _providers = providers;
-        _botClient = botClient;
         _logger = logger;
         _paginationOptions = paginationOptions.Value;
-        _subscriptionRepository = subscriptionRepository;
+        _updateEventRepository = updateEventRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -66,28 +62,20 @@ public class LinkUpdateService : ILinkUpdateService
                     {
                         continue;
                     }
-
-                    var lastUpdate = await provider.GetLastUpdateAsync(new Uri(link.Url), cancellationToken);
-
-                    if (lastUpdate == null)
+                    
+                    var events = await provider.GetNewEventsAsync(new Uri(link.Url), link.LastChecked, cancellationToken);
+                    
+                    foreach (var dto in events.OrderBy(x => x.CreatedAt))
                     {
-                        continue;
+                        var updateEvent = UpdateEventMapper.ToDomain(link.Id, dto);
+                        await _updateEventRepository.AddUpdateEventAsync(updateEvent, cancellationToken);
                     }
-
-                    if (lastUpdate <= link.LastChecked)
-                    {
-                        continue;
-                    }
-
-                    link.Subscriptions = await GetSubscriptionByLinkIdAsync(link.Id, cancellationToken);
-
-                    var update = LinkMapper.ToUpdateRequest(link, lastUpdate.Value);
-
-                    await _botClient.PostUpdateAsync(update, cancellationToken);
-
-                    link.LastChecked = lastUpdate.Value;
-
-                    await _linkRepository.UpdateLinkAsync(link);
+                    
+                    var newLastChecked = events.Count > 0
+                        ? events.Max(x => x.CreatedAt)
+                        : DateTimeOffset.UtcNow;
+                    
+                    await _linkRepository.UpdateLastCheckedAsync(link.Id, newLastChecked, cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                 }
 
@@ -99,30 +87,5 @@ public class LinkUpdateService : ILinkUpdateService
             _logger.LogError("Scrapper update service : {message}", ex.Message);
         }
 
-    }
-
-    private async Task<List<Subscription>> GetSubscriptionByLinkIdAsync(long linkId, CancellationToken cancellationToken = default)
-    {
-        long lastId = 0;
-        int pageSize = _paginationOptions.PageSize;
-
-        var result = new List<Subscription>();
-
-        while (true)
-        {
-            var pageRequest = new PageRequest(lastId, pageSize);
-
-            var subscriptions = await _subscriptionRepository.GetSubscriptionByLinkAsync(linkId, pageRequest, cancellationToken);
-
-            if (subscriptions.Count == 0)
-            {
-                break;
-            }
-
-            result.AddRange(subscriptions);
-            lastId = subscriptions[^1].Id;
-        }
-
-        return result;
     }
 }
