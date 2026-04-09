@@ -38,7 +38,7 @@ public class LinkProcessor : ILinkProcessor
         {
             if (!Uri.TryCreate(link.Url, UriKind.Absolute, out var uri))
             {
-                return LinkProcessingResult.Error(link.Id, link.Url, "Не корректная ссылка");
+                return LinkProcessingResult.Error(link.Id, link.Url, "Некорректная ссылка");
             }
             
             var provider = _providers.FirstOrDefault(p => p.CanHandle(new Uri(link.Url)));

@@ -10,6 +10,7 @@ public class ScrapperDbContext : DbContext
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<UpdateEvent> UpdateEvents { get; set; }
+    public DbSet<ChatLinkScanReport> ChatLinkScanReports { get; set; }
 
     public ScrapperDbContext(DbContextOptions<ScrapperDbContext> options) : base(options) { }
 
