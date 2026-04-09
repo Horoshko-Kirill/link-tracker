@@ -7,6 +7,7 @@ public interface ILinkRepository
 {
     Task AddLinkAsync(Link link, CancellationToken cancellationToken = default);
     Task UpdateLinkAsync(Link link, CancellationToken cancellationToken = default);
+    Task UpdateLastCheckedAsync(long id, DateTimeOffset lastChecked, CancellationToken cancellationToken = default);
     Task<bool> LinkExistByUrlAsync(string url, CancellationToken cancellationToken = default);
     Task RemoveLinkAsync(long id, CancellationToken cancellationToken = default);
     Task<Link?> GetByIdAsync(long id, CancellationToken cancellationToken = default);

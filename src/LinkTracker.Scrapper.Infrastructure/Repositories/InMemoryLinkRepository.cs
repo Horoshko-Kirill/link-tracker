@@ -37,6 +37,11 @@ public class InMemoryLinkRepository : ILinkRepository
         return Task.CompletedTask;
     }
 
+    public Task UpdateLastCheckedAsync(long id, DateTimeOffset lastChecked, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<Link?> GetLinkAsync(long chatId, string url, CancellationToken cancellationToken = default)
     {
         var link = _links.Values.FirstOrDefault(l => l.Url == url);

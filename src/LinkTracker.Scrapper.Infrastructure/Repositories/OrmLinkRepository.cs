@@ -45,6 +45,20 @@ public class OrmLinkRepository : ILinkRepository
             .ToListAsync(cancellationToken);
     }
 
+    public Task UpdateLastCheckedAsync(long id, DateTimeOffset lastChecked, CancellationToken cancellationToken = default)
+    {
+        var link = new Link
+        {
+            Id = id,
+            LastChecked = lastChecked
+        };
+
+        _dbContext.Attach(link);
+        _dbContext.Entry(link).Property(x => x.LastChecked).IsModified = true;
+
+        return Task.CompletedTask;
+    }
+
     public Task<bool> LinkExistByUrlAsync(string url, CancellationToken cancellationToken = default)
     {
         return _links

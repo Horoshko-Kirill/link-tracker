@@ -45,6 +45,22 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
         }, cancellationToken);
     }
 
+    public Task UpdateLastCheckedAsync(long id, DateTimeOffset lastChecked, CancellationToken cancellationToken = default)
+    {
+        string sql = """
+                     update scrapper_links
+                     set last_checked = @last_checked,
+                     where id = @id
+                     """;
+
+        return ExecuteAsync(sql, async cmd =>
+            {
+                cmd.Parameters.AddWithValue("id", id);
+                cmd.Parameters.AddWithValue("last_checked", lastChecked);
+                await cmd.ExecuteNonQueryAsync(cancellationToken);
+            }, cancellationToken);
+    }
+
     public Task<bool> LinkExistByUrlAsync(string url, CancellationToken cancellationToken = default)
     {
         string sql = """
