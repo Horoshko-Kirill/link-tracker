@@ -59,7 +59,7 @@ public class SqlUpdateEventRepository : SqlRepositoryBase, IUpdateEventRepositor
         string sql = $"""
                       select id, link_id, event_type, source, title, author, preview, created_at, detected_at, status, sent_at
                       from scrapper_update_event
-                      where id > @lastId
+                      where id > @lastId and status = @status
                       order by id
                       limit {limit}
                       """;

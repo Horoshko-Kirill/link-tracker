@@ -22,12 +22,10 @@ public class StackOverflowUpdateProvider : IUpdateProvider
     {
         var parts = url.AbsolutePath.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
-        if (parts.Length < 3)
+        if (parts.Length < 3 || !long.TryParse(parts[1], out var id))
         {
             return [];
         }
-
-        var id = long.Parse(parts[1]);
         
         return await _stackOverflowClient.GetNewEventsAsync(id, from, cancellationToken);
     }
