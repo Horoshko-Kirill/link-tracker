@@ -1,11 +1,10 @@
-﻿using LinkTracker.Scrapper.Application.Common.Pagination;
-using LinkTracker.Scrapper.Application.InterfacesClients;
-using LinkTracker.Scrapper.Application.InterfacesCommon;
+﻿using System.Collections.Concurrent;
+using LinkTracker.Scrapper.Application.Common.Pagination;
+using LinkTracker.Scrapper.Application.Common.Results;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.InterfacesServices;
-using LinkTracker.Scrapper.Application.Mappers;
 using LinkTracker.Scrapper.Application.Options;
-using LinkTracker.Scrapper.Application.Providers.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,78 +13,75 @@ namespace LinkTracker.Scrapper.Application.Services;
 public class LinkUpdateService : ILinkUpdateService
 {
     private readonly ILinkRepository _linkRepository;
-    private readonly IUpdateEventRepository _updateEventRepository;
-    private readonly IEnumerable<IUpdateProvider> _providers;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly PaginationOptions _paginationOptions;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IReportBuilderService _reportBuilderService;
+    private readonly LinkProcessingOptions _options;
     private readonly ILogger<LinkUpdateService> _logger;
 
     public LinkUpdateService(
         ILinkRepository linkRepository,
-        IEnumerable<IUpdateProvider> providers,
-        ILogger<LinkUpdateService> logger,
-        IOptions<PaginationOptions> paginationOptions,
-        IUpdateEventRepository updateEventRepository,
-        IUnitOfWork unitOfWork)
+        IServiceScopeFactory scopeFactory,
+        IReportBuilderService reportBuilderService,
+        IOptions<LinkProcessingOptions> options,
+        ILogger<LinkUpdateService> logger)
     {
         _linkRepository = linkRepository;
-        _providers = providers;
+        _scopeFactory = scopeFactory;
+        _reportBuilderService = reportBuilderService;
+        _options = options.Value;
         _logger = logger;
-        _paginationOptions = paginationOptions.Value;
-        _updateEventRepository = updateEventRepository;
-        _unitOfWork = unitOfWork;
     }
 
     public async Task CheckUpdatesAsync(CancellationToken cancellationToken = default)
     {
-        try
-        {
-            long lastId = 0;
-            int pageSize = _paginationOptions.PageSize;
+        long lastId = 0;
+        var failedResults = new ConcurrentBag<LinkProcessingResult>();
+        var scanStartedAt = DateTimeOffset.UtcNow;
 
-            while (true)
+        while (true)
+        {
+            var pageRequest = new PageRequest(lastId, _options.BatchSize);
+            var links = await _linkRepository.GetPageAsync(pageRequest, cancellationToken);
+
+            if (links.Count == 0)
             {
-                var pageRequest = new PageRequest(lastId, pageSize);
-
-                var links = await _linkRepository.GetPageAsync(pageRequest, cancellationToken);
-
-                if (links.Count == 0)
-                {
-                    break;
-                }
-
-                foreach (var link in links)
-                {
-                    var provider = _providers.FirstOrDefault(p => p.CanHandle(new Uri(link.Url)));
-
-                    if (provider == null)
-                    {
-                        continue;
-                    }
-                    
-                    var events = await provider.GetNewEventsAsync(new Uri(link.Url), link.LastChecked, cancellationToken);
-                    
-                    foreach (var dto in events.OrderBy(x => x.CreatedAt))
-                    {
-                        var updateEvent = UpdateEventMapper.ToDomain(link.Id, dto);
-                        await _updateEventRepository.AddUpdateEventAsync(updateEvent, cancellationToken);
-                    }
-                    
-                    var newLastChecked = events.Count > 0
-                        ? events.Max(x => x.CreatedAt)
-                        : DateTimeOffset.UtcNow;
-                    
-                    await _linkRepository.UpdateLastCheckedAsync(link.Id, newLastChecked, cancellationToken);
-                    await _unitOfWork.SaveChangesAsync(cancellationToken);
-                }
-
-                lastId = links[^1].Id;
+                break;
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Scrapper update service : {message}", ex.Message);
+
+            await Parallel.ForEachAsync(
+                links,
+                new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = _options.MaxDegreeOfParallelism,
+                    CancellationToken = cancellationToken
+                },
+                async (link, token) =>
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var processor = scope.ServiceProvider.GetRequiredService<ILinkProcessor>();
+
+                    var result = await processor.ProcessAsync(link, token);
+
+                    if (!result.Success)
+                    {
+                        failedResults.Add(result);
+                    }
+                });
+
+            lastId = links[^1].Id;
         }
 
+        var scanFinishedAt = DateTimeOffset.UtcNow;
+
+        if (!failedResults.IsEmpty)
+        {
+            await _reportBuilderService.BuildReportsAsync(
+                failedResults.ToList(),
+                scanStartedAt,
+                scanFinishedAt,
+                cancellationToken);
+
+            _logger.LogWarning("Failed to process {Count} links", failedResults.Count);
+        }
     }
 }

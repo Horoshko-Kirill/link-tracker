@@ -50,20 +50,32 @@ public class LinkProcessor : ILinkProcessor
             
             var events = await provider.GetNewEventsAsync(uri, link.LastChecked, cancellationToken);
             
-            foreach (var dto in events.OrderBy(x => x.CreatedAt))
+            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+
+            try
             {
-                var updateEvent = UpdateEventMapper.ToDomain(link.Id, dto);
-                await _updateEventRepository.AddUpdateEventAsync(updateEvent, cancellationToken);
+                foreach (var dto in events.OrderBy(x => x.CreatedAt))
+                {
+                    var updateEvent = UpdateEventMapper.ToDomain(link.Id, dto);
+                    await _updateEventRepository.AddUpdateEventAsync(updateEvent, cancellationToken);
+                }
+
+                var newLastChecked = events.Count > 0
+                    ? events.Max(x => x.CreatedAt)
+                    : DateTimeOffset.UtcNow;
+
+                await _linkRepository.UpdateLastCheckedAsync(link.Id, newLastChecked, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                await transaction.CommitAsync(cancellationToken);
+
+                return LinkProcessingResult.Ok();
             }
-
-            var newLastChecked = events.Count > 0
-                ? events.Max(x => x.CreatedAt)
-                : DateTimeOffset.UtcNow;
-
-            await _linkRepository.UpdateLastCheckedAsync(link.Id, newLastChecked, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            return LinkProcessingResult.Ok();
+            catch 
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
         }
         catch (Exception ex)
         {
