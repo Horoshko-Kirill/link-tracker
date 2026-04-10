@@ -67,8 +67,7 @@ public class SqlUpdateEventRepository : SqlRepositoryBase, IUpdateEventRepositor
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("status", (int)UpdateEventStatus.Pending);
-            cmd.Parameters.AddWithValue("last_id", pageRequest.LastId);
-            cmd.Parameters.AddWithValue("size", pageRequest.Size);
+            cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
 
             var result = new List<UpdateEvent>();
 
