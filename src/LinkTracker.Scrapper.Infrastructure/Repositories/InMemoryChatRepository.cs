@@ -32,6 +32,11 @@ public class InMemoryChatRepository : IChatRepository
         return Task.FromResult(true);
     }
 
+    public Task<Dictionary<long, Chat>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<List<Chat>> GetAllChatAsync(CancellationToken cancellationToken = default)
     {
         return Task.FromResult(_chats.Values.ToList());

@@ -140,4 +140,40 @@ public class SqlChatRepository : SqlRepositoryBase, IChatRepository
             return Convert.ToBoolean(result);
         }, cancellationToken);
     }
+
+    public Task<Dictionary<long, Chat>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default)
+    {
+        if (ids.Count == 0)
+        {
+            return Task.FromResult(new Dictionary<long, Chat>());
+        }
+
+        const string sql = """
+                           select id, chat_id
+                           from scrapper_chats
+                           where id = any(@ids)
+                           """;
+
+        return QueryAsync(sql, async cmd =>
+        {
+            cmd.Parameters.AddWithValue("ids", ids.ToArray());
+
+            var result = new Dictionary<long, Chat>();
+
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                var chat = new Chat
+                {
+                    Id = reader.GetInt64(0),
+                    ChatId = reader.GetInt64(1)
+                };
+
+                result[chat.Id] = chat;
+            }
+
+            return result;
+        }, cancellationToken);
+    }
 }

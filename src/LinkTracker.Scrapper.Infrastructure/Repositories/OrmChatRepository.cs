@@ -28,6 +28,21 @@ public class OrmChatRepository : IChatRepository
             .AnyAsync(x => x.ChatId == chatId, cancellationToken);
     }
 
+    public async Task<Dictionary<long, Chat>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default)
+    {
+        if (ids.Count == 0)
+        {
+            return new Dictionary<long, Chat>();
+        }
+
+        var chats = await _dbContext.Chats
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return chats.ToDictionary(x => x.Id, x => x);
+    }
+
     public Task<Chat?> GetChatAsync(long id, CancellationToken cancellationToken = default)
     {
         return _chats

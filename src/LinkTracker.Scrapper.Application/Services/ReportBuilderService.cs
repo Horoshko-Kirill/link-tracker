@@ -41,7 +41,7 @@ public class ReportBuilderService : IReportBuilderService
             .Distinct()
             .ToArray();
         
-        var chatIdsByLinkId = await _subscriptionRepository.GetChatIdsByLinkIdsAsync(
+        var chatIdsByLinkId = await _subscriptionRepository.GetChatDbIdsByLinkIdsAsync(
             uniqueLinkIds,
             cancellationToken);
         
