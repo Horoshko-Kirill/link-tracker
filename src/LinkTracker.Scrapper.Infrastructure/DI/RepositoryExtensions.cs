@@ -6,6 +6,7 @@ using LinkTracker.Scrapper.Infrastructure.Database.Transaction;
 using LinkTracker.Scrapper.Infrastructure.Options;
 using LinkTracker.Scrapper.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 
@@ -13,14 +14,20 @@ namespace LinkTracker.Scrapper.Infrastructure.DI;
 
 public static class RepositoryExtensions
 {
-    public static IServiceCollection AddRepository(this IServiceCollection services, DatabaseOptions databaseOptions)
+    public static IServiceCollection AddRepository(this IServiceCollection services, IConfiguration configuration)
     {
-        switch (databaseOptions.AccessType)
+        services.Configure<DatabaseOptions>(configuration.GetSection(DatabaseOptions.SectionName));
+
+        var dbOptions = configuration
+            .GetSection(DatabaseOptions.SectionName)
+            .Get<DatabaseOptions>();
+        
+        switch (dbOptions.AccessType)
         {
             case "Sql":
                 services.AddSingleton(_ =>
                 {
-                    var builder = new NpgsqlDataSourceBuilder(databaseOptions.ConnectionString);
+                    var builder = new NpgsqlDataSourceBuilder(dbOptions.ConnectionString);
                     return builder.Build();
                 });
 
@@ -38,7 +45,7 @@ public static class RepositoryExtensions
             case "Orm":
                 services.AddDbContext<ScrapperDbContext>(options =>
                 {
-                    options.UseNpgsql(databaseOptions.ConnectionString);
+                    options.UseNpgsql(dbOptions.ConnectionString);
                 });
 
                 services.AddScoped<IChatRepository, OrmChatRepository>();
