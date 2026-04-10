@@ -1,7 +1,7 @@
 ﻿using LinkTracker.Scrapper.Application.Common.Pagination;
 using LinkTracker.Scrapper.Domain.Models;
 
-namespace LinkTracker.Scrapper.Application.InterfacesServices;
+namespace LinkTracker.Scrapper.Application.InterfacesRepositories;
 
 public interface IChatLinkScanReportRepository
 {
