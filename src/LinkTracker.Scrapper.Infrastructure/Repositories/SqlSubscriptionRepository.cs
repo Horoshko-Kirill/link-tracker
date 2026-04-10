@@ -379,6 +379,49 @@ public class SqlSubscriptionRepository : SqlRepositoryBase, ISubscriptionReposit
         }, cancellationToken);
     }
 
+    public Task<Dictionary<long, IReadOnlyCollection<long>>> GetChatIdsByLinkIdsAsync(IReadOnlyCollection<long> linkIds, CancellationToken cancellationToken = default)
+    {
+        if (linkIds.Count == 0)
+        {
+            return Task.FromResult(new Dictionary<long, IReadOnlyCollection<long>>());
+        }
+
+        string sql = """
+                     select s.link_id, c.chat_id
+                     from scrapper_subscriptions s
+                     join scrapper_chats c on c.id = s.chat_id
+                     where s.link_id = any(@link_ids)
+                     order by s.link_id
+                     """;
+
+        return QueryAsync(sql, async cmd =>
+        {
+            cmd.Parameters.AddWithValue("link_ids", linkIds.ToArray());
+
+            var result = new Dictionary<long, List<long>>();
+
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                var linkId = reader.GetInt64(0);
+                var chatId = reader.GetInt64(1);
+
+                if (!result.TryGetValue(linkId, out var chats))
+                {
+                    chats = [];
+                    result[linkId] = chats;
+                }
+
+                chats.Add(chatId);
+            }
+
+            return result.ToDictionary(
+                x => x.Key,
+                x => (IReadOnlyCollection<long>)x.Value);
+        }, cancellationToken);
+    }
+
     private async Task<List<Tag>> GetTagsBySubscriptionIdAsync(long subscriptionId, CancellationToken cancellationToken = default)
     {
         string tagSql = """
