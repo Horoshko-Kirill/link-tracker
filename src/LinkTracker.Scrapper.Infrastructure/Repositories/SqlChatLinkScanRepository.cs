@@ -62,12 +62,12 @@ public class SqlChatLinkScanRepository : SqlRepositoryBase, IChatLinkScanReportR
                 {
                     Id = reader.GetInt64(reader.GetOrdinal("id")),
                     ChatId = reader.GetInt64(reader.GetOrdinal("chat_id")),
-                    ScanStartedAt = reader.GetFieldValue<DateTime>(reader.GetOrdinal("scan_started_at")),
-                    ScanFinishedAt = reader.GetFieldValue<DateTime>(reader.GetOrdinal("scan_finished_at")),
+                    ScanStartedAt = reader.GetFieldValue<DateTimeOffset>(reader.GetOrdinal("scan_started_at")),
+                    ScanFinishedAt = reader.GetFieldValue<DateTimeOffset>(reader.GetOrdinal("scan_finished_at")),
                     FailedCount = reader.GetFieldValue<int>(reader.GetOrdinal("failed_count")),
                     Message = reader.GetFieldValue<string>(reader.GetOrdinal("message")),
                     Status = (ReportStatus)reader.GetInt32(reader.GetOrdinal("status")),
-                    SentAt = reader.GetFieldValue<DateTime>(reader.GetOrdinal("sent_at")),
+                    SentAt = reader.GetFieldValue<DateTimeOffset>(reader.GetOrdinal("sent_at")),
                 });
             }
             
