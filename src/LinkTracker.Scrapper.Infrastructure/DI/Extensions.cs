@@ -24,22 +24,7 @@ public static class Extensions
         services.AddSingleton<IGitHubClient, GitHubClient>();
         services.AddSingleton<IStackOverflowClient, StackOverflowClient>();
 
-        services.AddQuartz(q =>
-        {
-            var jobKey = new JobKey("LinkUpdateJob");
-            q.AddJob<LinkUpdateJob>(opts => opts.WithIdentity(jobKey));
-
-            q.AddTrigger(opts => opts
-                .ForJob(jobKey)
-                .WithIdentity("LinkUpdateJob-trigger")
-                .WithSimpleSchedule(x => x
-                    .WithIntervalInMinutes(1)
-                    .RepeatForever()
-                )
-            );
-        });
-
-        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+        services.AddScrapperQuartz(configuration);
 
         return services;
     }
