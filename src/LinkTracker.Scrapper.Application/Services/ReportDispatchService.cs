@@ -13,6 +13,7 @@ namespace LinkTracker.Scrapper.Application.Services;
 public class ReportDispatchService : IReportDispatchService
 {
     private readonly IChatLinkScanReportRepository _chatLinkScanReportRepository;
+    private readonly IChatRepository _chatRepository;
     private readonly IMessageSender _messageSender;
     private readonly IUnitOfWork _unitOfWork;
     private readonly LinkProcessingOptions _options;
@@ -20,12 +21,14 @@ public class ReportDispatchService : IReportDispatchService
 
     public ReportDispatchService(
         IChatLinkScanReportRepository chatLinkScanReportRepository,
+        IChatRepository chatRepository,
         IMessageSender messageSender,
         IUnitOfWork unitOfWork,
         IOptions<LinkProcessingOptions> options,
         ILogger<ReportDispatchService> logger)
     {
         _chatLinkScanReportRepository = chatLinkScanReportRepository;
+        _chatRepository = chatRepository;
         _messageSender = messageSender;
         _unitOfWork = unitOfWork;
         _options = options.Value;
@@ -45,16 +48,31 @@ public class ReportDispatchService : IReportDispatchService
             {
                 break;
             }
+            
+            var chatDbIds = reports
+                .Select(x => x.ChatId)
+                .Distinct()
+                .ToArray();
+
+            var chatsById = await _chatRepository.GetByIdsAsync(chatDbIds, cancellationToken);
 
             foreach (var report in reports)
             {
                 try
                 {
+                    if (!chatsById.TryGetValue(report.ChatId, out var chat))
+                    {
+                        report.Status = ReportStatus.Failed;
+                        await _chatLinkScanReportRepository.UpdateAsync(report, cancellationToken);
+                        await _unitOfWork.SaveChangesAsync(cancellationToken);
+                        continue;
+                    }
+
                     var notification = new LinkUpdate
                     {
                         Url = string.Empty,
                         Description = report.Message,
-                        ChatIds = [report.ChatId]
+                        ChatIds = [chat.ChatId]
                     };
 
                     await _messageSender.SendAsync(notification, cancellationToken);
