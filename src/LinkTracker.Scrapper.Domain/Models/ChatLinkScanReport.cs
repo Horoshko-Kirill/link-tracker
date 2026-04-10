@@ -5,6 +5,7 @@ namespace LinkTracker.Scrapper.Domain.Models;
 public class ChatLinkScanReport : Entity
 {
     public long ChatId { get; set; }
+    public Chat Chat { get; set; } = null!;
     public DateTimeOffset ScanStartedAt { get; set; }
     public DateTimeOffset ScanFinishedAt { get; set; }
     public int FailedCount { get; set; }

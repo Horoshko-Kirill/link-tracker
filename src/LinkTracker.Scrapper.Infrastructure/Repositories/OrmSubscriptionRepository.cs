@@ -103,6 +103,31 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
                 g => (IReadOnlyCollection<long>)g.Select(x => x.ChatId).Distinct().ToList());
     }
 
+    public async Task<Dictionary<long, IReadOnlyCollection<long>>> GetChatDbIdsByLinkIdsAsync(IReadOnlyCollection<long> linkIds, CancellationToken cancellationToken = default)
+    {
+        if (linkIds.Count == 0)
+        {
+            return new Dictionary<long, IReadOnlyCollection<long>>();
+        }
+
+        var rows = await _subscriptions
+            .AsNoTracking()
+            .Where(x => linkIds.Contains(x.LinkId))
+            .Select(x => new
+            {
+                x.LinkId,
+                ChatDbId = x.ChatId
+            })
+            .ToListAsync(cancellationToken);
+
+        return rows
+            .GroupBy(x => x.LinkId)
+            .ToDictionary(
+                g => g.Key,
+                g => (IReadOnlyCollection<long>)g.Select(x => x.ChatDbId).Distinct().ToList());
+    }
+    
+
     public Task<List<Subscription>> GetSubscriptionByLinkAsync(long linkId, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
         IQueryable<Subscription> query = _subscriptions

@@ -10,6 +10,11 @@ public static class KestrelExtensions
     {
         return webHostBuilder.ConfigureKestrel((context, options) =>
         {
+            if (context.HostingEnvironment.IsDevelopment())
+            {
+                return;
+            }
+            
             var kestrelOptions = context.Configuration
                 .GetSection(KestrelOptions.SectionName)
                 .Get<KestrelOptions>();
