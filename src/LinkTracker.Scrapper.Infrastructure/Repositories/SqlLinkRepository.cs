@@ -175,4 +175,41 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
             return result;
         }, cancellationToken);
     }
+
+    public Task<Dictionary<long, Link>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default)
+    {
+        if (ids.Count == 0)
+        {
+            return Task.FromResult(new Dictionary<long, Link>());
+        }
+
+        string sql = """
+                     select id, url, last_checked
+                     from scrapper_links
+                     where id = any(@ids)
+                     """;
+
+        return QueryAsync(sql, async cmd =>
+        {
+            cmd.Parameters.AddWithValue("ids", ids.ToArray());
+
+            var result = new Dictionary<long, Link>();
+
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                var link = new Link
+                {
+                    Id = reader.GetInt64(0),
+                    Url = reader.GetString(1),
+                    LastChecked = reader.GetFieldValue<DateTimeOffset>(2)
+                };
+
+                result[link.Id] = link;
+            }
+
+            return result;
+        }, cancellationToken);
+    }
 }

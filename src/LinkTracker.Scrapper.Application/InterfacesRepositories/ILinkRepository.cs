@@ -13,4 +13,5 @@ public interface ILinkRepository
     Task<Link?> GetByIdAsync(long id, CancellationToken cancellationToken = default);
     Task<Link?> GetByUrlAsync(string url, CancellationToken cancellationToken = default);
     Task<List<Link>> GetPageAsync(PageRequest pageRequest, CancellationToken cancellationToken = default);
+    Task<Dictionary<long, Link>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default);
 }

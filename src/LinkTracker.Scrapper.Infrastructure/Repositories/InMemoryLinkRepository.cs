@@ -139,6 +139,11 @@ public class InMemoryLinkRepository : ILinkRepository
         throw new NotImplementedException();
     }
 
+    public Task<Dictionary<long, Link>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<List<Link>> GetOutdatedPageAsync(DateTimeOffset checkedBefore, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();

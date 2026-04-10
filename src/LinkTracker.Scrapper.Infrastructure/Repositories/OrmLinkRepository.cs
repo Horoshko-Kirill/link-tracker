@@ -45,6 +45,21 @@ public class OrmLinkRepository : ILinkRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<Dictionary<long, Link>> GetByIdsAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default)
+    {
+        if (ids.Count == 0)
+        {
+            return new Dictionary<long, Link>();
+        }
+
+        var links = await _links
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return links.ToDictionary(x => x.Id, x => x);
+    }
+
     public Task UpdateLastCheckedAsync(long id, DateTimeOffset lastChecked, CancellationToken cancellationToken = default)
     {
         var link = new Link
