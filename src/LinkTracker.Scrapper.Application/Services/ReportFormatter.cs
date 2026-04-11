@@ -9,7 +9,7 @@ public class ReportFormatter : IReportFormatter
     public string Format(IReadOnlyCollection<LinkProcessingResult> failedLinks, DateTimeOffset scanStartedAt, DateTimeOffset scanFinishedAt)
     {
         var sb = new StringBuilder();
-        
+
         sb.AppendLine("Отчет о проверке ссылок");
         sb.AppendLine();
         sb.AppendLine($"Начало сканирования: {scanStartedAt:G}");
@@ -26,7 +26,7 @@ public class ReportFormatter : IReportFormatter
             sb.AppendLine();
             index++;
         }
-        
+
         return sb.ToString();
     }
 }

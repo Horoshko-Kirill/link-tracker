@@ -27,5 +27,5 @@ public class ReportFormatterTest
         Assert.Contains("Timeout", result);
         Assert.Contains("Не удалось обработать ссылок: 2", result);
     }
-    
+
 }

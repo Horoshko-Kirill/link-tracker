@@ -12,7 +12,7 @@ public class HttpMessageSender : IMessageSender
     {
         _botClient = botClient;
     }
-    
+
     public Task SendAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
         return _botClient.PostUpdateAsync(linkUpdate, cancellationToken);

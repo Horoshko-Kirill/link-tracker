@@ -46,14 +46,14 @@ public class SqlChatLinkScanRepository : SqlRepositoryBase, IChatLinkScanReportR
                       order by id
                       limit {limit}
                       """;
-        
+
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("status", (int)ReportStatus.Pending);
             cmd.Parameters.AddWithValue("lastId", pageRequest.LastId);
-            
+
             var result = new List<ChatLinkScanReport>();
-            
+
             await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
 
             while (await reader.ReadAsync(cancellationToken))
@@ -70,7 +70,7 @@ public class SqlChatLinkScanRepository : SqlRepositoryBase, IChatLinkScanReportR
                     SentAt = reader.GetFieldValue<DateTimeOffset>(reader.GetOrdinal("sent_at")),
                 });
             }
-            
+
             return result;
         }, cancellationToken);
     }

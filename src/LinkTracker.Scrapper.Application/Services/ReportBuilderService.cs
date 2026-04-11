@@ -24,29 +24,29 @@ public class ReportBuilderService : IReportBuilderService
         _unitOfWork = unitOfWork;
         _reportFormatter = reportFormatter;
     }
-    
+
     public async Task BuildReportsAsync(
         IReadOnlyCollection<LinkProcessingResult> failedResults,
-        DateTimeOffset scanStartedAt, 
-        DateTimeOffset scanFinishedAt, 
+        DateTimeOffset scanStartedAt,
+        DateTimeOffset scanFinishedAt,
         CancellationToken cancellationToken = default)
     {
         if (failedResults.Count == 0)
         {
             return;
         }
-        
+
         var uniqueLinkIds = failedResults
             .Select(x => x.LinkId)
             .Distinct()
             .ToArray();
-        
+
         var chatIdsByLinkId = await _subscriptionRepository.GetChatDbIdsByLinkIdsAsync(
             uniqueLinkIds,
             cancellationToken);
-        
+
         var groupedByChatId = new Dictionary<long, List<LinkProcessingResult>>();
-        
+
         foreach (var failedResult in failedResults)
         {
             if (!chatIdsByLinkId.TryGetValue(failedResult.LinkId, out var chatIds))

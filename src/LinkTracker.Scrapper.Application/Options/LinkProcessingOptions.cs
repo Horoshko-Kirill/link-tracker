@@ -3,7 +3,7 @@
 public class LinkProcessingOptions
 {
     public const string SectionName = "LinkProcessingOptions";
-    
+
     public int BatchSize { get; set; } = 100;
     public int MaxDegreeOfParallelism { get; set; } = 4;
     public int NotificationBatchSize { get; set; } = 100;

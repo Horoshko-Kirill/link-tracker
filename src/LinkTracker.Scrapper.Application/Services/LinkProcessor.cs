@@ -11,7 +11,7 @@ namespace LinkTracker.Scrapper.Application.Services;
 
 public class LinkProcessor : ILinkProcessor
 {
-    
+
     private readonly ILinkRepository _linkRepository;
     private readonly IUpdateEventRepository _updateEventRepository;
     private readonly IEnumerable<IUpdateProvider> _providers;
@@ -31,7 +31,7 @@ public class LinkProcessor : ILinkProcessor
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
-    
+
     public async Task<LinkProcessingResult> ProcessAsync(Link link, CancellationToken cancellationToken = default)
     {
         try
@@ -40,16 +40,16 @@ public class LinkProcessor : ILinkProcessor
             {
                 return LinkProcessingResult.Error(link.Id, link.Url, "Некорректная ссылка");
             }
-            
+
             var provider = _providers.FirstOrDefault(p => p.CanHandle(new Uri(link.Url)));
 
             if (provider == null)
             {
                 return LinkProcessingResult.Error(link.Id, link.Url, "Не поддерживается обработчик для данной ссылки");
             }
-            
+
             var events = await provider.GetNewEventsAsync(uri, link.LastChecked, cancellationToken);
-            
+
             await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
@@ -71,7 +71,7 @@ public class LinkProcessor : ILinkProcessor
 
                 return LinkProcessingResult.Ok();
             }
-            catch 
+            catch
             {
                 await transaction.RollbackAsync(cancellationToken);
                 throw;

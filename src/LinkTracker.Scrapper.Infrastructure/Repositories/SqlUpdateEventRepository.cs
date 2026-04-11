@@ -20,7 +20,7 @@ public class SqlUpdateEventRepository : SqlRepositoryBase, IUpdateEventRepositor
                      values (@link_id, @event_type, @source, @title, @author, @preview, @created_at, @detected_at, @status, @sent_at)
                      returning id
                      """;
-        
+
         return ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("link_id", updateEvent.LinkId);
@@ -63,7 +63,7 @@ public class SqlUpdateEventRepository : SqlRepositoryBase, IUpdateEventRepositor
                       order by id
                       limit {limit}
                       """;
-        
+
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("status", (int)UpdateEventStatus.Pending);

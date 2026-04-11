@@ -126,7 +126,7 @@ public class OrmSubscriptionRepository : ISubscriptionRepository
                 g => g.Key,
                 g => (IReadOnlyCollection<long>)g.Select(x => x.ChatDbId).Distinct().ToList());
     }
-    
+
 
     public Task<List<Subscription>> GetSubscriptionByLinkAsync(long linkId, PageRequest pageRequest, CancellationToken cancellationToken = default)
     {

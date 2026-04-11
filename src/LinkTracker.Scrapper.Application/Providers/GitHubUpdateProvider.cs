@@ -28,8 +28,8 @@ public class GitHubUpdateProvider : IUpdateProvider
 
         var owner = parts[0];
         var repo = parts[1];
-        
+
         return await _gitHubClient.GetNewEventsAsync(owner, repo, from, cancellationToken);
     }
-    
+
 }

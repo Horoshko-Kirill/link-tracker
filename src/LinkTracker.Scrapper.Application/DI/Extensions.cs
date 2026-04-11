@@ -22,16 +22,16 @@ public static class Extensions
 
         services.AddScoped<IUpdateProvider, GitHubUpdateProvider>();
         services.AddScoped<IUpdateProvider, StackOverflowUpdateProvider>();
-        
+
         services.AddScoped<ILinkProcessor, LinkProcessor>();
 
         services.AddScoped<IMessageSender, HttpMessageSender>();
-        
+
         services.AddScoped<IReportFormatter, ReportFormatter>();
         services.AddScoped<INotificationFormatter, NotificationFormatter>();
-        
+
         services.AddScoped<IReportBuilderService, ReportBuilderService>();
-        
+
         services.AddScoped<IReportDispatchService, ReportDispatchService>();
         services.AddScoped<INotificationDispatchService, NotificationDispatchService>();
         return services;

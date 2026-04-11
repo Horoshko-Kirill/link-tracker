@@ -21,7 +21,7 @@ public static class RepositoryExtensions
         var dbOptions = configuration
             .GetSection(DatabaseOptions.SectionName)
             .Get<DatabaseOptions>();
-        
+
         switch (dbOptions.AccessType)
         {
             case "Sql":

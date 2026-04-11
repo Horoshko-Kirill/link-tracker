@@ -11,7 +11,7 @@ public class ReportDispatchJob : IJob
     {
         _reportDispatchService = reportDispatchService;
     }
-    
+
     public async Task Execute(IJobExecutionContext context)
     {
         await _reportDispatchService.DispatchPendingAsync(context.CancellationToken);

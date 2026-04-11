@@ -15,7 +15,7 @@ namespace LinkTracker.Tests.Unit.LinkTracker.Scrapper;
 
 public class NotificationDispatchServiceTests
 {
-     [Fact]
+    [Fact]
     public async Task DispatchPendingAsync_ShouldSendNotification_AndMarkEventAsSent()
     {
         var updateEventRepository = Substitute.For<IUpdateEventRepository>();

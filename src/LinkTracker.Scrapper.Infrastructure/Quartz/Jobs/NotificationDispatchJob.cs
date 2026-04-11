@@ -11,7 +11,7 @@ public class NotificationDispatchJob : IJob
     {
         _notificationDispatchService = notificationDispatchService;
     }
-    
+
     public async Task Execute(IJobExecutionContext context)
     {
         await _notificationDispatchService.DispatchPendingAsync(context.CancellationToken);

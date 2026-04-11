@@ -34,7 +34,7 @@ public class ReportDispatchService : IReportDispatchService
         _options = options.Value;
         _logger = logger;
     }
-    
+
     public async Task DispatchPendingAsync(CancellationToken cancellationToken = default)
     {
         long lastId = 0;
@@ -48,7 +48,7 @@ public class ReportDispatchService : IReportDispatchService
             {
                 break;
             }
-            
+
             var chatDbIds = reports
                 .Select(x => x.ChatId)
                 .Distinct()

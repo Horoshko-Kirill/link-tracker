@@ -40,7 +40,7 @@ public class NotificationDispatchService : INotificationDispatchService
         _options = options.Value;
         _logger = logger;
     }
-    
+
     public async Task DispatchPendingAsync(CancellationToken cancellationToken = default)
     {
         long lastId = 0;

@@ -31,7 +31,7 @@ public class OrmUpdateEventRepository : IUpdateEventRepository
         {
             return;
         }
-        
+
         _updateEvents.Remove(updateEvent);
     }
 

@@ -15,7 +15,7 @@ namespace LinkTracker.Tests.Unit.LinkTracker.Scrapper;
 
 public class ReportDispatchServiceTests
 {
-     [Fact]
+    [Fact]
     public async Task DispatchPendingAsync_ShouldSendReport_AndMarkSent()
     {
         var reportRepository = Substitute.For<IChatLinkScanReportRepository>();

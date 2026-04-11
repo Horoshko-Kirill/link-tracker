@@ -14,7 +14,7 @@ public static class KestrelExtensions
             {
                 return;
             }
-            
+
             var kestrelOptions = context.Configuration
                 .GetSection(KestrelOptions.SectionName)
                 .Get<KestrelOptions>();

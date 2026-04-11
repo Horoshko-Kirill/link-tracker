@@ -18,7 +18,7 @@ namespace LinkTracker.Tests.Unit.LinkTracker.Scrapper;
 
 public class LinkUpdateServiceTests
 {
-   [Fact]
+    [Fact]
     public async Task CheckUpdatesAsync_ShouldBuildReports_WhenThereAreFailedLinks()
     {
         var linkRepository = Substitute.For<ILinkRepository>();

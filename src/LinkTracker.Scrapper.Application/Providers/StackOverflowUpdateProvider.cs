@@ -26,7 +26,7 @@ public class StackOverflowUpdateProvider : IUpdateProvider
         {
             return [];
         }
-        
+
         return await _stackOverflowClient.GetNewEventsAsync(id, from, cancellationToken);
     }
 }

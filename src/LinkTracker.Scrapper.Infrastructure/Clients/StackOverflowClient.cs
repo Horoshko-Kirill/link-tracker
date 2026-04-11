@@ -18,10 +18,10 @@ public class StackOverflowClient : IStackOverflowClient
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("link-tracker-bot");
     }
 
-     public async Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(
-        long questionId,
-        DateTimeOffset from,
-        CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(
+       long questionId,
+       DateTimeOffset from,
+       CancellationToken cancellationToken = default)
     {
         var questionTask = GetQuestionAsync(questionId, cancellationToken);
         var answersTask = GetAllNewAnswersAsync(questionId, from, cancellationToken);

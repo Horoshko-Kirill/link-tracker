@@ -11,7 +11,7 @@ namespace LinkTracker.Tests.Unit.LinkTracker.Scrapper;
 
 public class LinkProcessorTests
 {
-     [Fact]
+    [Fact]
     public async Task ProcessAsync_ShouldSaveEventsAndUpdateLastChecked()
     {
         var linkRepository = Substitute.For<ILinkRepository>();
@@ -89,7 +89,7 @@ public class LinkProcessorTests
         };
 
         var result = await service.ProcessAsync(link);
-        
+
         Assert.Equal(link.Id, result.LinkId);
     }
 

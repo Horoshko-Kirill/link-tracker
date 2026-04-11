@@ -17,7 +17,7 @@ public class OrmChatLinkScanRepository : IChatLinkScanReportRepository
         _dbContext = dbContext;
         _chatLinkScanReports = _dbContext.ChatLinkScanReports;
     }
-    
+
     public Task AddAsync(ChatLinkScanReport report, CancellationToken cancellationToken = default)
     {
         _chatLinkScanReports.Add(report);
