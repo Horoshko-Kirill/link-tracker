@@ -20,7 +20,7 @@ public class UpdatesController : ControllerBase
     {
         foreach (var chatId in linkUpdate.ChatIds)
         {
-            var message = $"{linkUpdate.Url} : \n {linkUpdate.Description}";
+            var message = $"{linkUpdate.Description}";
 
             await _telegramClient.SendMessageAsync(chatId, message, cancellationToken);
         }

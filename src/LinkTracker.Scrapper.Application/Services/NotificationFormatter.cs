@@ -16,7 +16,7 @@ public class NotificationFormatter : INotificationFormatter
                          Тип: {updateEvent.EventType}
                          Название: {updateEvent.Title}
                          Автор: {updateEvent.Author}
-                         Время создания: {updateEvent.CreatedAt:O}
+                         Время создания: {updateEvent.CreatedAt:G}
 
                          Превью:
                          {updateEvent.Preview}
@@ -26,9 +26,10 @@ public class NotificationFormatter : INotificationFormatter
                                 Обновление StackOverflow
 
                                 Ссылка: {url}
+                                Тип: {updateEvent.EventType}
                                 Тема вопроса: {updateEvent.Title}
                                 Автор: {updateEvent.Author}
-                                Время создания: {updateEvent.CreatedAt:O}
+                                Время создания: {updateEvent.CreatedAt:G}
 
                                 Превью:
                                 {updateEvent.Preview}
@@ -41,7 +42,7 @@ public class NotificationFormatter : INotificationFormatter
                   Тип: {updateEvent.EventType}
                   Заголовок: {updateEvent.Title}
                   Автор: {updateEvent.Author}
-                  Время создания: {updateEvent.CreatedAt:O}
+                  Время создания: {updateEvent.CreatedAt:G}
 
                   Превью:
                   {updateEvent.Preview}

@@ -49,7 +49,7 @@ public class SqlLinkRepository : SqlRepositoryBase, ILinkRepository
     {
         string sql = """
                      update scrapper_links
-                     set last_checked = @last_checked,
+                     set last_checked = @last_checked
                      where id = @id
                      """;
 

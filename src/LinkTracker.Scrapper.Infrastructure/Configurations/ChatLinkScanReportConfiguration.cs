@@ -44,7 +44,7 @@ public class ChatLinkScanReportConfiguration : IEntityTypeConfiguration<ChatLink
             .HasConversion<int>()
             .IsRequired();
 
-        builder.HasOne<Chat>()
+        builder.HasOne(x => x.Chat)
             .WithMany()
             .HasForeignKey(x => x.ChatId);
 

@@ -18,7 +18,7 @@ public class BotGrpcUpdateService : BotUpdateService.BotUpdateServiceBase
     {
         foreach (var chatId in update.ChatIds)
         {
-            var message = $"{update.Url} : \n {update.Description}";
+            var message = $"{update.Description}";
 
             await _telegramClient.SendMessageAsync(chatId, message, context.CancellationToken);
         }

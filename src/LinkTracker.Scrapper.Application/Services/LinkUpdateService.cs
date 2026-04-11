@@ -36,7 +36,7 @@ public class LinkUpdateService : ILinkUpdateService
     {
         long lastId = 0;
         var failedResults = new ConcurrentBag<LinkProcessingResult>();
-        var scanStartedAt = DateTimeOffset.UtcNow;
+        var scanStartedAt = DateTimeOffset.UtcNow.AddHours(3);
 
         while (true)
         {
@@ -71,7 +71,7 @@ public class LinkUpdateService : ILinkUpdateService
             lastId = links[^1].Id;
         }
 
-        var scanFinishedAt = DateTimeOffset.UtcNow;
+        var scanFinishedAt = DateTimeOffset.UtcNow.AddHours(3);
 
         if (!failedResults.IsEmpty)
         {

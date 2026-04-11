@@ -1,5 +1,6 @@
 ﻿using LinkTracker.Scrapper.Application.Common.Pagination;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
+using LinkTracker.Scrapper.Domain.Enum;
 using LinkTracker.Scrapper.Domain.Models;
 using LinkTracker.Scrapper.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ public class OrmChatLinkScanRepository : IChatLinkScanReportRepository
     {
         return _chatLinkScanReports
             .AsNoTracking()
-            .Where(x => x.Id > pageRequest.LastId)
+            .Where(x => x.Id > pageRequest.LastId && x.Status == ReportStatus.Pending)
             .OrderBy(x => x.Id)
             .Take(pageRequest.Size)
             .ToListAsync(cancellationToken);

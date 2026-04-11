@@ -10,7 +10,6 @@ services:
     ports:
       - "7175:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - Bot__Token=${BOT_TOKEN} 
       - Scrapper__BaseUrl=http://scrapper:80
@@ -33,7 +32,6 @@ services:
     ports:
       - "7197:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - TelegramBot__BaseUrl=http://bot:80
       - Database__ConnectionString=Host=linktracker.db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}

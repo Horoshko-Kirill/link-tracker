@@ -12,8 +12,8 @@ public class ReportFormatter : IReportFormatter
         
         sb.AppendLine("Отчет о проверке ссылок");
         sb.AppendLine();
-        sb.AppendLine($"Начало сканирования: {scanStartedAt:O}");
-        sb.AppendLine($"Окончание сканирования: {scanFinishedAt:O}");
+        sb.AppendLine($"Начало сканирования: {scanStartedAt:G}");
+        sb.AppendLine($"Окончание сканирования: {scanFinishedAt:G}");
         sb.AppendLine();
         sb.AppendLine($"Не удалось обработать ссылок: {failedLinks.Count}");
         sb.AppendLine();

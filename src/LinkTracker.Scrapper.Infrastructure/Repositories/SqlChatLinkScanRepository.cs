@@ -28,7 +28,7 @@ public class SqlChatLinkScanRepository : SqlRepositoryBase, IChatLinkScanReportR
             cmd.Parameters.AddWithValue("scan_finished_at", report.ScanFinishedAt);
             cmd.Parameters.AddWithValue("failed_count", report.FailedCount);
             cmd.Parameters.AddWithValue("message", report.Message);
-            cmd.Parameters.AddWithValue("status", report.Status);
+            cmd.Parameters.AddWithValue("status", (int)report.Status);
             cmd.Parameters.AddWithValue("sent_at", report.SentAt);
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
             report.Id = Convert.ToInt64(result);
@@ -97,7 +97,7 @@ public class SqlChatLinkScanRepository : SqlRepositoryBase, IChatLinkScanReportR
             cmd.Parameters.AddWithValue("scan_finished_at", report.ScanFinishedAt);
             cmd.Parameters.AddWithValue("failed_count", report.FailedCount);
             cmd.Parameters.AddWithValue("message", report.Message);
-            cmd.Parameters.AddWithValue("status", report.Status);
+            cmd.Parameters.AddWithValue("status", (int)report.Status);
             cmd.Parameters.AddWithValue("sent_at", report.SentAt);
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }, cancellationToken);
