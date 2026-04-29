@@ -2,7 +2,7 @@
 using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Application.InterfacesServices;
 
-namespace LinkTracker.Scrapper.Application.Services;
+namespace LinkTracker.Scrapper.Infrastructure.MessageSenders;
 
 public class HttpMessageSender : IMessageSender
 {

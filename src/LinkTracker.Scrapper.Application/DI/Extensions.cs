@@ -3,7 +3,6 @@ using LinkTracker.Scrapper.Application.Options;
 using LinkTracker.Scrapper.Application.Providers;
 using LinkTracker.Scrapper.Application.Providers.Interfaces;
 using LinkTracker.Scrapper.Application.Services;
-using LinkTracker.Scrapper.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,8 +23,6 @@ public static class Extensions
         services.AddScoped<IUpdateProvider, StackOverflowUpdateProvider>();
 
         services.AddScoped<ILinkProcessor, LinkProcessor>();
-
-        services.AddScoped<IMessageSender, HttpMessageSender>();
 
         services.AddScoped<IReportFormatter, ReportFormatter>();
         services.AddScoped<INotificationFormatter, NotificationFormatter>();

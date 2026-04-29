@@ -23,6 +23,7 @@ public static class Extensions
 
         services.AddSingleton<IGitHubClient, GitHubClient>();
         services.AddSingleton<IStackOverflowClient, StackOverflowClient>();
+        services.AddMessageSenders(configuration);
 
         services.AddScrapperQuartz(configuration);
 
