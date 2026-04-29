@@ -1,5 +1,6 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
-using LinkTracker.Bot.Telegram;
+﻿using LinkTracker.Bot.Application.InterfacesClients;
+using LinkTracker.Bot.Application.InterfacesServices;
+using LinkTracker.Bot.Contracts.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkTracker.Bot.Controllers;
@@ -8,22 +9,17 @@ namespace LinkTracker.Bot.Controllers;
 [Route("updates")]
 public class UpdatesController : ControllerBase
 {
-    private readonly ITelegramClient _telegramClient;
+    private readonly ILinkUpdateHandler _handler;
 
-    public UpdatesController(ITelegramClient telegramClient)
+    public UpdatesController(ILinkUpdateHandler handler)
     {
-        _telegramClient = telegramClient;
+        _handler = handler;
     }
 
     [HttpPost]
     public async Task<IActionResult> PostUpdate([FromBody] LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
-        foreach (var chatId in linkUpdate.ChatIds)
-        {
-            var message = $"{linkUpdate.Description}";
-
-            await _telegramClient.SendMessageAsync(chatId, message, cancellationToken);
-        }
+        await _handler.HandleAsync(linkUpdate, cancellationToken);
 
         return Ok();
     }

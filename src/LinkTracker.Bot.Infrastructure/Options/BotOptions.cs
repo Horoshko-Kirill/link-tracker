@@ -1,4 +1,4 @@
-﻿namespace LinkTracker.Bot.Options;
+﻿namespace LinkTracker.Bot.Infrastructure.Options;
 
 /// <summary>
 /// Класс для типобезопасной конфигурации

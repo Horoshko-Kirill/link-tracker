@@ -1,10 +1,11 @@
+using LinkTracker.Bot.Application.Commands;
+using LinkTracker.Bot.Application.Commands.Interfaces;
 using LinkTracker.Bot.Application.DI;
-using LinkTracker.Bot.Commands;
-using LinkTracker.Bot.Commands.Interfaces;
 using LinkTracker.Bot.DI;
 using LinkTracker.Bot.Dispatching;
 using LinkTracker.Bot.Grpc;
 using LinkTracker.Bot.Infrastructure.DI;
+using LinkTracker.Bot.Infrastructure.Options;
 using LinkTracker.Bot.Middleware;
 using LinkTracker.Bot.Options;
 using LinkTracker.Bot.Services;
@@ -28,16 +29,6 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
-
-builder.Services.AddTelegramClient();
-
-builder.Services.AddTransient<ICommand, StartCommand>();
-builder.Services.AddTransient<ICommand, HelpCommand>();
-builder.Services.AddTransient<ICommand, UnknownCommand>();
-builder.Services.AddTransient<ICommand, TrackCommand>();
-builder.Services.AddTransient<ICommand, UntrackCommand>();
-builder.Services.AddTransient<ICommand, ListCommand>();
-builder.Services.AddTransient<ICommand, CancelCommand>();
 
 builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
 builder.Services.AddScoped<IMessageRoute, MessageRoute>();

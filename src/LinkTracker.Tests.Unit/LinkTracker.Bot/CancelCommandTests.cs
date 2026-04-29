@@ -1,8 +1,7 @@
-﻿using LinkTracker.Bot.Application.Constants;
+﻿using LinkTracker.Bot.Application.Commands;
+using LinkTracker.Bot.Application.Constants;
 using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Application.InterfacesServices;
-using LinkTracker.Bot.Commands;
-using LinkTracker.Bot.Telegram;
 using LinkTracker.Scrapper.Contracts.Dto;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

@@ -1,4 +1,4 @@
-﻿namespace LinkTracker.Bot.Commands.Interfaces;
+﻿namespace LinkTracker.Bot.Application.Commands.Interfaces;
 
 /// <summary>
 /// Интерфейс команд

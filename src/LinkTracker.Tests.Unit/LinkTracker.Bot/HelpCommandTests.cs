@@ -1,6 +1,6 @@
-﻿using LinkTracker.Bot.Commands;
-using LinkTracker.Bot.Constants;
-using LinkTracker.Bot.Telegram;
+﻿using LinkTracker.Bot.Application.Commands;
+using LinkTracker.Bot.Application.Constants;
+using LinkTracker.Bot.Application.InterfacesClients;
 using NSubstitute;
 
 namespace LinkTracker.Tests.Unit.LinkTracker.Bot;

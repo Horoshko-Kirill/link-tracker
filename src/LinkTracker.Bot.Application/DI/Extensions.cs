@@ -26,6 +26,10 @@ public static class Extensions
         services.AddScoped<IProcessService, ProcessService>();
         services.AddScoped<IProcessOrchestrator, ProcessOrchestrator>();
 
+        services.AddCommand();
+        
+        services.AddScoped<ILinkUpdateHandler, LinkUpdateHandler>();
+
         return services;
     }
 }

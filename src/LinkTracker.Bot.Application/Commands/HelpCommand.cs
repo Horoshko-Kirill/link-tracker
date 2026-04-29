@@ -1,8 +1,8 @@
-﻿using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Constants;
-using LinkTracker.Bot.Telegram;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
+using LinkTracker.Bot.Application.Constants;
+using LinkTracker.Bot.Application.InterfacesClients;
 
-namespace LinkTracker.Bot.Commands;
+namespace LinkTracker.Bot.Application.Commands;
 
 /// <summary>
 /// Команда /help для вывода возможных команд

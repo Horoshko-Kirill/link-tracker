@@ -1,7 +1,7 @@
-﻿using LinkTracker.Bot.Commands.Interfaces;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
 using Telegram.Bot.Types;
 
-namespace LinkTracker.Bot.Telegram;
+namespace LinkTracker.Bot.Application.InterfacesClients;
 /// <summary>
 /// Интерфейс реализующий обертку над библиотекой, предоставляющей методы телеграмма
 /// </summary>

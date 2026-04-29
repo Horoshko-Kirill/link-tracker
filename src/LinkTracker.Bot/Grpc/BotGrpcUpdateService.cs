@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
+using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Contracts.Dto;
 using LinkTracker.Bot.Contracts.Grpc;
-using LinkTracker.Bot.Telegram;
 
 namespace LinkTracker.Bot.Grpc;
 

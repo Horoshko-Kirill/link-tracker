@@ -1,5 +1,4 @@
-﻿using LinkTracker.Bot.Commands;
-using LinkTracker.Bot.Commands.Interfaces;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
 
 namespace LinkTracker.Bot.Dispatching;
 

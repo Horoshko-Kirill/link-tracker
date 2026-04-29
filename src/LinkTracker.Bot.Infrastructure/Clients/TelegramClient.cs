@@ -1,12 +1,14 @@
-﻿using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Options;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
+using LinkTracker.Bot.Application.InterfacesClients;
+using LinkTracker.Bot.Infrastructure.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace LinkTracker.Bot.Telegram;
+namespace LinkTracker.Bot.Infrastructure.Clients;
 
 /// <summary>
 /// Класс реализовывающий ITelegramClient

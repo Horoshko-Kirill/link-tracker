@@ -1,7 +1,8 @@
-﻿using LinkTracker.Bot.Commands.Interfaces;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
+using LinkTracker.Bot.Application.InterfacesClients;
 using Telegram.Bot.Types;
 
-namespace LinkTracker.Bot.Telegram;
+namespace LinkTracker.Bot.Infrastructure.Clients;
 
 public class FakeTelegramClient : ITelegramClient
 {

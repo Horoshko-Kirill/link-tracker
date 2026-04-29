@@ -1,4 +1,4 @@
-﻿namespace LinkTracker.Bot.Constants;
+﻿namespace LinkTracker.Bot.Application.Constants;
 
 /// <summary>
 /// Статический класс для хранения константой строки для команды /help

@@ -1,4 +1,5 @@
-﻿using LinkTracker.Bot.Infrastructure.Options;
+﻿using LinkTracker.Bot.Infrastructure.Clients;
+using LinkTracker.Bot.Infrastructure.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,7 @@ public static class Extensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<DatabaseOptions>(configuration.GetSection(DatabaseOptions.SectionName));
+        services.Configure<KafkaConsumerOptions>(configuration.GetSection(KafkaConsumerOptions.SectionName));
 
         var dbOptions = configuration
             .GetSection(DatabaseOptions.SectionName)
@@ -16,6 +18,10 @@ public static class Extensions
 
         services.AddRepository(dbOptions);
 
+        services.AddTelegramClient();
+        
+        services.AddHostedService<LinkUpdateKafkaConsumer>();
+        
         return services;
     }
 }

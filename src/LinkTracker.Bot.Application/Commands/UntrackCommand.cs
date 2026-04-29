@@ -1,12 +1,11 @@
-﻿using LinkTracker.Bot.Application.Constants;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
+using LinkTracker.Bot.Application.Constants;
 using LinkTracker.Bot.Application.Exceptions;
 using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Application.InterfacesServices;
-using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Telegram;
-using LinkTracker.Scrapper.Contracts.Dto;
+using Microsoft.Extensions.Logging;
 
-namespace LinkTracker.Bot.Commands;
+namespace LinkTracker.Bot.Application.Commands;
 
 public class UntrackCommand : ICommand
 {

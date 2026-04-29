@@ -1,6 +1,6 @@
-﻿using LinkTracker.Bot.Commands.Interfaces;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
+using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Bot.Dispatching;
-using LinkTracker.Bot.Telegram;
 using Telegram.Bot.Types.Enums;
 
 namespace LinkTracker.Bot.Services;

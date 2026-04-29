@@ -1,8 +1,7 @@
-﻿using LinkTracker.Bot.Application.InterfacesClients;
-using LinkTracker.Bot.Commands.Interfaces;
-using LinkTracker.Bot.Telegram;
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
+using LinkTracker.Bot.Application.InterfacesClients;
 
-namespace LinkTracker.Bot.Commands;
+namespace LinkTracker.Bot.Application.Commands;
 
 /// <summary>
 /// Неизвестная команда для обработки исключительных ситуаций пользовательского ввода

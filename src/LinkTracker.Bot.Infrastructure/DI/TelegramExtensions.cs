@@ -1,8 +1,12 @@
-﻿using LinkTracker.Bot.Options;
-using LinkTracker.Bot.Telegram;
+﻿using LinkTracker.Bot.Application.InterfacesClients;
+using LinkTracker.Bot.Infrastructure.Clients;
+using LinkTracker.Bot.Infrastructure.Options;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace LinkTracker.Bot.DI;
+namespace LinkTracker.Bot.Infrastructure.DI;
 
 public static class TelegramExtensions
 {

@@ -1,6 +1,5 @@
-﻿using LinkTracker.Bot.Application.InterfacesClients;
-using LinkTracker.Bot.Commands;
-using LinkTracker.Bot.Telegram;
+﻿using LinkTracker.Bot.Application.Commands;
+using LinkTracker.Bot.Application.InterfacesClients;
 using LinkTracker.Scrapper.Contracts.Dto;
 using NSubstitute;
 
