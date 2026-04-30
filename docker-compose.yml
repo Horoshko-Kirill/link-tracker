@@ -18,8 +18,13 @@ services:
       - KESTREL__PORT=80
       - ClientType__Type=${PROTOCOL_TYPE_Scrapper}
       - KESTREL__TYPE=${PROTOCOL_TYPE_Bot}
+      - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
+      - Kafka__Topic=link-updates
+      - Kafka__GroupId=link-tracker-bot
     depends_on:
       bot.migrator:
+        condition: service_completed_successfully
+      kafka-init-topics:
         condition: service_completed_successfully
     networks:
       - linktracker-network
@@ -39,8 +44,13 @@ services:
       - KESTREL__PORT=80
       - ClientType__Type=${PROTOCOL_TYPE_Bot}
       - KESTREL__TYPE=${PROTOCOL_TYPE_Scrapper}
+      - Notification__Transport=Kafka
+      - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
+      - Kafka__Topic=link-updates
     depends_on:
       scrapper.migrator:
+        condition: service_completed_successfully
+      kafka-init-topics:
         condition: service_completed_successfully
     networks:
       - linktracker-network
@@ -92,6 +102,117 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - linktracker-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: linktracker.zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - linktracker-network
+
+  kafka-1:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: linktracker.kafka-1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://kafka-1:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+    networks:
+      - linktracker-network
+
+  kafka-2:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: linktracker.kafka-2
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://kafka-2:29093,EXTERNAL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:29093,EXTERNAL://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+    networks:
+      - linktracker-network
+
+  kafka-3:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: linktracker.kafka-3
+    depends_on:
+      - zookeeper
+    ports:
+      - "9094:9094"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://kafka-3:29094,EXTERNAL://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:29094,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+    networks:
+      - linktracker-network
+
+  kafka-init-topics:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: linktracker.kafka-init-topics
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    command: >
+      bash -c "
+      cub kafka-ready -b kafka-1:29092 1 60 &&
+      kafka-topics --bootstrap-server kafka-1:29092
+      --create --if-not-exists
+      --topic link-updates
+      --partitions 3
+      --replication-factor 3
+      --config min.insync.replicas=2
+      "
+    networks:
+      - linktracker-network
+    restart: "no"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: linktracker.kafka-ui
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:29092,kafka-2:29093,kafka-3:29094
+      DYNAMIC_CONFIG_ENABLED: "true"
     networks:
       - linktracker-network
 

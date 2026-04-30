@@ -70,7 +70,7 @@ public class ReportDispatchService : IReportDispatchService
 
                     var notification = new LinkUpdate
                     {
-                        Url = string.Empty,
+                        Url = $"report:{report.ChatId}",
                         Description = report.Message,
                         ChatIds = [chat.ChatId]
                     };
