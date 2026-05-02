@@ -1,4 +1,6 @@
 ﻿using LinkTracker.Bot.Infrastructure.Clients;
+using LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
+using LinkTracker.Bot.Infrastructure.Kafka.Services;
 using LinkTracker.Bot.Infrastructure.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,10 @@ public static class Extensions
         services.AddTelegramClient();
 
         services.AddKafkaProducer();
+        
+        services.AddScoped<ILinkUpdateMessageProcessor, LinkUpdateMessageProcessor>();
+        services.AddScoped<ILinkUpdateProcessingService, LinkUpdateProcessingService>();
+        services.AddSingleton<IDeadLetterQueueProducer, DeadLetterQueueProducer>();
         
         services.AddHostedService<LinkUpdateKafkaConsumer>();
         

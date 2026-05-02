@@ -2,6 +2,7 @@
 using Confluent.Kafka;
 using LinkTracker.Bot.Application.InterfacesServices;
 using LinkTracker.Bot.Contracts.Dto;
+using LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
 using LinkTracker.Bot.Infrastructure.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,17 +13,19 @@ namespace LinkTracker.Bot.Infrastructure.Clients;
 
 public class LinkUpdateKafkaConsumer : BackgroundService
 {
-    
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILinkUpdateProcessingService _processingService;
+    private readonly IDeadLetterQueueProducer _deadLetterQueueProducer;
     private readonly KafkaConsumerOptions _options;
     private readonly ILogger<LinkUpdateKafkaConsumer> _logger;
     
     public LinkUpdateKafkaConsumer(
-        IServiceScopeFactory scopeFactory,
+        ILinkUpdateProcessingService processingService,
+        IDeadLetterQueueProducer deadLetterQueueProducer,
         IOptions<KafkaConsumerOptions> options,
         ILogger<LinkUpdateKafkaConsumer> logger)
     {
-        _scopeFactory = scopeFactory;
+        _processingService = processingService;
+        _deadLetterQueueProducer = deadLetterQueueProducer;
         _options = options.Value;
         _logger = logger;
     }
@@ -42,22 +45,25 @@ public class LinkUpdateKafkaConsumer : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            ConsumeResult<string, string>? result = null;
+            
             try
             {
-                var result = consumer.Consume(stoppingToken);
+                result = consumer.Consume(stoppingToken);
 
-                var linkUpdate = JsonSerializer.Deserialize<LinkUpdate>(result.Message.Value);
-
-                if (linkUpdate is null)
+                var processingResult = await _processingService.ProcessAsync(
+                    result.Message.Value,
+                    stoppingToken);
+                
+                if (!processingResult.IsSuccess)
                 {
-                    throw new InvalidOperationException("Kafka message body is null");
+                    await _deadLetterQueueProducer.SendAsync(
+                        result,
+                        processingResult.ErrorType!,
+                        processingResult.ErrorMessage!,
+                        stoppingToken);
                 }
-
-                using var scope = _scopeFactory.CreateScope();
-                var handler = scope.ServiceProvider.GetRequiredService<ILinkUpdateHandler>();
-
-                await handler.HandleAsync(linkUpdate, stoppingToken);
-
+                
                 consumer.Commit(result);
             }
             catch (OperationCanceledException)
@@ -67,6 +73,17 @@ public class LinkUpdateKafkaConsumer : BackgroundService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while consuming link update from Kafka");
+                
+                if (result is not null)
+                {
+                    await _deadLetterQueueProducer.SendAsync(
+                        result,
+                        "UnexpectedError",
+                        ex.Message,
+                        stoppingToken);
+
+                    consumer.Commit(result);
+                }
             }
         }
 
