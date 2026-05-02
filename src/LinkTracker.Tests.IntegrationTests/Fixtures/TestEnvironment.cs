@@ -1,116 +1,162 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using Confluent.Kafka;
+using Confluent.Kafka.Admin;
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
 
-namespace LinkTracker.Tests.IntegrationTests.Fixtures
+namespace LinkTracker.Tests.IntegrationTests.Fixtures;
+
+public class TestEnvironment : IAsyncLifetime
 {
-    public class TestEnvironment : IAsyncLifetime
+    private readonly INetwork _network;
+
+    public IContainer Bot { get; private set; } = null!;
+    public IContainer Scrapper { get; private set; } = null!;
+    public IContainer Db { get; private set; } = null!;
+    public IContainer BotMigrator { get; private set; } = null!;
+    public IContainer ScrapperMigrator { get; private set; } = null!;
+    public IContainer Kafka { get; private set; } = null!;
+    public IContainer Zookeeper { get; private set; } = null!;
+
+    public string BotUrl => $"http://localhost:{Bot.GetMappedPublicPort(80)}";
+    public string ScrapperUrl => $"http://localhost:{Scrapper.GetMappedPublicPort(80)}";
+    public string KafkaBootstrapAddress => $"localhost:{Kafka.GetMappedPublicPort(9092)}";
+
+    public TestEnvironment()
     {
-        private readonly INetwork _network;
+        _network = new NetworkBuilder()
+            .WithName(Guid.NewGuid().ToString())
+            .Build();
+    }
 
-        public IContainer Bot { get; private set; } = null!;
-        public IContainer Scrapper { get; private set; } = null!;
-        public IContainer Db { get; private set; } = null!;
-        public IContainer BotMigrator { get; private set; } = null!;
-        public IContainer ScrapperMigrator { get; private set; } = null!;
+    public async Task InitializeAsync()
+    {
+        await _network.CreateAsync();
 
-        public string BotUrl => $"http://localhost:{Bot.GetMappedPublicPort(80)}";
-        public string ScrapperUrl => $"http://localhost:{Scrapper.GetMappedPublicPort(80)}";
+        Db = new ContainerBuilder()
+            .WithImage("postgres:16")
+            .WithNetwork(_network)
+            .WithNetworkAliases("linktracker.db")
+            .WithEnvironment("POSTGRES_DB", "linktracker_test")
+            .WithEnvironment("POSTGRES_USER", "postgres")
+            .WithEnvironment("POSTGRES_PASSWORD", "postgres")
+            .WithPortBinding(5432, true)
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilCommandIsCompleted("pg_isready -U postgres"))
+            .Build();
 
-        public TestEnvironment()
-        {
-            _network = new NetworkBuilder()
-                .WithName(Guid.NewGuid().ToString())
-                .Build();
-        }
+        await Db.StartAsync();
 
-        public async Task InitializeAsync()
-        {
-            await _network.CreateAsync();
+        Zookeeper = new ContainerBuilder()
+            .WithImage("confluentinc/cp-zookeeper:7.6.1")
+            .WithNetwork(_network)
+            .WithNetworkAliases("zookeeper")
+            .WithEnvironment("ZOOKEEPER_CLIENT_PORT", "2181")
+            .WithEnvironment("ZOOKEEPER_TICK_TIME", "2000")
+            .Build();
 
-            Db = new ContainerBuilder()
-                .WithImage("postgres:16")
-                .WithNetwork(_network)
-                .WithNetworkAliases("linktracker.db")
-                .WithEnvironment("POSTGRES_DB", "linktracker_test")
-                .WithEnvironment("POSTGRES_USER", "postgres")
-                .WithEnvironment("POSTGRES_PASSWORD", "postgres")
-                .WithPortBinding(5432, true)
-                .WithWaitStrategy(
-                    Wait.ForUnixContainer()
-                        .UntilCommandIsCompleted("pg_isready -U postgres"))
-                .Build();
+        await Zookeeper.StartAsync();
 
-            await Db.StartAsync();
+        Kafka = new ContainerBuilder()
+            .WithImage("confluentinc/cp-kafka:7.6.1")
+            .WithNetwork(_network)
+            .WithNetworkAliases("kafka")
+            .WithPortBinding(9092, true)
+            .WithEnvironment("KAFKA_BROKER_ID", "1")
+            .WithEnvironment("KAFKA_ZOOKEEPER_CONNECT", "zookeeper:2181")
+            .WithEnvironment("KAFKA_LISTENERS", "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092")
+            .WithEnvironment("KAFKA_ADVERTISED_LISTENERS", "INTERNAL://kafka:29092,EXTERNAL://localhost:9092")
+            .WithEnvironment("KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT")
+            .WithEnvironment("KAFKA_INTER_BROKER_LISTENER_NAME", "INTERNAL")
+            .WithEnvironment("KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1")
+            .WithEnvironment("KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR", "1")
+            .WithEnvironment("KAFKA_TRANSACTION_STATE_LOG_MIN_ISR", "1")
+            .Build();
 
-            BotMigrator = new ContainerBuilder()
-                .WithImage("link-tracker-bot.migrator:latest")
-                .WithNetwork(_network)
-                .WithEnvironment("Database__ConnectionString",
-                    "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
-                .Build();
+        await Kafka.StartAsync();
 
-            await BotMigrator.StartAsync();
-            await BotMigrator.GetExitCodeAsync();
+        await Kafka.ExecAsync([
+            "bash",
+            "-c",
+            "cub kafka-ready -b kafka:29092 1 60 && kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic link-updates --partitions 3 --replication-factor 1"
+        ]);
 
-            ScrapperMigrator = new ContainerBuilder()
-                .WithImage("link-tracker-scrapper.migrator:latest")
-                .WithNetwork(_network)
-                .WithEnvironment("Database__ConnectionString",
-                    "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
-                .Build();
+        BotMigrator = new ContainerBuilder()
+            .WithImage("link-tracker-bot.migrator:latest")
+            .WithNetwork(_network)
+            .WithEnvironment("Database__ConnectionString",
+                "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
+            .Build();
 
-            await ScrapperMigrator.StartAsync();
-            await ScrapperMigrator.GetExitCodeAsync();
+        await BotMigrator.StartAsync();
+        await BotMigrator.GetExitCodeAsync();
 
-            Scrapper = new ContainerBuilder()
-                .WithImage("link-tracker-scrapper:latest")
-                .WithNetwork(_network)
-                .WithNetworkAliases("scrapper")
-                .WithPortBinding(80, true)
-                .WithEnvironment("ASPNETCORE_URLS", "http://+:80")
-                .WithEnvironment("TelegramBot__BaseUrl", "http://bot:80")
-                .WithEnvironment("Database__ConnectionString",
-                    "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
-                .WithEnvironment("KESTREL__PORT", "80")
-                .WithEnvironment("ClientType__Type", "Http")
-                .WithEnvironment("KESTREL__Type", "Http")
-                .Build();
+        ScrapperMigrator = new ContainerBuilder()
+            .WithImage("link-tracker-scrapper.migrator:latest")
+            .WithNetwork(_network)
+            .WithEnvironment("Database__ConnectionString",
+                "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
+            .Build();
 
-            await Scrapper.StartAsync();
+        await ScrapperMigrator.StartAsync();
+        await ScrapperMigrator.GetExitCodeAsync();
 
-            Bot = new ContainerBuilder()
-                .WithImage("link-tracker-bot:latest")
-                .WithNetwork(_network)
-                .WithNetworkAliases("bot")
-                .WithPortBinding(80, true)
-                .WithEnvironment("ASPNETCORE_URLS", "http://+:80")
-                .WithEnvironment("Scrapper__BaseUrl", "http://scrapper:80")
-                .WithEnvironment("UseFakeTelegramClient", "true")
-                .WithEnvironment("Bot__Token", "Tests")
-                .WithEnvironment("Database__ConnectionString",
-                    "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
-                .WithEnvironment("KESTREL__PORT", "80")
-                .WithEnvironment("ClientType__Type", "Http")
-                .WithEnvironment("KESTREL__Type", "Http")
-                .WithWaitStrategy(
-                    Wait.ForUnixContainer()
-                        .UntilHttpRequestIsSucceeded(r => r
-                            .ForPort(80)
-                            .ForPath("/updates")))
-                .Build();
+        Scrapper = new ContainerBuilder()
+            .WithImage("link-tracker-scrapper:latest")
+            .WithNetwork(_network)
+            .WithNetworkAliases("scrapper")
+            .WithPortBinding(80, true)
+            .WithEnvironment("ASPNETCORE_URLS", "http://+:80")
+            .WithEnvironment("TelegramBot__BaseUrl", "http://bot:80")
+            .WithEnvironment("Database__ConnectionString",
+                "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
+            .WithEnvironment("KESTREL__PORT", "80")
+            .WithEnvironment("ClientType__Type", "Http")
+            .WithEnvironment("KESTREL__Type", "Http")
+            .WithEnvironment("NotificationTransport", "Kafka")
+            .WithEnvironment("Kafka__BootstrapServers", "kafka:29092")
+            .WithEnvironment("Kafka__Topic", "link-updates")
+            .Build();
 
-            await Bot.StartAsync();
-        }
+        await Scrapper.StartAsync();
 
-        public async Task DisposeAsync()
-        {
-            await Bot.DisposeAsync();
-            await Scrapper.DisposeAsync();
-            await ScrapperMigrator.DisposeAsync();
-            await BotMigrator.DisposeAsync();
-            await Db.DisposeAsync();
-            await _network.DeleteAsync();
-        }
+        Bot = new ContainerBuilder()
+            .WithImage("link-tracker-bot:latest")
+            .WithNetwork(_network)
+            .WithNetworkAliases("bot")
+            .WithPortBinding(80, true)
+            .WithEnvironment("ASPNETCORE_URLS", "http://+:80")
+            .WithEnvironment("Scrapper__BaseUrl", "http://scrapper:80")
+            .WithEnvironment("UseFakeTelegramClient", "true")
+            .WithEnvironment("Bot__Token", "Tests")
+            .WithEnvironment("Database__ConnectionString",
+                "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
+            .WithEnvironment("KESTREL__PORT", "80")
+            .WithEnvironment("ClientType__Type", "Http")
+            .WithEnvironment("KESTREL__Type", "Http")
+            .WithEnvironment("Kafka__BootstrapServers", "kafka:29092")
+            .WithEnvironment("Kafka__Topic", "link-updates")
+            .WithEnvironment("Kafka__GroupId", "link-tracker-bot-tests")
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilHttpRequestIsSucceeded(r => r
+                        .ForPort(80)
+                        .ForPath("/updates")))
+            .Build();
+
+        await Bot.StartAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await Bot.DisposeAsync();
+        await Scrapper.DisposeAsync();
+        await ScrapperMigrator.DisposeAsync();
+        await BotMigrator.DisposeAsync();
+        await Kafka.DisposeAsync();
+        await Zookeeper.DisposeAsync();
+        await Db.DisposeAsync();
+        await _network.DeleteAsync();
     }
 }
