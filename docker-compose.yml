@@ -21,6 +21,9 @@ services:
       - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
       - Kafka__Topic=link-updates
       - Kafka__GroupId=link-tracker-bot
+      - Kafka__DeadLetterTopic=link-updates-dlq
+      - Kafka__MaxProcessingAttempts=3
+      - Kafka__RetryDelayMilliseconds=1000
     depends_on:
       bot.migrator:
         condition: service_completed_successfully
@@ -194,6 +197,13 @@ services:
       --topic link-updates
       --partitions 3
       --replication-factor 3
+      --config min.insync.replicas=2
+      &&
+      kafka-topics --bootstrap-server kafka-1:29092 \
+      --create --if-not-exists \
+      --topic link-updates-dlq \
+      --partitions 3 \
+      --replication-factor 3 \
       --config min.insync.replicas=2
       "
     networks:

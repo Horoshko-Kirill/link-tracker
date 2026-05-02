@@ -19,6 +19,8 @@ public static class Extensions
         services.AddRepository(dbOptions);
 
         services.AddTelegramClient();
+
+        services.AddKafkaProducer();
         
         services.AddHostedService<LinkUpdateKafkaConsumer>();
         
