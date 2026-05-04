@@ -9,5 +9,5 @@ public class OutboxMessage : Entity
     public int Attempts { get; set; } = 0;
     public string? Error { get; set; } = null;
     public DateTimeOffset? CreatedAt { get; set; } = DateTimeOffset.UtcNow.AddHours(3);
-    public DateTimeOffset SentAt { get; set; }
+    public DateTimeOffset? SentAt { get; set; }
 }
