@@ -24,6 +24,7 @@ services:
       - Kafka__DeadLetterTopic=link-updates-dlq
       - Kafka__MaxProcessingAttempts=3
       - Kafka__RetryDelayMilliseconds=1000
+      - Kafka__SchemaRegistryUrl=http://schema-registry:8081
     depends_on:
       bot.migrator:
         condition: service_completed_successfully
@@ -50,6 +51,7 @@ services:
       - Notification__Transport=Kafka
       - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
       - Kafka__Topic=link-updates
+      - Kafka__SchemaRegistryUrl=http://schema-registry:8081
     depends_on:
       scrapper.migrator:
         condition: service_completed_successfully
@@ -223,6 +225,22 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:29092,kafka-2:29093,kafka-3:29094
       DYNAMIC_CONFIG_ENABLED: "true"
+    networks:
+      - linktracker-network
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.6.1
+    container_name: linktracker.schema-registry
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:29092,PLAINTEXT://kafka-2:29093,PLAINTEXT://kafka-3:29094
     networks:
       - linktracker-network
 

@@ -9,4 +9,5 @@ public class KafkaConsumerOptions
     public string DeadLetterTopic { get; set; } = null!;
     public int MaxProcessingAttempts { get; set; } = 3;
     public int RetryDelayMilliseconds { get; set; } = 1000;
+    public string SchemaRegistryUrl { get; set; } = null!;
 }

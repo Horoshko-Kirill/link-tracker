@@ -6,4 +6,5 @@ public class KafkaOptions
     
     public string BootstrapServers { get; set; } = null!;
     public string Topic { get; set; } = null!;
+    public string SchemaRegistryUrl { get; set; } = null!;
 }
