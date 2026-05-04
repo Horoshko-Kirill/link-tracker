@@ -21,7 +21,7 @@ public class NotificationDispatchServiceTests
         var updateEventRepository = Substitute.For<IUpdateEventRepository>();
         var subscriptionRepository = Substitute.For<ISubscriptionRepository>();
         var linkRepository = Substitute.For<ILinkRepository>();
-        var messageSender = Substitute.For<IMessageSender>();
+        var messageSender = Substitute.For<IOutboxMessageWriter>();
         var formatter = Substitute.For<INotificationFormatter>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
         var logger = Substitute.For<ILogger<NotificationDispatchService>>();
@@ -74,7 +74,7 @@ public class NotificationDispatchServiceTests
 
         await service.DispatchPendingAsync();
 
-        await messageSender.Received(1).SendAsync(
+        await messageSender.Received(1).WriteAsync(
             Arg.Is<LinkUpdate>(x => x.ChatIds.Contains(123456) && x.Description == "formatted message"),
             Arg.Any<CancellationToken>());
 
@@ -90,7 +90,7 @@ public class NotificationDispatchServiceTests
         var updateEventRepository = Substitute.For<IUpdateEventRepository>();
         var subscriptionRepository = Substitute.For<ISubscriptionRepository>();
         var linkRepository = Substitute.For<ILinkRepository>();
-        var messageSender = Substitute.For<IMessageSender>();
+        var messageSender = Substitute.For<IOutboxMessageWriter>();
         var formatter = Substitute.For<INotificationFormatter>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
         var logger = Substitute.For<ILogger<NotificationDispatchService>>();
@@ -131,7 +131,7 @@ public class NotificationDispatchServiceTests
         formatter.Format(Arg.Any<UpdateEvent>(), Arg.Any<string>())
             .Returns("formatted message");
 
-        messageSender.SendAsync(Arg.Any<LinkUpdate>(), Arg.Any<CancellationToken>())
+        messageSender.WriteAsync(Arg.Any<LinkUpdate>(), Arg.Any<CancellationToken>())
             .Returns<Task>(_ => throw new Exception("send failed"));
 
         var service = new NotificationDispatchService(

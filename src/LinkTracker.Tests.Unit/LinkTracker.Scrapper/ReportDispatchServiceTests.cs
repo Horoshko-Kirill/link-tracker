@@ -20,7 +20,7 @@ public class ReportDispatchServiceTests
     {
         var reportRepository = Substitute.For<IChatLinkScanReportRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
-        var messageSender = Substitute.For<IMessageSender>();
+        var messageSender = Substitute.For<IOutboxMessageWriter>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
         var logger = Substitute.For<ILogger<ReportDispatchService>>();
 
@@ -56,7 +56,7 @@ public class ReportDispatchServiceTests
 
         await service.DispatchPendingAsync();
 
-        await messageSender.Received(1).SendAsync(
+        await messageSender.Received(1).WriteAsync(
             Arg.Is<LinkUpdate>(x => x.ChatIds.Contains(123456) && x.Description == "report message"),
             Arg.Any<CancellationToken>());
 
@@ -68,7 +68,7 @@ public class ReportDispatchServiceTests
     {
         var reportRepository = Substitute.For<IChatLinkScanReportRepository>();
         var chatRepository = Substitute.For<IChatRepository>();
-        var messageSender = Substitute.For<IMessageSender>();
+        var messageSender = Substitute.For<IOutboxMessageWriter>();
         var unitOfWork = Substitute.For<IUnitOfWork>();
         var logger = Substitute.For<ILogger<ReportDispatchService>>();
 
@@ -94,7 +94,7 @@ public class ReportDispatchServiceTests
                 [10] = new Chat { Id = 10, ChatId = 123456 }
             });
 
-        messageSender.SendAsync(Arg.Any<LinkUpdate>(), Arg.Any<CancellationToken>())
+        messageSender.WriteAsync(Arg.Any<LinkUpdate>(), Arg.Any<CancellationToken>())
             .Returns<Task>(_ => throw new Exception("send failed"));
 
         var service = new ReportDispatchService(
