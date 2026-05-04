@@ -4,6 +4,7 @@ using LinkTracker.Scrapper.Domain.Enum;
 using LinkTracker.Scrapper.Domain.Models;
 using LinkTracker.Scrapper.Infrastructure.Database.Sql;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace LinkTracker.Scrapper.Infrastructure.Repositories;
 
@@ -24,11 +25,11 @@ public class SqlOutboxMessageRepository : SqlRepositoryBase, IOutboxMessageRepos
         await ExecuteAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("paylod", message.Paylod);
-            cmd.Parameters.AddWithValue("status", message.Status);
+            cmd.Parameters.AddWithValue("status", (int)message.Status);
             cmd.Parameters.AddWithValue("attempts", message.Attempts);
-            cmd.Parameters.AddWithValue("error", message.Error);
-            cmd.Parameters.AddWithValue("created_at", message.CreatedAt);
-            cmd.Parameters.AddWithValue("sent_at",  message.SentAt);
+            cmd.Parameters.AddWithValue("error", message.Error == null ? DBNull.Value : message.Error); 
+            cmd.Parameters.AddWithValue("created_at", message.CreatedAt == null ? DBNull.Value : message.CreatedAt);
+            cmd.Parameters.AddWithValue("sent_at",  message.SentAt == null ? DBNull.Value : message.SentAt);
             
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
             message.Id = Convert.ToInt64(result);
@@ -94,11 +95,11 @@ public class SqlOutboxMessageRepository : SqlRepositoryBase, IOutboxMessageRepos
         {
             cmd.Parameters.AddWithValue("id", message.Id);
             cmd.Parameters.AddWithValue("paylod", message.Paylod);
-            cmd.Parameters.AddWithValue("status", message.Status);
+            cmd.Parameters.AddWithValue("status", (int)message.Status);
             cmd.Parameters.AddWithValue("attempts", message.Attempts);
-            cmd.Parameters.AddWithValue("error", message.Error);
-            cmd.Parameters.AddWithValue("created_at", message.CreatedAt);
-            cmd.Parameters.AddWithValue("sent_at", message.SentAt);
+            cmd.Parameters.AddWithValue("error", message.Error == null ? DBNull.Value : message.Error); 
+            cmd.Parameters.AddWithValue("created_at", message.CreatedAt == null ? DBNull.Value : message.CreatedAt);
+            cmd.Parameters.AddWithValue("sent_at",  message.SentAt == null ? DBNull.Value : message.SentAt);
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }, cancellationToken);
     }

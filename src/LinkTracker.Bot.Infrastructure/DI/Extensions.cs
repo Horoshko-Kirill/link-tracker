@@ -21,7 +21,7 @@ public static class Extensions
         services.AddRepository(dbOptions);
 
         services.AddTelegramClient();
-
+        /*
         services.AddKafkaProducer();
         
         services.AddScoped<ILinkUpdateMessageProcessor, LinkUpdateMessageProcessor>();
@@ -29,7 +29,7 @@ public static class Extensions
         services.AddSingleton<IDeadLetterQueueProducer, DeadLetterQueueProducer>();
         
         services.AddHostedService<LinkUpdateKafkaConsumer>();
-        
+        */
         return services;
     }
 }

@@ -11,4 +11,6 @@ public class LinkProcessingOptions
     public TimeSpan UpdateInterval { get; set; } = TimeSpan.FromMinutes(1);
     public TimeSpan NotificationInterval { get; set; } = TimeSpan.FromSeconds(10);
     public TimeSpan ReportInterval { get; set; } = TimeSpan.FromSeconds(15);
+    public int OutboxMaxAttempts { get; set; } = 3;
+    public TimeSpan OutboxInterval { get; set; } = TimeSpan.FromSeconds(15);
 }

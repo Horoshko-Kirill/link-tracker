@@ -47,6 +47,16 @@ public static class QuartzExtensions
                 .WithSimpleSchedule(x => x
                     .WithInterval(options.ReportInterval)
                     .RepeatForever()));
+            
+            var outboxMessageDispatchJobKey = new JobKey(nameof(OutboxMessageDispatchJob));
+            q.AddJob<OutboxMessageDispatchJob>(opts =>opts.WithIdentity(outboxMessageDispatchJobKey));
+            q.AddTrigger(opts => opts
+                .ForJob(outboxMessageDispatchJobKey)
+                .WithIdentity("OutboxMessageDispatchJob-trigger")
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithInterval(options.OutboxInterval)
+                    .RepeatForever()));
         });
 
         services.AddQuartzHostedService(options =>

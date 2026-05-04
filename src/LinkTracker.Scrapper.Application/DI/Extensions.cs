@@ -28,9 +28,12 @@ public static class Extensions
         services.AddScoped<INotificationFormatter, NotificationFormatter>();
 
         services.AddScoped<IReportBuilderService, ReportBuilderService>();
+        
+        services.AddScoped<IOutboxMessageWriter, OutboxMessageWriter>();
 
         services.AddScoped<IReportDispatchService, ReportDispatchService>();
         services.AddScoped<INotificationDispatchService, NotificationDispatchService>();
+        services.AddScoped<IOutboxMessageDispatchService, OutboxMessageDispatchService>();
         return services;
     }
 }
