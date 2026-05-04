@@ -39,6 +39,7 @@ public static class RepositoryExtensions
                 services.AddScoped<ITagRepository, SqlTagRepository>();
                 services.AddScoped<IUpdateEventRepository, SqlUpdateEventRepository>();
                 services.AddScoped<IChatLinkScanReportRepository, SqlChatLinkScanRepository>();
+                services.AddScoped<IOutboxMessageRepository, SqlOutboxMessageRepository>();
 
                 services.AddScoped<IUnitOfWork, SqlUnitOfWork>();
                 break;
@@ -54,6 +55,7 @@ public static class RepositoryExtensions
                 services.AddScoped<ITagRepository, OrmTagRepository>();
                 services.AddScoped<IUpdateEventRepository, OrmUpdateEventRepository>();
                 services.AddScoped<IChatLinkScanReportRepository, OrmChatLinkScanRepository>();
+                services.AddScoped<IOutboxMessageRepository, OrmOutboxMessageRepository>();
 
                 services.AddScoped<IUnitOfWork, EfUnitOfWork>();
                 break;

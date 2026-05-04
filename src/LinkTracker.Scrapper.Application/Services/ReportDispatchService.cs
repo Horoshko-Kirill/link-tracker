@@ -14,7 +14,7 @@ public class ReportDispatchService : IReportDispatchService
 {
     private readonly IChatLinkScanReportRepository _chatLinkScanReportRepository;
     private readonly IChatRepository _chatRepository;
-    private readonly IMessageSender _messageSender;
+    private readonly IOutboxMessageWriter _outboxMessageWriter;
     private readonly IUnitOfWork _unitOfWork;
     private readonly LinkProcessingOptions _options;
     private readonly ILogger<ReportDispatchService> _logger;
@@ -22,14 +22,14 @@ public class ReportDispatchService : IReportDispatchService
     public ReportDispatchService(
         IChatLinkScanReportRepository chatLinkScanReportRepository,
         IChatRepository chatRepository,
-        IMessageSender messageSender,
+        IOutboxMessageWriter outboxMessageWriter,
         IUnitOfWork unitOfWork,
         IOptions<LinkProcessingOptions> options,
         ILogger<ReportDispatchService> logger)
     {
         _chatLinkScanReportRepository = chatLinkScanReportRepository;
         _chatRepository = chatRepository;
-        _messageSender = messageSender;
+        _outboxMessageWriter = outboxMessageWriter;
         _unitOfWork = unitOfWork;
         _options = options.Value;
         _logger = logger;
@@ -75,7 +75,7 @@ public class ReportDispatchService : IReportDispatchService
                         ChatIds = [chat.ChatId]
                     };
 
-                    await _messageSender.SendAsync(notification, cancellationToken);
+                    await _outboxMessageWriter.WriteAsync(notification, cancellationToken);
 
                     report.Status = ReportStatus.Sent;
                     report.SentAt = DateTimeOffset.UtcNow;

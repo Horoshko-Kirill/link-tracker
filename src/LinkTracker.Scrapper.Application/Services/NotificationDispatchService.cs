@@ -15,7 +15,7 @@ public class NotificationDispatchService : INotificationDispatchService
     private readonly IUpdateEventRepository _updateEventRepository;
     private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly ILinkRepository _linkRepository;
-    private readonly IMessageSender _messageSender;
+    private readonly IOutboxMessageWriter _outboxMessageWriter;
     private readonly INotificationFormatter _formatter;
     private readonly IUnitOfWork _unitOfWork;
     private readonly LinkProcessingOptions _options;
@@ -25,7 +25,7 @@ public class NotificationDispatchService : INotificationDispatchService
         IUpdateEventRepository updateEventRepository,
         ISubscriptionRepository subscriptionRepository,
         ILinkRepository linkRepository,
-        IMessageSender messageSender,
+        IOutboxMessageWriter outboxMessageWriter,
         INotificationFormatter formatter,
         IUnitOfWork unitOfWork,
         IOptions<LinkProcessingOptions> options,
@@ -34,7 +34,7 @@ public class NotificationDispatchService : INotificationDispatchService
         _updateEventRepository = updateEventRepository;
         _subscriptionRepository = subscriptionRepository;
         _linkRepository = linkRepository;
-        _messageSender = messageSender;
+        _outboxMessageWriter = outboxMessageWriter;
         _formatter = formatter;
         _unitOfWork = unitOfWork;
         _options = options.Value;
@@ -93,7 +93,7 @@ public class NotificationDispatchService : INotificationDispatchService
                         ChatIds = chatIds.ToList()
                     };
 
-                    await _messageSender.SendAsync(notification, cancellationToken);
+                    await _outboxMessageWriter.WriteAsync(notification, cancellationToken);
 
                     updateEvent.Status = UpdateEventStatus.Sent;
                     updateEvent.SentAt = DateTimeOffset.UtcNow;
