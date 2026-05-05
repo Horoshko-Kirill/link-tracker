@@ -17,15 +17,15 @@ public static class MessageSendersExtensions
     {
         services.Configure<NotificationOptions>(configuration.GetSection(NotificationOptions.SectionName));
         services.Configure<KafkaOptions>(configuration.GetSection(KafkaOptions.SectionName));
-        
+
         var notificationOptions = configuration
             .GetSection(NotificationOptions.SectionName)
             .Get<NotificationOptions>();
-        
+
         switch (notificationOptions.Transport)
         {
             case ("Kafka"):
-                
+
                 services.AddSingleton<ISchemaRegistryClient>(sp =>
                 {
                     var options = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
@@ -35,7 +35,7 @@ public static class MessageSendersExtensions
                         Url = options.SchemaRegistryUrl
                     });
                 });
-                
+
                 services.AddSingleton<IProducer<string, LinkUpdateEvent>>(sp =>
                 {
                     var options = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
@@ -52,17 +52,17 @@ public static class MessageSendersExtensions
                         .SetValueSerializer(new AvroSerializer<LinkUpdateEvent>(schemaRegistry))
                         .Build();
                 });
-                
+
                 services.AddScoped<IMessageSender, KafkaMessageSender>();
                 break;
-            case("Http"):
+            case ("Http"):
                 services.AddScoped<IMessageSender, HttpMessageSender>();
                 break;
             default:
                 services.AddScoped<IMessageSender, HttpMessageSender>();
                 break;
         }
-        
+
         return services;
     }
 }

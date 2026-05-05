@@ -17,7 +17,7 @@ public class OrmOutboxMessageRepository : IOutboxMessageRepository
         _dbContext = dbContext;
         _messages = _dbContext.OutboxMessages;
     }
-    
+
     public Task AddAsync(OutboxMessage message, CancellationToken cancellationToken = default)
     {
         _messages.Add(message);

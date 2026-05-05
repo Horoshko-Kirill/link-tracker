@@ -15,7 +15,7 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
         builder.Property(x => x.Id)
             .ValueGeneratedOnAdd()
             .HasColumnName("id");
-        
+
         builder.Property(x => x.Paylod)
             .HasColumnName("paylod")
             .IsRequired();
@@ -23,7 +23,7 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
         builder.Property(x => x.Status)
             .HasColumnName("status")
             .IsRequired();
-       
+
         builder.Property(x => x.Attempts)
             .HasColumnName("attempts")
             .IsRequired();
@@ -33,7 +33,7 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
 
         builder.Property(x => x.CreatedAt)
             .HasColumnName("created_at");
-        
+
         builder.Property(x => x.SentAt)
             .HasColumnName("sent_at");
     }

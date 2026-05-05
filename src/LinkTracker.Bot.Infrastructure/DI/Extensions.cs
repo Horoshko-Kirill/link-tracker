@@ -22,11 +22,11 @@ public static class Extensions
 
         services.AddTelegramClient();
         services.AddKafka();
-        
+
         services.AddScoped<ILinkUpdateMessageProcessor, LinkUpdateMessageProcessor>();
         services.AddScoped<ILinkUpdateProcessingService, LinkUpdateProcessingService>();
         services.AddSingleton<IDeadLetterQueueProducer, DeadLetterQueueProducer>();
-        
+
         services.AddHostedService<LinkUpdateKafkaConsumer>();
         return services;
     }

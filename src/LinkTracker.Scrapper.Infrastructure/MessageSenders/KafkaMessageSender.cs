@@ -20,11 +20,11 @@ public class KafkaMessageSender : IMessageSender
         _producer = producer;
         _options = options.Value;
     }
-    
+
     public async Task SendAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
         var message = new Message<string, LinkUpdateEvent> { Key = linkUpdate.Url, Value = LinkUpdateAvroMappers.ToAvro(linkUpdate) };
-        
+
         await _producer.ProduceAsync(_options.Topic, message, cancellationToken);
     }
 }

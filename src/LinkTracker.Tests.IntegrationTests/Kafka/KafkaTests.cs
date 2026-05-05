@@ -76,7 +76,7 @@ public class KafkaTests
             }
 
             var columns = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            
+
             if (columns.Any(x => long.TryParse(x, out var value) && value > 0))
             {
                 return true;

@@ -32,7 +32,7 @@ public class OutboxMessageDispatchService : IOutboxMessageDispatchService
         _messageSender = messageSender;
         _logger = logger;
     }
-    
+
     public async Task DispatchPendingAsync(CancellationToken cancellationToken = default)
     {
         long lastId = 0;
@@ -41,7 +41,7 @@ public class OutboxMessageDispatchService : IOutboxMessageDispatchService
         {
             var pageRequest = new PageRequest(lastId, _options.NotificationBatchSize);
             var events = await _outboxMessageRepository.GetPendingAsync(pageRequest, cancellationToken);
-            
+
             if (events.Count == 0)
             {
                 break;
@@ -86,7 +86,7 @@ public class OutboxMessageDispatchService : IOutboxMessageDispatchService
                         outboxMessage.Id);
                 }
             }
-            
+
             lastId = events[^1].Id;
         }
     }

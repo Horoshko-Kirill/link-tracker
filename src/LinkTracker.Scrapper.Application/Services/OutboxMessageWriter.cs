@@ -18,7 +18,7 @@ public class OutboxMessageWriter : IOutboxMessageWriter
         _outboxMessageRepository = outboxMessageRepository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task WriteAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
         var message = new OutboxMessage
@@ -28,7 +28,7 @@ public class OutboxMessageWriter : IOutboxMessageWriter
             Status = OutboxMessageStatus.Pending,
             CreatedAt = DateTimeOffset.UtcNow.AddHours(3)
         };
-        
+
         await _outboxMessageRepository.AddAsync(message, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

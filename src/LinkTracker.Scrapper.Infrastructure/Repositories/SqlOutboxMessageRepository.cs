@@ -27,10 +27,10 @@ public class SqlOutboxMessageRepository : SqlRepositoryBase, IOutboxMessageRepos
             cmd.Parameters.AddWithValue("paylod", message.Paylod);
             cmd.Parameters.AddWithValue("status", (int)message.Status);
             cmd.Parameters.AddWithValue("attempts", message.Attempts);
-            cmd.Parameters.AddWithValue("error", message.Error == null ? DBNull.Value : message.Error); 
+            cmd.Parameters.AddWithValue("error", message.Error == null ? DBNull.Value : message.Error);
             cmd.Parameters.AddWithValue("created_at", message.CreatedAt == null ? DBNull.Value : message.CreatedAt);
-            cmd.Parameters.AddWithValue("sent_at",  message.SentAt == null ? DBNull.Value : message.SentAt);
-            
+            cmd.Parameters.AddWithValue("sent_at", message.SentAt == null ? DBNull.Value : message.SentAt);
+
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
             message.Id = Convert.ToInt64(result);
         }, cancellationToken);
@@ -46,7 +46,7 @@ public class SqlOutboxMessageRepository : SqlRepositoryBase, IOutboxMessageRepos
                       order by id
                       limit {limit}
                       """;
-        
+
         return QueryAsync(sql, async cmd =>
         {
             cmd.Parameters.AddWithValue("status", (int)OutboxMessageStatus.Pending);
@@ -64,8 +64,8 @@ public class SqlOutboxMessageRepository : SqlRepositoryBase, IOutboxMessageRepos
                     Paylod = reader.GetString(reader.GetOrdinal("paylod")),
                     Status = (OutboxMessageStatus)reader.GetInt32(reader.GetOrdinal("status")),
                     Attempts = reader.GetInt32(reader.GetOrdinal("attempts")),
-                    Error = reader.IsDBNull(reader.GetOrdinal("error")) 
-                        ? null 
+                    Error = reader.IsDBNull(reader.GetOrdinal("error"))
+                        ? null
                         : reader.GetString(reader.GetOrdinal("error")),
                     CreatedAt = reader.GetFieldValue<DateTimeOffset>(reader.GetOrdinal("created_at")),
                     SentAt = reader.IsDBNull(reader.GetOrdinal("sent_at"))
@@ -97,9 +97,9 @@ public class SqlOutboxMessageRepository : SqlRepositoryBase, IOutboxMessageRepos
             cmd.Parameters.AddWithValue("paylod", message.Paylod);
             cmd.Parameters.AddWithValue("status", (int)message.Status);
             cmd.Parameters.AddWithValue("attempts", message.Attempts);
-            cmd.Parameters.AddWithValue("error", message.Error == null ? DBNull.Value : message.Error); 
+            cmd.Parameters.AddWithValue("error", message.Error == null ? DBNull.Value : message.Error);
             cmd.Parameters.AddWithValue("created_at", message.CreatedAt == null ? DBNull.Value : message.CreatedAt);
-            cmd.Parameters.AddWithValue("sent_at",  message.SentAt == null ? DBNull.Value : message.SentAt);
+            cmd.Parameters.AddWithValue("sent_at", message.SentAt == null ? DBNull.Value : message.SentAt);
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }, cancellationToken);
     }

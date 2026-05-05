@@ -12,7 +12,7 @@ public class LinkUpdateHandler : ILinkUpdateHandler
     {
         _telegramClient = telegramClient;
     }
-    
+
     public async Task HandleAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken = default)
     {
         foreach (var chatId in linkUpdate.ChatIds)

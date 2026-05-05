@@ -21,8 +21,8 @@ public class DeadLetterQueueProducer : IDeadLetterQueueProducer
         _options = options.Value;
         _logger = logger;
     }
-    
-    public async Task SendAsync( string key, LinkUpdate linkUpdate, string errorType, string errorMessage, CancellationToken cancellationToken)
+
+    public async Task SendAsync(string key, LinkUpdate linkUpdate, string errorType, string errorMessage, CancellationToken cancellationToken)
     {
         var headers = new Headers
         {

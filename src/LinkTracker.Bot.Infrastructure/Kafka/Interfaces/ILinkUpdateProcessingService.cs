@@ -5,5 +5,5 @@ namespace LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
 
 public interface ILinkUpdateProcessingService
 {
-     Task<ProcessingResult> ProcessAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken);
+    Task<ProcessingResult> ProcessAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken);
 }

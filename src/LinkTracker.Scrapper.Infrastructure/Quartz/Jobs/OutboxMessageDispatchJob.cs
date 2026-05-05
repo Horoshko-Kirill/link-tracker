@@ -11,7 +11,7 @@ public class OutboxMessageDispatchJob : IJob
     {
         _outboxMessageDispatchService = outboxMessageDispatchService;
     }
-    
+
     public async Task Execute(IJobExecutionContext context)
     {
         await _outboxMessageDispatchService.DispatchPendingAsync(context.CancellationToken);

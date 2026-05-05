@@ -4,5 +4,5 @@ namespace LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
 
 public interface IDeadLetterQueueProducer
 {
-    Task SendAsync( string key, LinkUpdate linkUpdate, string errorType, string errorMessage, CancellationToken cancellationToken);
+    Task SendAsync(string key, LinkUpdate linkUpdate, string errorType, string errorMessage, CancellationToken cancellationToken);
 }

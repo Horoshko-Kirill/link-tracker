@@ -8,7 +8,7 @@ public static class CommandExtensions
 {
     public static IServiceCollection AddCommand(this IServiceCollection services)
     {
-        
+
         services.AddTransient<ICommand, StartCommand>();
         services.AddTransient<ICommand, HelpCommand>();
         services.AddTransient<ICommand, UnknownCommand>();
@@ -16,7 +16,7 @@ public static class CommandExtensions
         services.AddTransient<ICommand, UntrackCommand>();
         services.AddTransient<ICommand, ListCommand>();
         services.AddTransient<ICommand, CancelCommand>();
-        
+
         return services;
     }
 }
