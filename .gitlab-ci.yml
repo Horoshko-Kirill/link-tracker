@@ -72,6 +72,7 @@ integration_test:
       -e DOCKER_HOST=tcp://docker:2376
       -e DOCKER_TLS_VERIFY=1
       -e DOCKER_CERT_PATH=/certs/client
+      -e TESTCONTAINERS_HOST_OVERRIDE=docker
       -v "$DOCKER_CERT_PATH:/certs/client:ro"
       mcr.microsoft.com/dotnet/sdk:10.0
       dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
