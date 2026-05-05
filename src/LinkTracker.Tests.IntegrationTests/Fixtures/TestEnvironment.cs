@@ -18,9 +18,12 @@ public class TestEnvironment : IAsyncLifetime
     public IContainer Kafka { get; private set; } = null!;
     public IContainer Zookeeper { get; private set; } = null!;
 
-    public string BotUrl => $"http://localhost:{Bot.GetMappedPublicPort(80)}";
-    public string ScrapperUrl => $"http://localhost:{Scrapper.GetMappedPublicPort(80)}";
-    public string KafkaBootstrapAddress => $"localhost:{Kafka.GetMappedPublicPort(9092)}";
+    private static string DockerHost =>
+        Environment.GetEnvironmentVariable("TESTCONTAINERS_HOST_OVERRIDE") ?? "localhost";
+
+    public string BotUrl => $"http://{DockerHost}:{Bot.GetMappedPublicPort(80)}";
+    public string ScrapperUrl => $"http://{DockerHost}:{Scrapper.GetMappedPublicPort(80)}";
+    public string KafkaBootstrapAddress => $"{DockerHost}:{Kafka.GetMappedPublicPort(9092)}";
 
     public TestEnvironment()
     {
