@@ -8,6 +8,25 @@ stages:
 variables:
   GITLAB_DOCKER_PROXY: gitlab.education.tbank.ru:443/backend-academy-dotnet-2025/lecture-materials/dependency_proxy/containers
 
+build_ci_image:
+  image: docker:29.0.1-cli
+  stage: build
+  tags:
+    - dind
+  services:
+    - name: docker:29.0.1-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+  script:
+    - echo "$CI_JOB_TOKEN" | docker login "$CI_REGISTRY" -u gitlab-ci-token --password-stdin
+    - docker build -t "$CI_REGISTRY_IMAGE/dotnet-docker:10.0" -f ci/Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE/dotnet-docker:10.0"
+  rules:
+    - when: manual
 
 build:
   stage: build
@@ -38,7 +57,7 @@ module_test:
     - dotnet test src/LinkTracker.Tests.Unit/LinkTracker.Tests.Unit.csproj
 
 integration_test:
-  image: docker:29.0.1-cli
+  image: $CI_REGISTRY_IMAGE/dotnet-docker:10.0
   stage: test
   needs:
     - job: module_test
@@ -58,12 +77,9 @@ integration_test:
     DOCKER_TLS_VERIFY: 1
     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
   before_script:
-    - apk add --no-cache bash curl icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib
-    - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
-    - chmod +x dotnet-install.sh
-    - ./dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet
-    - ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
-    - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
+    - docker --version
+    - dotnet --info
+    - echo "$CI_JOB_TOKEN" | docker login "$CI_REGISTRY" -u gitlab-ci-token --password-stdin
   script:
     - docker build -t link-tracker-scrapper:latest -f src/LinkTracker.Scrapper/Dockerfile .
     - docker build -t link-tracker-bot:latest -f src/LinkTracker.Bot/Dockerfile .
