@@ -38,16 +38,10 @@ module_test:
     - dotnet test src/LinkTracker.Tests.Unit/LinkTracker.Tests.Unit.csproj
 
 integration_test:
-  timeout: 30m
-  image: mcr.microsoft.com/dotnet/sdk:10.0
+  image: docker:29.0.1-cli
   stage: test
   needs:
     - job: module_test
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master"
-      when: always
-      allow_failure: false
-    - when: never
   tags:
     - dind
   services:
@@ -59,14 +53,17 @@ integration_test:
     DOCKER_TLS_VERIFY: 1
     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
   before_script:
-    - apt-get update
-    - apt-get install -y docker.io
+    - apk add --no-cache bash curl icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib
+    - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+    - chmod +x dotnet-install.sh
+    - ./dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet
+    - ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
-    - docker build -t link-tracker-scrapper -f src/LinkTracker.Scrapper/Dockerfile .
-    - docker build -t link-tracker-bot -f src/LinkTracker.Bot/Dockerfile .
-    - docker build -t link-tracker-bot.migrator -f src/LinkTracker.Bot.Migrator/Dockerfile .
-    - docker build -t link-tracker-scrapper.migrator -f src/LinkTracker.Scrapper.Migrator/Dockerfile .
+    - docker build -t link-tracker-scrapper:latest -f src/LinkTracker.Scrapper/Dockerfile .
+    - docker build -t link-tracker-bot:latest -f src/LinkTracker.Bot/Dockerfile .
+    - docker build -t link-tracker-bot.migrator:latest -f src/LinkTracker.Bot.Migrator/Dockerfile .
+    - docker build -t link-tracker-scrapper.migrator:latest -f src/LinkTracker.Scrapper.Migrator/Dockerfile .
     - dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
 
 
