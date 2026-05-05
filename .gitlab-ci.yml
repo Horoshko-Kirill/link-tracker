@@ -42,6 +42,11 @@ integration_test:
   stage: test
   needs:
     - job: module_test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master"
+      when: always
+      allow_failure: false
+    - when: never
   tags:
     - dind
   services:
