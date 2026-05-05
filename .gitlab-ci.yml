@@ -56,26 +56,15 @@ integration_test:
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+    DOCKER_CERT_PATH: "/certs/client"
   script:
+    - until [ -f /certs/client/ca.pem ]; do echo "waiting docker certs"; sleep 1; done
     - docker version
-
     - docker build -t link-tracker-scrapper:latest -f src/LinkTracker.Scrapper/Dockerfile .
     - docker build -t link-tracker-bot:latest -f src/LinkTracker.Bot/Dockerfile .
     - docker build -t link-tracker-bot.migrator:latest -f src/LinkTracker.Bot.Migrator/Dockerfile .
     - docker build -t link-tracker-scrapper.migrator:latest -f src/LinkTracker.Scrapper.Migrator/Dockerfile .
-
-    - docker run --rm
-      --add-host docker:host-gateway
-      -v "$PWD:/src"
-      -w /src
-      -e DOCKER_HOST=tcp://docker:2376
-      -e DOCKER_TLS_VERIFY=1
-      -e DOCKER_CERT_PATH=/certs/client
-      -e TESTCONTAINERS_HOST_OVERRIDE=docker
-      -v "$DOCKER_CERT_PATH:/certs/client:ro"
-      mcr.microsoft.com/dotnet/sdk:10.0
-      dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
+    - docker run --rm --add-host docker:host-gateway -v "$PWD:/src" -w /src -e DOCKER_HOST=tcp://docker:2376 -e DOCKER_TLS_VERIFY=1 -e DOCKER_CERT_PATH=/certs/client -e TESTCONTAINERS_HOST_OVERRIDE=docker -v /certs/client:/certs/client:ro mcr.microsoft.com/dotnet/sdk:10.0 dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
 
 
   
