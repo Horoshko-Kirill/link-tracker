@@ -8,25 +8,6 @@ stages:
 variables:
   GITLAB_DOCKER_PROXY: gitlab.education.tbank.ru:443/backend-academy-dotnet-2025/lecture-materials/dependency_proxy/containers
 
-build_ci_image:
-  image: docker:29.0.1-cli
-  stage: build
-  tags:
-    - dind
-  services:
-    - name: docker:29.0.1-dind
-      alias: docker
-  variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
-  script:
-    - echo "$CI_JOB_TOKEN" | docker login "$CI_REGISTRY" -u gitlab-ci-token --password-stdin
-    - docker build -t "$CI_REGISTRY_IMAGE/dotnet-docker:10.0" -f ci/Dockerfile .
-    - docker push "$CI_REGISTRY_IMAGE/dotnet-docker:10.0"
-  rules:
-    - when: manual
 
 build:
   stage: build
@@ -57,7 +38,7 @@ module_test:
     - dotnet test src/LinkTracker.Tests.Unit/LinkTracker.Tests.Unit.csproj
 
 integration_test:
-  image: $CI_REGISTRY_IMAGE/dotnet-docker:10.0
+  image: docker:29.0.1-cli
   stage: test
   needs:
     - job: module_test
@@ -72,20 +53,22 @@ integration_test:
     - name: docker:29.0.1-dind
       alias: docker
   variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
-  before_script:
-    - docker --version
-    - dotnet --info
-    - echo "$CI_JOB_TOKEN" | docker login "$CI_REGISTRY" -u gitlab-ci-token --password-stdin
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   script:
+    - docker version
+
     - docker build -t link-tracker-scrapper:latest -f src/LinkTracker.Scrapper/Dockerfile .
     - docker build -t link-tracker-bot:latest -f src/LinkTracker.Bot/Dockerfile .
     - docker build -t link-tracker-bot.migrator:latest -f src/LinkTracker.Bot.Migrator/Dockerfile .
     - docker build -t link-tracker-scrapper.migrator:latest -f src/LinkTracker.Scrapper.Migrator/Dockerfile .
-    - dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
+
+    - docker run --rm
+      -v "$PWD:/src"
+      -w /src
+      -e DOCKER_HOST=tcp://docker:2375
+      mcr.microsoft.com/dotnet/sdk:10.0
+      dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
 
 
   
