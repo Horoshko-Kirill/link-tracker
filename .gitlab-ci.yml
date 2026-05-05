@@ -66,6 +66,7 @@ integration_test:
     - docker build -t link-tracker-scrapper.migrator:latest -f src/LinkTracker.Scrapper.Migrator/Dockerfile .
 
     - docker run --rm
+      --add-host docker:host-gateway
       -v "$PWD:/src"
       -w /src
       -e DOCKER_HOST=tcp://docker:2376
