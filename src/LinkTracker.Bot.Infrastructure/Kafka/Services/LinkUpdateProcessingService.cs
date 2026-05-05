@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using LinkTracker.Bot.Contracts.Dto;
 using LinkTracker.Bot.Infrastructure.Exceptions;
 using LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
 using LinkTracker.Bot.Infrastructure.Kafka.Result;
@@ -24,13 +25,13 @@ public class LinkUpdateProcessingService : ILinkUpdateProcessingService
         _logger = logger;
     }
 
-    public async Task<ProcessingResult> ProcessAsync(string message, CancellationToken cancellationToken)
+    public async Task<ProcessingResult> ProcessAsync(LinkUpdate linkUpdate, CancellationToken cancellationToken)
     {
         for (var attempt = 1; attempt <= _options.MaxProcessingAttempts; attempt++)
         {
             try
             {
-                await _processor.ProcessAsync(message, cancellationToken);
+                await _processor.ProcessAsync(linkUpdate, cancellationToken);
                 return ProcessingResult.Success();
             }
             catch (JsonException ex)

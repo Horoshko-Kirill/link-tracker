@@ -1,8 +1,8 @@
-﻿using Confluent.Kafka;
+﻿using LinkTracker.Bot.Contracts.Dto;
 
 namespace LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
 
 public interface IDeadLetterQueueProducer
 {
-    Task SendAsync(ConsumeResult<string, string> result, string errorType, string errorMessage, CancellationToken cancellationToken);
+    Task SendAsync( string key, LinkUpdate linkUpdate, string errorType, string errorMessage, CancellationToken cancellationToken);
 }

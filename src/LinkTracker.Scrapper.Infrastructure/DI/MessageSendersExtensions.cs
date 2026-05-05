@@ -1,4 +1,7 @@
 ﻿using Confluent.Kafka;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
+using LinkTracker.Bot.Contracts.Avro;
 using LinkTracker.Scrapper.Application.InterfacesServices;
 using LinkTracker.Scrapper.Infrastructure.MessageSenders;
 using LinkTracker.Scrapper.Infrastructure.Options;
@@ -22,18 +25,32 @@ public static class MessageSendersExtensions
         switch (notificationOptions.Transport)
         {
             case ("Kafka"):
-                services.AddSingleton<IProducer<string, string>>(sp =>
+                
+                services.AddSingleton<ISchemaRegistryClient>(sp =>
                 {
-                    var kafkaOptions = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
-                    
-                    var config = new ProducerConfig
+                    var options = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
+
+                    return new CachedSchemaRegistryClient(new SchemaRegistryConfig
                     {
-                        BootstrapServers = kafkaOptions.BootstrapServers, 
-                        Acks = Acks.All, 
+                        Url = options.SchemaRegistryUrl
+                    });
+                });
+                
+                services.AddSingleton<IProducer<string, LinkUpdateEvent>>(sp =>
+                {
+                    var options = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
+                    var schemaRegistry = sp.GetRequiredService<ISchemaRegistryClient>();
+
+                    var producerConfig = new ProducerConfig
+                    {
+                        BootstrapServers = options.BootstrapServers,
+                        Acks = Acks.All,
                         EnableIdempotence = true
                     };
-                    
-                    return new ProducerBuilder<string, string>(config).Build();
+
+                    return new ProducerBuilder<string, LinkUpdateEvent>(producerConfig)
+                        .SetValueSerializer(new AvroSerializer<LinkUpdateEvent>(schemaRegistry))
+                        .Build();
                 });
                 
                 services.AddScoped<IMessageSender, KafkaMessageSender>();

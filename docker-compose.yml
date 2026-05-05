@@ -30,6 +30,8 @@ services:
         condition: service_completed_successfully
       kafka-init-topics:
         condition: service_completed_successfully
+      schema-registry:
+        condition: service_started
     networks:
       - linktracker-network
 
@@ -57,6 +59,8 @@ services:
         condition: service_completed_successfully
       kafka-init-topics:
         condition: service_completed_successfully
+      schema-registry:
+        condition: service_started
     networks:
       - linktracker-network
 
