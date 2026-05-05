@@ -12,8 +12,10 @@ namespace LinkTracker.Tests.IntegrationTests.Database
         public DbTests(TestEnvironment env)
         {
             _env = env;
+            var host = Environment.GetEnvironmentVariable("TESTCONTAINERS_HOST_OVERRIDE") ?? "localhost";
             var port = _env.Db.GetMappedPublicPort(5432);
-            _connectionString = $"Host=localhost;Port={port};Database=linktracker_test;Username=postgres;Password=postgres";
+
+            _connectionString = $"Host={host};Port={port};Database=linktracker_test;Username=postgres;Password=postgres";
         }
 
         [Fact]
