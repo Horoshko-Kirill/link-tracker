@@ -11,13 +11,11 @@ namespace LinkTracker.Scrapper.Infrastructure.Services;
 public class ValkeyLinkCacheService : ILinkCacheService
 {
     private readonly IDatabase _db;
-    private readonly ILogger _logger;
     private readonly ValkeyOptions _valkeyOptions;
 
     public ValkeyLinkCacheService(IConnectionMultiplexer connection, IOptions<ValkeyOptions> valkeyOptions, ILogger<ValkeyLinkCacheService> logger)
     {
         _db = connection.GetDatabase();
-        _logger = logger;
         _valkeyOptions = valkeyOptions.Value;
     }
 
