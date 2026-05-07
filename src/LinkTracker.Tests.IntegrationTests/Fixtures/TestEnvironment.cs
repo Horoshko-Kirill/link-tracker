@@ -17,6 +17,7 @@ public class TestEnvironment : IAsyncLifetime
     public IContainer ScrapperMigrator { get; private set; } = null!;
     public IContainer Kafka { get; private set; } = null!;
     public IContainer Zookeeper { get; private set; } = null!;
+    public IContainer Valkey { get; private set; } = null!;
 
     private static string DockerHost =>
         Environment.GetEnvironmentVariable("TESTCONTAINERS_HOST_OVERRIDE") ?? "localhost";
@@ -84,6 +85,19 @@ public class TestEnvironment : IAsyncLifetime
             "-c",
             "cub kafka-ready -b kafka:29092 1 60 && kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic link-updates --partitions 3 --replication-factor 1"
         ]);
+        
+        Valkey = new ContainerBuilder()
+            .WithImage("valkey/valkey:8.0")
+            .WithNetwork(_network)
+            .WithNetworkAliases("valkey")
+            .WithCommand("valkey-server", "--protected-mode", "no")
+            .WithPortBinding(6379, true)
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilCommandIsCompleted("valkey-cli ping"))
+            .Build();
+
+        await Valkey.StartAsync();
 
         BotMigrator = new ContainerBuilder()
             .WithImage("link-tracker-bot.migrator:latest")
@@ -120,6 +134,8 @@ public class TestEnvironment : IAsyncLifetime
             .WithEnvironment("NotificationTransport", "Kafka")
             .WithEnvironment("Kafka__BootstrapServers", "kafka:29092")
             .WithEnvironment("Kafka__Topic", "link-updates")
+            .WithEnvironment("Valkey__Configuration", "valkey:6379,abortConnect=false,connectRetry=5,connectTimeout=10000,syncTimeout=10000,keepAlive=10,allowAdmin=true,ssl=false")
+            .WithEnvironment("Valkey__DefaultTtlMinutes", "00:10:00")
             .Build();
 
         await Scrapper.StartAsync();
@@ -160,6 +176,7 @@ public class TestEnvironment : IAsyncLifetime
         await Kafka.DisposeAsync();
         await Zookeeper.DisposeAsync();
         await Db.DisposeAsync();
+        await Valkey.DisposeAsync();
         await _network.DeleteAsync();
     }
 }
