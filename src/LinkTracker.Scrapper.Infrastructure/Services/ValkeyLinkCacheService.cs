@@ -13,13 +13,13 @@ public class ValkeyLinkCacheService : ILinkCacheService
     private readonly IDatabase _db;
     private readonly ValkeyOptions _valkeyOptions;
 
-    public ValkeyLinkCacheService(IConnectionMultiplexer connection, IOptions<ValkeyOptions> valkeyOptions, ILogger<ValkeyLinkCacheService> logger)
+    public ValkeyLinkCacheService(IConnectionMultiplexer connection, IOptions<ValkeyOptions> valkeyOptions)
     {
         _db = connection.GetDatabase();
         _valkeyOptions = valkeyOptions.Value;
     }
 
-    private static string Key(long chatId, string? tag = null) => $"links:{chatId}:{tag ?? "all"}";
+    private static string Key(long chatId, string? tag = null) => $"links:{{{chatId}}}:{tag ?? "all"}";
     
     public async Task<ListLinksResponse?> GetAsync(long chatId, string? tag = null, CancellationToken cancellationToken = default)
     {
@@ -41,13 +41,16 @@ public class ValkeyLinkCacheService : ILinkCacheService
 
     public async Task RemoveAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        var server = _db.Multiplexer.GetServer(_db.Multiplexer.GetEndPoints().First());
-        
-        var keys = server.Keys(pattern: $"links:{chatId}:*");
-        
-        foreach (var key in keys)
+        var pattern = $"links:{{{chatId}}}:*";
+
+        foreach (var endpoint in _db.Multiplexer.GetEndPoints())
         {
-            await _db.KeyDeleteAsync(key);
+            var server = _db.Multiplexer.GetServer(endpoint);
+
+            await foreach (var key in server.KeysAsync(pattern: pattern))
+            {
+                await _db.KeyDeleteAsync(key);
+            }
         }
     }
 }

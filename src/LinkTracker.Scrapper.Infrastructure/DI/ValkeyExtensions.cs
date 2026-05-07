@@ -3,6 +3,7 @@ using LinkTracker.Scrapper.Infrastructure.Options;
 using LinkTracker.Scrapper.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
@@ -18,7 +19,11 @@ public static class ValkeyExtensions
         {
             var options = sp.GetRequiredService<IOptions<ValkeyOptions>>().Value;
 
-            return ConnectionMultiplexer.Connect(options.Configuration);
+            var redisOptions = ConfigurationOptions.Parse(options.Configuration);
+            redisOptions.AbortOnConnectFail = false;
+            redisOptions.Protocol = RedisProtocol.Resp2;
+
+            return ConnectionMultiplexer.Connect(redisOptions);
         });
 
         services.AddScoped<ILinkCacheService, ValkeyLinkCacheService>();
