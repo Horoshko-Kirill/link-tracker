@@ -54,6 +54,7 @@ services:
       - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
       - Kafka__Topic=link-updates
       - Kafka__SchemaRegistryUrl=http://schema-registry:8081
+      - Valkey__Configuration=valkey-node-0:6379,valkey-node-1:6379,valkey-node-2:6379
     depends_on:
       scrapper.migrator:
         condition: service_completed_successfully
@@ -248,9 +249,54 @@ services:
     networks:
       - linktracker-network
 
+  valkey-node-0:
+    image: bitnami/valkey-cluster:latest
+    container_name: valkey-node-0
+    environment:
+      - VALKEY_CLUSTER_REPLICAS=0
+      - VALKEY_NODES=valkey-node-0 valkey-node-1 valkey-node-2
+      - VALKEY_CLUSTER_CREATOR=yes
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - valkey_data:/bitnami/valkey/data
+    networks:
+      - linktracker-network
+
+  valkey-node-1:
+    image: bitnami/valkey-cluster:latest
+    container_name: valkey-node-1
+    environment:
+      - VALKEY_CLUSTER_REPLICAS=0
+      - VALKEY_NODES=valkey-node-0 valkey-node-1 valkey-node-2
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6380:6379"
+    volumes:
+      - valkey_data:/bitnami/valkey/data
+    networks:
+      - linktracker-network
+
+  valkey-node-2:
+    image: bitnami/valkey-cluster:latest
+    container_name: valkey-node-2
+    environment:
+      - VALKEY_CLUSTER_REPLICAS=0
+      - VALKEY_NODES=valkey-node-0 valkey-node-1 valkey-node-2
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6381:6379"
+    volumes:
+      - valkey_data:/bitnami/valkey/data
+    networks:
+      - linktracker-network
+
+
 networks:
   linktracker-network:
     driver: bridge
 
 volumes:
   postgres_data:
+  valkey_data:
