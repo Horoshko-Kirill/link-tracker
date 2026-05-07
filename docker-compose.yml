@@ -387,6 +387,16 @@ services:
 
         echo "VALKEY CLUSTER READY"
 
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis-insight
+    ports:
+      - "5540:5540"
+    volumes:
+      - redis_insight_data:/data
+    networks:
+      - linktracker-network
+
 networks:
   linktracker-network:
     driver: bridge
@@ -396,3 +406,4 @@ volumes:
   valkey_node_1_data:
   valkey_node_2_data:
   valkey_node_3_data:
+  redis_insight_data:
