@@ -26,6 +26,8 @@ public static class Extensions
         services.AddMessageSenders(configuration);
 
         services.AddScrapperQuartz(configuration);
+        
+        services.AddValkey(configuration);
 
         return services;
     }
