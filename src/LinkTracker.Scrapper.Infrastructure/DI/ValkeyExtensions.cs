@@ -14,7 +14,7 @@ public static class ValkeyExtensions
     public static IServiceCollection AddValkey(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<ValkeyOptions>(configuration.GetSection(ValkeyOptions.SectionName));
-        
+
         services.AddSingleton<IConnectionMultiplexer>(sp =>
         {
             var options = sp.GetRequiredService<IOptions<ValkeyOptions>>().Value;
@@ -27,7 +27,7 @@ public static class ValkeyExtensions
         });
 
         services.AddScoped<ILinkCacheService, ValkeyLinkCacheService>();
-        
+
         services.Decorate<ILinkService, CachedLinkService>();
 
         return services;

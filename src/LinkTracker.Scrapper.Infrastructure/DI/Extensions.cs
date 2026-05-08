@@ -26,8 +26,13 @@ public static class Extensions
         services.AddMessageSenders(configuration);
 
         services.AddScrapperQuartz(configuration);
-        
-        services.AddValkey(configuration);
+
+        var valkeyOptions = configuration.GetSection(ValkeyOptions.SectionName).Get<ValkeyOptions>();
+
+        if (valkeyOptions?.Enabled == true)
+        {
+            services.AddValkey(configuration);
+        }
 
         return services;
     }

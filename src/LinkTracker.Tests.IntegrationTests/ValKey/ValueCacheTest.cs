@@ -46,7 +46,7 @@ public class ValkeyCacheTests
         Assert.Equal(0, cacheResult.ExitCode);
         Assert.Contains("\"size\"", cacheResult.Stdout, StringComparison.OrdinalIgnoreCase);
     }
-    
+
     [Fact]
     public async Task AddLink_Should_Invalidate_List_Cache()
     {

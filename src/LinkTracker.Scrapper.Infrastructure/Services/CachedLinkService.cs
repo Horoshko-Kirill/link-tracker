@@ -25,13 +25,13 @@ public class CachedLinkService : ILinkService
             _logger.LogInformation($"Cached links for {chatId}:{tag ?? "all"} successfully retrieved.");
             return cached;
         }
-        
+
         _logger.LogInformation($"Cached links for {chatId} does not exist.");
-        
+
         var result = await _inner.GetLinksAsync(chatId, tag, cancellationToken);
-        
+
         await _cache.SetAsync(chatId, tag, result, cancellationToken);
-        
+
         return result;
     }
 

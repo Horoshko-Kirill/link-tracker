@@ -85,7 +85,7 @@ public class TestEnvironment : IAsyncLifetime
             "-c",
             "cub kafka-ready -b kafka:29092 1 60 && kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic link-updates --partitions 3 --replication-factor 1"
         ]);
-        
+
         Valkey = new ContainerBuilder()
             .WithImage("valkey/valkey:8.0")
             .WithNetwork(_network)

@@ -20,7 +20,7 @@ public class ValkeyLinkCacheService : ILinkCacheService
     }
 
     private static string Key(long chatId, string? tag = null) => $"links:{{{chatId}}}:{tag ?? "all"}";
-    
+
     public async Task<ListLinksResponse?> GetAsync(long chatId, string? tag = null, CancellationToken cancellationToken = default)
     {
         var value = await _db.StringGetAsync(Key(chatId, tag));
@@ -29,13 +29,13 @@ public class ValkeyLinkCacheService : ILinkCacheService
         {
             return null;
         }
-        
+
         return JsonSerializer.Deserialize<ListLinksResponse>((string)value!);
     }
 
     public async Task SetAsync(long chatId, string? tag, ListLinksResponse response, CancellationToken cancellationToken = default)
     {
-        var json  = JsonSerializer.Serialize(response);
+        var json = JsonSerializer.Serialize(response);
         await _db.StringSetAsync(Key(chatId, tag), json, _valkeyOptions.DefaultTtlMinutes);
     }
 
