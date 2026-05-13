@@ -1,15 +1,11 @@
-﻿using System.Text.Json;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
-using LinkTracker.Bot.Application.InterfacesServices;
 using LinkTracker.Bot.Contracts.Avro;
 using LinkTracker.Bot.Contracts.Avro.Mappers;
-using LinkTracker.Bot.Contracts.Dto;
 using LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
 using LinkTracker.Bot.Infrastructure.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

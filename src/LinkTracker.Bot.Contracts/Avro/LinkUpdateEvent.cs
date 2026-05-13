@@ -12,6 +12,7 @@ public class LinkUpdateEvent : ISpecificRecord
             "name": "LinkUpdateEvent",
             "namespace": "LinkTracker.Bot.Contracts.Avro",
             "fields": [
+                { "name": "eventId", "type": "string" },
                 { "name": "url", "type": "string" },
                 { "name": "description", "type": "string" },
                 {
@@ -26,6 +27,8 @@ public class LinkUpdateEvent : ISpecificRecord
         """);
 
     public virtual Schema Schema => _SCHEMA;
+    
+    public string eventId { get; set; } = string.Empty;
     public string url { get; set; } = string.Empty;
     public string description { get; set; } = string.Empty;
     public IList<long> tgChatIds { get; set; } = new List<long>();
@@ -34,9 +37,10 @@ public class LinkUpdateEvent : ISpecificRecord
     {
         return fieldPos switch
         {
-            0 => url,
-            1 => description,
-            2 => tgChatIds,
+            0 => eventId,
+            1 => url,
+            2 => description,
+            3 => tgChatIds,
             _ => throw new AvroRuntimeException($"Bad index {fieldPos}")
         };
     }
@@ -46,12 +50,15 @@ public class LinkUpdateEvent : ISpecificRecord
         switch (fieldPos)
         {
             case 0:
+                eventId = (string)fieldValue; 
+            break;
+            case 1:
                 url = (string)fieldValue;
                 break;
-            case 1:
+            case 2:
                 description = (string)fieldValue;
                 break;
-            case 2:
+            case 3:
                 tgChatIds = (IList<long>)fieldValue;
                 break;
             default:

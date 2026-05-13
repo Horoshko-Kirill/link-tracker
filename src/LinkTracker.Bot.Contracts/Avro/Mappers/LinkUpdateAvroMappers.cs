@@ -8,6 +8,7 @@ public static class LinkUpdateAvroMappers
     {
         return new LinkUpdateEvent
         {
+            eventId = Guid.NewGuid().ToString(),
             url = dto.Url ?? string.Empty,
             description = dto.Description,
             tgChatIds = dto.ChatIds
@@ -18,6 +19,7 @@ public static class LinkUpdateAvroMappers
     {
         return new LinkUpdate
         {
+            EventId = avro.eventId,
             Url = avro.url,
             Description = avro.description,
             ChatIds = avro.tgChatIds.ToList()
