@@ -22,6 +22,7 @@ public static class Extensions
 
         services.AddTelegramClient();
         services.AddKafka();
+        services.AddValkey(configuration);
 
         services.AddScoped<ILinkUpdateMessageProcessor, LinkUpdateMessageProcessor>();
         services.AddScoped<ILinkUpdateProcessingService, LinkUpdateProcessingService>();
