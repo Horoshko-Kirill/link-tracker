@@ -2,6 +2,7 @@
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+using LinkTracker.Bot.Application.InterfacesServices;
 using LinkTracker.Bot.Contracts.Avro;
 using LinkTracker.Bot.Contracts.Avro.Mappers;
 using LinkTracker.Bot.Infrastructure.Kafka.Interfaces;
@@ -19,19 +20,22 @@ public class LinkUpdateKafkaConsumer : BackgroundService
     private readonly KafkaConsumerOptions _options;
     private readonly ISchemaRegistryClient _schemaRegistryClient;
     private readonly ILogger<LinkUpdateKafkaConsumer> _logger;
+    private readonly IEventDeduplicator _deduplicator;
 
     public LinkUpdateKafkaConsumer(
         ILinkUpdateProcessingService processingService,
         IDeadLetterQueueProducer deadLetterQueueProducer,
         IOptions<KafkaConsumerOptions> options,
         ISchemaRegistryClient schemaRegistryClient,
-        ILogger<LinkUpdateKafkaConsumer> logger)
+        ILogger<LinkUpdateKafkaConsumer> logger,
+        IEventDeduplicator deduplicator)
     {
         _processingService = processingService;
         _deadLetterQueueProducer = deadLetterQueueProducer;
         _options = options.Value;
         _schemaRegistryClient = schemaRegistryClient;
         _logger = logger;
+        _deduplicator = deduplicator;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -58,10 +62,21 @@ public class LinkUpdateKafkaConsumer : BackgroundService
                 result = consumer.Consume(stoppingToken);
 
                 var linkUpdate = LinkUpdateAvroMappers.ToDto(result.Message.Value);
+                
+                var alreadyProcessed = await _deduplicator.IsProcessedAsync(linkUpdate.EventId);
+                
+                if (alreadyProcessed)
+                {
+                    _logger.LogInformation(
+                        "Duplicate skipped {EventId}",
+                        linkUpdate.EventId);
 
-                var processingResult = await _processingService.ProcessAsync(
-                    linkUpdate,
-                    stoppingToken);
+                    consumer.Commit(result);
+
+                    continue;
+                }
+
+                var processingResult = await _processingService.ProcessAsync(linkUpdate, stoppingToken);
 
                 if (!processingResult.IsSuccess)
                 {
@@ -71,6 +86,10 @@ public class LinkUpdateKafkaConsumer : BackgroundService
                         processingResult.ErrorType!,
                         processingResult.ErrorMessage!,
                         stoppingToken);
+                }
+                else
+                {
+                    await _deduplicator.MarkProcessedAsync(linkUpdate.EventId);
                 }
 
                 consumer.Commit(result);
