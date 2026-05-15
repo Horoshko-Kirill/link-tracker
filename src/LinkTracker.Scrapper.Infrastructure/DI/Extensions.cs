@@ -21,7 +21,7 @@ public static class Extensions
 
         if (valkeyOptions?.Enabled == true)
         {
-            services.AddValkey(configuration);
+            services.AddCached(configuration);
         }
 
         return services;

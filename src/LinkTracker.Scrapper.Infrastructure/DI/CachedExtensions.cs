@@ -9,9 +9,9 @@ using StackExchange.Redis;
 
 namespace LinkTracker.Scrapper.Infrastructure.DI;
 
-public static class ValkeyExtensions
+public static class CachedExtensions
 {
-    public static IServiceCollection AddValkey(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCached(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<ValkeyOptions>(configuration.GetSection(ValkeyOptions.SectionName));
 
@@ -26,8 +26,12 @@ public static class ValkeyExtensions
             return ConnectionMultiplexer.Connect(redisOptions);
         });
 
-        services.AddScoped<ILinkCacheService, ValkeyLinkCacheService>();
-
+        services.AddMemoryCache();
+        
+        services.AddScoped<ValkeyLinkCacheService>();
+        services.AddSingleton<MemoryLinkCacheService>();
+        services.AddScoped<ILinkCacheService, CompositeLinkCacheService>();
+        
         services.Decorate<ILinkService, CachedLinkService>();
 
         return services;
