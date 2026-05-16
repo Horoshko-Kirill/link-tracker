@@ -13,31 +13,24 @@ public static class ClientExtensions
     {
         var clientOptions = configuration.GetSection(ClientOptions.SectionName).Get<ClientOptions>();
 
-        if (clientOptions == null)
-        {
-            throw new InvalidOperationException($"ClientOptions configuration section '{ClientOptions.SectionName}' not found");
-        }
-
         switch (clientOptions.Type)
         {
             case "Http":
 
-                services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
-                {
-                    var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;
-
-                    client.BaseAddress = new Uri(options.BaseUrl);
-                });
+                services.AddScrapperHttpClient(configuration);
 
                 break;
             case "Grpc":
-
+                
+                services.AddTransient<GrpcResilienceInterceptor>();
+                
                 services.AddGrpcClient<ScrapperLinkService.ScrapperLinkServiceClient>((sp, o) =>
                 {
                     var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;
 
                     o.Address = new Uri(options.BaseUrl);
-                });
+                })
+                .AddInterceptor<GrpcResilienceInterceptor>();
 
                 services.AddSingleton<IScrapperClient, ScrapperGrpcClient>();
 

@@ -22,6 +22,9 @@ builder.Services.Configure<BotOptions>(
 builder.Services.Configure<ScrapperOptions>(
     builder.Configuration.GetSection(ScrapperOptions.SectionName));
 
+builder.Services.Configure<ResilienceOptions>(
+    builder.Configuration.GetSection(ResilienceOptions.SectionName));
+
 builder.Services.Configure<KestrelOptions>(
     builder.Configuration.GetSection(KestrelOptions.SectionName));
 

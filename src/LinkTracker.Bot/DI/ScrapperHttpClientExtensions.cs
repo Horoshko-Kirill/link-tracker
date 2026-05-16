@@ -1,23 +1,22 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesClients;
-using LinkTracker.Scrapper.Infrastructure.Clients;
-using LinkTracker.Scrapper.Infrastructure.Options;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using LinkTracker.Bot.Application.InterfacesClients;
+using LinkTracker.Bot.Infrastructure.Clients;
+using LinkTracker.Bot.Infrastructure.Options;
+using LinkTracker.Bot.Options;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
 
-namespace LinkTracker.Scrapper.Infrastructure.DI;
+namespace LinkTracker.Bot.DI;
 
-public static class GitHubClientExtensions
+public static class ScrapperHttpClientExtensions
 {
-    public static IServiceCollection AddGitHubClient(this IServiceCollection services, IConfiguration configuration)
+     public static IServiceCollection AddScrapperHttpClient(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpClient<IGitHubClient, GitHubClient>((sp, client) =>
+        services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
         {
-            client.BaseAddress = new Uri("https://api.stackexchange.com/2.3");
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("link-tracker-bot");
+            var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;
+
+            client.BaseAddress = new Uri(options.BaseUrl);
         })
         .AddPolicyHandler((sp, _) =>
         {
@@ -29,7 +28,7 @@ public static class GitHubClientExtensions
         .AddPolicyHandler((sp, _) =>
         {
             var options = sp.GetRequiredService<IOptions<ResilienceOptions>>().Value;
-            var logger = sp.GetRequiredService<ILogger<GitHubClient>>();
+            var logger = sp.GetRequiredService<ILogger<ScrapperClient>>();
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -68,7 +67,7 @@ public static class GitHubClientExtensions
         .AddPolicyHandler((sp, _) =>
         {
             var options = sp.GetRequiredService<IOptions<ResilienceOptions>>().Value;
-            var logger = sp.GetRequiredService<ILogger<GitHubClient>>();
+            var logger = sp.GetRequiredService<ILogger<ScrapperClient>>();
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -99,13 +98,13 @@ public static class GitHubClientExtensions
                         {
                             logger.LogWarning(
                                 outcome.Exception,
-                                "Github circuit breaker OPEN for {Duration} seconds because of exception",
+                                "Scrapper circuit breaker OPEN for {Duration} seconds because of exception",
                                 duration.TotalSeconds);
                         }
                         else
                         {
                             logger.LogWarning(
-                                "Github circuit breaker OPEN for {Duration} seconds because of status code {StatusCode}",
+                                "Scrapper circuit breaker OPEN for {Duration} seconds because of status code {StatusCode}",
                                 duration.TotalSeconds,
                                 (int?)outcome.Result?.StatusCode);
                         }
@@ -113,17 +112,15 @@ public static class GitHubClientExtensions
                     
                     onReset: () =>
                     {
-                        logger.LogInformation(
-                            "Github circuit breaker CLOSED");
+                        logger.LogInformation("Scrapper circuit breaker CLOSED");
                     },
 
                     onHalfOpen: () =>
                     {
-                        logger.LogInformation(
-                            "Github circuit breaker HALF-OPEN");
+                        logger.LogInformation("Scrapper circuit breaker HALF-OPEN");
                     });
         });
-        
+
         return services;
     }
 }

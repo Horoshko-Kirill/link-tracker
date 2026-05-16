@@ -28,7 +28,7 @@ public static class BotHttpClientExtensions
         .AddPolicyHandler((sp, _) =>
         {
             var options = sp.GetRequiredService<IOptions<ResilienceOptions>>().Value;
-            var logger = sp.GetRequiredService<ILogger<StackOverflowClient>>();
+            var logger = sp.GetRequiredService<ILogger<GitHubClient>>();
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -67,7 +67,7 @@ public static class BotHttpClientExtensions
         .AddPolicyHandler((sp, _) =>
         {
             var options = sp.GetRequiredService<IOptions<ResilienceOptions>>().Value;
-            var logger = sp.GetRequiredService<ILogger<StackOverflowClient>>();
+            var logger = sp.GetRequiredService<ILogger<BotClient>>();
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
