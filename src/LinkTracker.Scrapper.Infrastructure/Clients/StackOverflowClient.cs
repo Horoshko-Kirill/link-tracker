@@ -1,4 +1,5 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesClients;
+﻿using System.Net;
+using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Domain.ClientsModels.StackOverflow;
 using System.Net.Http.Json;
 using LinkTracker.Scrapper.Contracts.Dto;
@@ -50,10 +51,12 @@ public class StackOverflowClient : IStackOverflowClient
             $"/questions/{questionId}?site=stackoverflow",
             cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
+        if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
         }
+
+        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<StackOverflowResponse<StackOverflowQuestionResponse>>(
             cancellationToken: cancellationToken);
@@ -138,10 +141,7 @@ public class StackOverflowClient : IStackOverflowClient
             $"/questions/{questionId}/answers?site=stackoverflow&sort=creation&order=desc&page={page}&pagesize=100&filter=withbody",
             cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return [];
-        }
+        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<StackOverflowResponse<StackOverflowAnswerResponse>>(
             cancellationToken: cancellationToken);
@@ -158,10 +158,7 @@ public class StackOverflowClient : IStackOverflowClient
             $"/questions/{questionId}/comments?site=stackoverflow&sort=creation&order=desc&page={page}&pagesize=100&filter=withbody",
             cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return [];
-        }
+        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<StackOverflowResponse<StackOverflowCommentResponse>>(
             cancellationToken: cancellationToken);

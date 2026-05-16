@@ -115,10 +115,7 @@ public class GitHubClient : IGitHubClient
             $"/repos/{owner}/{repo}/issues?state=all&sort=created&direction=desc&per_page=100&page={page}",
             cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return [];
-        }
+        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<List<GitHubIssueResponse>>(
             cancellationToken: cancellationToken);
@@ -136,10 +133,7 @@ public class GitHubClient : IGitHubClient
             $"/repos/{owner}/{repo}/pulls?state=all&sort=created&direction=desc&per_page=100&page={page}",
             cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return [];
-        }
+        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<List<GitHubPullRequestResponse>>(
             cancellationToken: cancellationToken);
