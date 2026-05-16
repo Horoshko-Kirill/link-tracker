@@ -12,8 +12,8 @@ public static class Extensions
     {
         services.AddRepository(configuration);
 
-        services.AddSingleton<IGitHubClient, GitHubClient>();
-        services.AddSingleton<IStackOverflowClient, StackOverflowClient>();
+        services.AddGitHubClient(configuration);
+        services.AddStackOverflowClient(configuration);
         services.AddMessageSenders(configuration);
         services.AddScrapperQuartz(configuration);
 

@@ -15,8 +15,6 @@ public class StackOverflowClient : IStackOverflowClient
     public StackOverflowClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        httpClient.BaseAddress = new Uri("https://api.stackexchange.com/2.3");
-        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("link-tracker-bot");
     }
 
     public async Task<IReadOnlyCollection<UpdateEventDto>> GetNewEventsAsync(

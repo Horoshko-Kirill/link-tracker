@@ -3,6 +3,7 @@ using LinkTracker.Scrapper.Application.DI;
 using LinkTracker.Scrapper.DI;
 using LinkTracker.Scrapper.Grpc;
 using LinkTracker.Scrapper.Infrastructure.DI;
+using LinkTracker.Scrapper.Infrastructure.Options;
 using LinkTracker.Scrapper.Middleware;
 using LinkTracker.Scrapper.Options;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -14,6 +15,9 @@ builder.Services.Configure<BotOptions>(
 
 builder.Services.Configure<ClientOptions>(
     builder.Configuration.GetSection(ClientOptions.SectionName));
+
+builder.Services.Configure<ResilienceOptions>(
+    builder.Configuration.GetSection(ResilienceOptions.SectionName));
 
 builder.Services.Configure<KestrelOptions>(
     builder.Configuration.GetSection(KestrelOptions.SectionName));
