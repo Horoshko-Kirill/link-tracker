@@ -13,31 +13,26 @@ public static class ClientExtensions
     {
         var clientOptions = configuration.GetSection(ClientOptions.SectionName).Get<ClientOptions>();
 
-        if (clientOptions == null)
-        {
-            throw new InvalidOperationException($"ClientOptions configuration section '{ClientOptions.SectionName}' not found");
-        }
-
         switch (clientOptions.Type)
         {
             case "Http":
-
-                services.AddHttpClient<IBotClient, BotClient>((sp, client) =>
-                {
-                    var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
-
-                    client.BaseAddress = new Uri(options.BaseUrl);
-                });
-
+                
+                services.AddBotHttpClient(configuration);
+                
                 break;
             case "Grpc":
 
-                services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
-                {
-                    var options = sp.GetRequiredService<IOptions<BotOptions>>().Value;
+                services.AddTransient<GrpcResilienceInterceptor>();
 
-                    o.Address = new Uri(options.BaseUrl);
-                });
+                services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) => 
+                    {
+                        var options = sp
+                            .GetRequiredService<IOptions<BotOptions>>()
+                            .Value;
+
+                        o.Address = new Uri(options.BaseUrl);
+                    })
+                    .AddInterceptor<GrpcResilienceInterceptor>();
 
                 services.AddSingleton<IBotClient, BotGrpcClient>();
 
