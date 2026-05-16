@@ -9,6 +9,7 @@ using LinkTracker.Bot.Infrastructure.Options;
 using LinkTracker.Bot.Middleware;
 using LinkTracker.Bot.Options;
 using LinkTracker.Bot.Services;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,22 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHostedService<TelegramHostedService>();
+
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(o =>
+    {
+        o.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Select(x => new
+                {
+                    Field = x.Key,
+                    Errors = x.Value.Errors.Select(e => e.ErrorMessage)
+                });
+
+            return new BadRequestObjectResult(errors);
+        };
+    });
 
 var app = builder.Build();
 

@@ -28,7 +28,7 @@ public static class BotHttpClientExtensions
         .AddPolicyHandler((sp, _) =>
         {
             var options = sp.GetRequiredService<IOptions<ResilienceOptions>>().Value;
-            var logger = sp.GetRequiredService<ILogger<GitHubClient>>();
+            var logger = sp.GetRequiredService<ILogger<BotClient>>();
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()

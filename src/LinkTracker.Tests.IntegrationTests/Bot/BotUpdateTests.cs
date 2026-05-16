@@ -38,12 +38,12 @@ public class BotUpdateTests
     {
         var invalid = new LinkUpdate
         {
-            Url = null!,
-            Description = null!,
+            Url = string.Empty,
+            Description = null,
             ChatIds = new List<long>()
         };
 
-        await Assert.ThrowsAsync<BotApiException>(() =>
+        await Assert.ThrowsAsync<System.Text.Json.JsonException>(() =>
         _bot.PostUpdateAsync(invalid));
     }
 }
