@@ -10,7 +10,7 @@ namespace LinkTracker.Bot.DI;
 
 public static class ScrapperHttpClientExtensions
 {
-     public static IServiceCollection AddScrapperHttpClient(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddScrapperHttpClient(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient<IScrapperClient, ScrapperClient>((sp, client) =>
         {
@@ -77,14 +77,14 @@ public static class ScrapperHttpClientExtensions
                         .Contains((int)response.StatusCode))
 
                 .AdvancedCircuitBreakerAsync(
-                    
+
                     failureThreshold:
                         options.CircuitBreaker.FailureThreshold,
-                    
+
                     samplingDuration:
                         TimeSpan.FromSeconds(
                             options.CircuitBreaker.SamplingDurationSeconds),
-                    
+
                     minimumThroughput:
                         options.CircuitBreaker.MinimumThroughput,
 
@@ -109,7 +109,7 @@ public static class ScrapperHttpClientExtensions
                                 (int?)outcome.Result?.StatusCode);
                         }
                     },
-                    
+
                     onReset: () =>
                     {
                         logger.LogInformation("Scrapper circuit breaker CLOSED");

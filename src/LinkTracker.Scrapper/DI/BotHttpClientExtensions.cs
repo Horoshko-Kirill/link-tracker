@@ -77,14 +77,14 @@ public static class BotHttpClientExtensions
                         .Contains((int)response.StatusCode))
 
                 .AdvancedCircuitBreakerAsync(
-                    
+
                     failureThreshold:
                         options.CircuitBreaker.FailureThreshold,
-                    
+
                     samplingDuration:
                         TimeSpan.FromSeconds(
                             options.CircuitBreaker.SamplingDurationSeconds),
-                    
+
                     minimumThroughput:
                         options.CircuitBreaker.MinimumThroughput,
 
@@ -109,7 +109,7 @@ public static class BotHttpClientExtensions
                                 (int?)outcome.Result?.StatusCode);
                         }
                     },
-                    
+
                     onReset: () =>
                     {
                         logger.LogInformation("Bot circuit breaker CLOSED");

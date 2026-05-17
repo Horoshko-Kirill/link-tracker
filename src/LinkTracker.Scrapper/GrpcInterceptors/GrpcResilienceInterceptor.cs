@@ -13,7 +13,7 @@ public class GrpcResilienceInterceptor : Interceptor
     public GrpcResilienceInterceptor(IOptions<ResilienceOptions> options)
     {
         var resilience = options.Value;
-        
+
         var retryPolicy = Policy
             .Handle<RpcException>(ex =>
                 ex.StatusCode == StatusCode.Unavailable ||
@@ -48,7 +48,7 @@ public class GrpcResilienceInterceptor : Interceptor
             circuitBreakerPolicy,
             timeoutPolicy);
     }
-    
+
     public override AsyncUnaryCall<TResponse> AsyncUnaryCall<TRequest, TResponse>(
         TRequest request,
         ClientInterceptorContext<TRequest, TResponse> context,

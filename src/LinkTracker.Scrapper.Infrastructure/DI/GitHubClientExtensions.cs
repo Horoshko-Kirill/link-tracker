@@ -78,14 +78,14 @@ public static class GitHubClientExtensions
                         .Contains((int)response.StatusCode))
 
                 .AdvancedCircuitBreakerAsync(
-                    
+
                     failureThreshold:
                         options.CircuitBreaker.FailureThreshold,
-                    
+
                     samplingDuration:
                         TimeSpan.FromSeconds(
                             options.CircuitBreaker.SamplingDurationSeconds),
-                    
+
                     minimumThroughput:
                         options.CircuitBreaker.MinimumThroughput,
 
@@ -110,7 +110,7 @@ public static class GitHubClientExtensions
                                 (int?)outcome.Result?.StatusCode);
                         }
                     },
-                    
+
                     onReset: () =>
                     {
                         logger.LogInformation(
@@ -123,7 +123,7 @@ public static class GitHubClientExtensions
                             "Github circuit breaker HALF-OPEN");
                     });
         });
-        
+
         return services;
     }
 }

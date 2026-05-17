@@ -15,7 +15,7 @@ public class ValkeyEventDeduplicator : IEventDeduplicator
         _db = connection.GetDatabase();
         _valkeyOptions = valkeyOptions.Value;
     }
-    
+
     private static string BuildKey(string eventId)
     {
         return $"dedup:event:{eventId}";

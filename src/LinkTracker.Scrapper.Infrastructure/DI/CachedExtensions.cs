@@ -27,11 +27,11 @@ public static class CachedExtensions
         });
 
         services.AddMemoryCache();
-        
+
         services.AddScoped<ValkeyLinkCacheService>();
         services.AddSingleton<MemoryLinkCacheService>();
         services.AddScoped<ILinkCacheService, CompositeLinkCacheService>();
-        
+
         services.Decorate<ILinkService, CachedLinkService>();
 
         return services;

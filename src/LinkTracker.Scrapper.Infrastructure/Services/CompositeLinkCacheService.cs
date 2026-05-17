@@ -22,9 +22,9 @@ public class CompositeLinkCacheService : ILinkCacheService
         {
             return memoryValue;
         }
-        
+
         var valkeyValue = await _memory.GetAsync(chatId, tag, cancellationToken);
-        
+
         return valkeyValue;
     }
 

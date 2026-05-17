@@ -119,7 +119,7 @@ public class TestEnvironment : IAsyncLifetime
 
         await ScrapperMigrator.StartAsync();
         await ScrapperMigrator.GetExitCodeAsync();
-        
+
         WireMock = new ContainerBuilder()
             .WithImage("wiremock/wiremock:latest")
             .WithNetwork(_network)
@@ -128,7 +128,7 @@ public class TestEnvironment : IAsyncLifetime
             .WithCommand("--global-response-templating", "--verbose") // удобно для отладки
             .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080).ForPath("/__admin")))
             .Build();
-        
+
         await WireMock.StartAsync();
 
         Scrapper = new ContainerBuilder()

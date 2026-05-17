@@ -16,15 +16,15 @@ public static class ClientExtensions
         switch (clientOptions.Type)
         {
             case "Http":
-                
+
                 services.AddBotHttpClient(configuration);
-                
+
                 break;
             case "Grpc":
 
                 services.AddTransient<GrpcResilienceInterceptor>();
 
-                services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) => 
+                services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
                     {
                         var options = sp
                             .GetRequiredService<IOptions<BotOptions>>()

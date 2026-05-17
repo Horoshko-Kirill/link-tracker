@@ -27,7 +27,7 @@ public class LinkUpdateEvent : ISpecificRecord
         """);
 
     public virtual Schema Schema => _SCHEMA;
-    
+
     public string eventId { get; set; } = string.Empty;
     public string url { get; set; } = string.Empty;
     public string description { get; set; } = string.Empty;
@@ -50,8 +50,8 @@ public class LinkUpdateEvent : ISpecificRecord
         switch (fieldPos)
         {
             case 0:
-                eventId = (string)fieldValue; 
-            break;
+                eventId = (string)fieldValue;
+                break;
             case 1:
                 url = (string)fieldValue;
                 break;

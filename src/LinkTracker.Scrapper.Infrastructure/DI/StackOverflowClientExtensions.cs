@@ -79,14 +79,14 @@ public static class StackOverflowClientExtensions
                         .Contains((int)response.StatusCode))
 
                 .AdvancedCircuitBreakerAsync(
-                    
+
                     failureThreshold:
                         options.CircuitBreaker.FailureThreshold,
-                    
+
                     samplingDuration:
                         TimeSpan.FromSeconds(
                             options.CircuitBreaker.SamplingDurationSeconds),
-                    
+
                     minimumThroughput:
                         options.CircuitBreaker.MinimumThroughput,
 
@@ -111,7 +111,7 @@ public static class StackOverflowClientExtensions
                                 (int?)outcome.Result?.StatusCode);
                         }
                     },
-                    
+
                     onReset: () =>
                     {
                         logger.LogInformation(
@@ -124,7 +124,7 @@ public static class StackOverflowClientExtensions
                             "StackOverflow circuit breaker HALF-OPEN");
                     });
         });
-        
+
         return services;
     }
 }

@@ -62,9 +62,9 @@ public class LinkUpdateKafkaConsumer : BackgroundService
                 result = consumer.Consume(stoppingToken);
 
                 var linkUpdate = LinkUpdateAvroMappers.ToDto(result.Message.Value);
-                
+
                 var alreadyProcessed = await _deduplicator.IsProcessedAsync(linkUpdate.EventId);
-                
+
                 if (alreadyProcessed)
                 {
                     _logger.LogInformation(

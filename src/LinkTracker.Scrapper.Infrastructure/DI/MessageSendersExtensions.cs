@@ -16,7 +16,7 @@ public static class MessageSendersExtensions
     public static IServiceCollection AddMessageSenders(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<KafkaOptions>(configuration.GetSection(KafkaOptions.SectionName));
-        
+
         services.AddSingleton<ISchemaRegistryClient>(sp =>
         {
             var options = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
@@ -43,11 +43,11 @@ public static class MessageSendersExtensions
                 .SetValueSerializer(new AvroSerializer<LinkUpdateEvent>(schemaRegistry))
                 .Build();
         });
-        
+
         services.AddScoped<KafkaMessageSender>();
         services.AddScoped<HttpMessageSender>();
         services.AddScoped<IMessageSender, FallbackMessageSender>();
-        
+
         return services;
     }
 }

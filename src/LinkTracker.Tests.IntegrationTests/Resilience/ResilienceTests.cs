@@ -48,7 +48,7 @@ public class ResilienceTests
             stopwatch.Elapsed < TimeSpan.FromSeconds(10),
             "Timeout policy did not stop request early");
     }
-    
+
     [Fact]
     public async Task CircuitBreaker_Should_Open()
     {
@@ -63,16 +63,16 @@ public class ResilienceTests
 
         for (int i = 0; i < 10; i++)
         {
-            await client.PostAsJsonAsync("/some-trigger-endpoint", new {});
+            await client.PostAsJsonAsync("/some-trigger-endpoint", new { });
         }
 
         var sw = Stopwatch.StartNew();
 
-        var response = await client.PostAsJsonAsync("/some-trigger-endpoint", new {});
+        var response = await client.PostAsJsonAsync("/some-trigger-endpoint", new { });
 
         sw.Stop();
 
         Assert.True(sw.Elapsed < TimeSpan.FromMilliseconds(500));
     }
-    
+
 }

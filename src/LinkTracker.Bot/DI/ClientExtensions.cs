@@ -21,9 +21,9 @@ public static class ClientExtensions
 
                 break;
             case "Grpc":
-                
+
                 services.AddTransient<GrpcResilienceInterceptor>();
-                
+
                 services.AddGrpcClient<ScrapperLinkService.ScrapperLinkServiceClient>((sp, o) =>
                 {
                     var options = sp.GetRequiredService<IOptions<ScrapperOptions>>().Value;

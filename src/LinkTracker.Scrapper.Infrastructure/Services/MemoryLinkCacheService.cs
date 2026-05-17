@@ -29,18 +29,18 @@ public class MemoryLinkCacheService : ILinkCacheService
     public Task SetAsync(long chatId, string? tag, ListLinksResponse response, CancellationToken cancellationToken = default)
     {
         var key = Key(chatId, tag);
-        
+
         var cts = _tokens.GetOrAdd(chatId, _ => new CancellationTokenSource());
-        
+
         var options = new MemoryCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = _options.DefaultTtlMinutes
         };
-        
+
         options.AddExpirationToken(new CancellationChangeToken(cts.Token));
-        
+
         _memoryCache.Set(key, response, options);
-        
+
         return Task.CompletedTask;
     }
 
