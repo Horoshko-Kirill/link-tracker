@@ -18,6 +18,7 @@ public class TestEnvironment : IAsyncLifetime
     public IContainer Kafka { get; private set; } = null!;
     public IContainer Zookeeper { get; private set; } = null!;
     public IContainer Valkey { get; private set; } = null!;
+    public IContainer WireMock { get; private set; } = null!;
 
     private static string DockerHost =>
         Environment.GetEnvironmentVariable("TESTCONTAINERS_HOST_OVERRIDE") ?? "localhost";
@@ -25,7 +26,7 @@ public class TestEnvironment : IAsyncLifetime
     public string BotUrl => $"http://{DockerHost}:{Bot.GetMappedPublicPort(80)}";
     public string ScrapperUrl => $"http://{DockerHost}:{Scrapper.GetMappedPublicPort(80)}";
     public string KafkaBootstrapAddress => $"{DockerHost}:{Kafka.GetMappedPublicPort(9092)}";
-
+    public string WireMockUrl => $"http://{DockerHost}:{WireMock.GetMappedPublicPort(8080)}";
     public TestEnvironment()
     {
         _network = new NetworkBuilder()
@@ -118,6 +119,17 @@ public class TestEnvironment : IAsyncLifetime
 
         await ScrapperMigrator.StartAsync();
         await ScrapperMigrator.GetExitCodeAsync();
+        
+        WireMock = new ContainerBuilder()
+            .WithImage("wiremock/wiremock:latest")
+            .WithNetwork(_network)
+            .WithNetworkAliases("wiremock")
+            .WithPortBinding(8080, true)
+            .WithCommand("--global-response-templating", "--verbose") // удобно для отладки
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080).ForPath("/__admin")))
+            .Build();
+        
+        await WireMock.StartAsync();
 
         Scrapper = new ContainerBuilder()
             .WithImage("link-tracker-scrapper:latest")
@@ -125,7 +137,7 @@ public class TestEnvironment : IAsyncLifetime
             .WithNetworkAliases("scrapper")
             .WithPortBinding(80, true)
             .WithEnvironment("ASPNETCORE_URLS", "http://+:80")
-            .WithEnvironment("TelegramBot__BaseUrl", "http://bot:80")
+            .WithEnvironment("TelegramBot__BaseUrl", "http://wiremock:8080")
             .WithEnvironment("Database__ConnectionString",
                 "Host=linktracker.db;Port=5432;Database=linktracker_test;Username=postgres;Password=postgres")
             .WithEnvironment("KESTREL__PORT", "80")
@@ -177,6 +189,7 @@ public class TestEnvironment : IAsyncLifetime
         await Zookeeper.DisposeAsync();
         await Db.DisposeAsync();
         await Valkey.DisposeAsync();
+        await WireMock.DisposeAsync();
         await _network.DeleteAsync();
     }
 }
