@@ -1,7 +1,11 @@
 using LinkTracker.AiAgent.Application.DI;
+using LinkTracker.AiAgent.Application.Options;
 using LinkTracker.AiAgent.Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<AiAgentOptions>(
+    builder.Configuration.GetSection(AiAgentOptions.SectionName));
 
 builder.Services.AddOpenApi();
 

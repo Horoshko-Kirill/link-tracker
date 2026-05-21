@@ -1,6 +1,6 @@
 ﻿namespace LinkTracker.AiAgent.Domain.Models;
 
-public class RowLinkUpdate
+public class RawLinkUpdate
 {
     public string EventId { get; set; } = string.Empty;
     public string Url { get; set; } = null!;
