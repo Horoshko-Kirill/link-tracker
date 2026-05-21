@@ -1,5 +1,5 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
-using LinkTracker.Scrapper.Application.InterfacesServices;
+﻿using LinkTracker.Scrapper.Application.InterfacesServices;
+using LinkTracker.Scrapper.Contracts.Dto;
 using Microsoft.Extensions.Logging;
 
 namespace LinkTracker.Scrapper.Infrastructure.MessageSenders;
@@ -20,12 +20,12 @@ public class FallbackMessageSender : IMessageSender
     {
         try
         {
-            await _httpMessageSender.SendAsync(linkUpdate, cancellationToken);
+            await _kafkaMessageSender.SendAsync(linkUpdate, cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "HTTP notification transport failed. Switching to Kafka fallback");
-            await _kafkaMessageSender.SendAsync(linkUpdate, cancellationToken);
+            _logger.LogError(ex, "Kafka notification transport failed. Switching to HTTP fallback");
+            await _httpMessageSender.SendAsync(linkUpdate, cancellationToken);
         }
     }
 }

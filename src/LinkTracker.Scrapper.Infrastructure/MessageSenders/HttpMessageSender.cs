@@ -1,6 +1,6 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
-using LinkTracker.Scrapper.Application.InterfacesClients;
+﻿using LinkTracker.Scrapper.Application.InterfacesClients;
 using LinkTracker.Scrapper.Application.InterfacesServices;
+using LinkTracker.Scrapper.Contracts.Dto;
 
 namespace LinkTracker.Scrapper.Infrastructure.MessageSenders;
 

@@ -1,5 +1,4 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
-using LinkTracker.Scrapper.Contracts.Dto;
+﻿using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Scrapper.Domain.Models;
 
 namespace LinkTracker.Scrapper.Application.Mappers;

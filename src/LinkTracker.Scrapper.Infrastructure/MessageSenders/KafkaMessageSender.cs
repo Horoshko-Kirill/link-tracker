@@ -1,10 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using Confluent.Kafka;
-using LinkTracker.Bot.Contracts.Avro;
-using LinkTracker.Bot.Contracts.Avro.Mappers;
-using LinkTracker.Bot.Contracts.Dto;
 using LinkTracker.Scrapper.Application.InterfacesServices;
+using LinkTracker.Scrapper.Contracts.Avro;
+using LinkTracker.Scrapper.Contracts.Avro.Mappers;
+using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Scrapper.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 

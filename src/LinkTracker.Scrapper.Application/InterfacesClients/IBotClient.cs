@@ -1,4 +1,4 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
+﻿using LinkTracker.Scrapper.Contracts.Dto;
 
 namespace LinkTracker.Scrapper.Application.InterfacesClients;
 

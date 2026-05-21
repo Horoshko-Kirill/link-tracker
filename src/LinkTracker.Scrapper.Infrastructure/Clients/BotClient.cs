@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
-using LinkTracker.Bot.Contracts.Dto;
 using LinkTracker.Scrapper.Application.InterfacesClients;
+using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Scrapper.Infrastructure.Handler;
 
 namespace LinkTracker.Scrapper.Infrastructure.Clients;

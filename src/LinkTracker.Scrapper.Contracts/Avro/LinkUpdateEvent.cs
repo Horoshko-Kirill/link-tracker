@@ -1,7 +1,7 @@
 ﻿using Avro;
 using Avro.Specific;
 
-namespace LinkTracker.Bot.Contracts.Avro;
+namespace LinkTracker.Scrapper.Contracts.Avro;
 
 public class LinkUpdateEvent : ISpecificRecord
 {
@@ -20,12 +20,7 @@ public class LinkUpdateEvent : ISpecificRecord
                     "type": {
                     "type": "array",
                     "items": "long"
-                    }
                 }
-                {
-                    "name": "priorityLevel",
-                    "type": "string",
-                    "default": "Normal"
                 }
             ]
         }
@@ -37,7 +32,6 @@ public class LinkUpdateEvent : ISpecificRecord
     public string url { get; set; } = string.Empty;
     public string description { get; set; } = string.Empty;
     public IList<long> tgChatIds { get; set; } = new List<long>();
-    public string priorityLevel { get; set; } = "Normal";
 
     public virtual object Get(int fieldPos)
     {
@@ -47,7 +41,6 @@ public class LinkUpdateEvent : ISpecificRecord
             1 => url,
             2 => description,
             3 => tgChatIds,
-            4 => priorityLevel, 
             _ => throw new AvroRuntimeException($"Bad index {fieldPos}")
         };
     }
@@ -67,9 +60,6 @@ public class LinkUpdateEvent : ISpecificRecord
                 break;
             case 3:
                 tgChatIds = (IList<long>)fieldValue;
-                break;
-            case 4:
-                priorityLevel = (string)fieldValue;
                 break;
             default:
                 throw new AvroRuntimeException($"Bad index {fieldPos}");

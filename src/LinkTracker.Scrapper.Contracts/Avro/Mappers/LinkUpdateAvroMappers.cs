@@ -1,7 +1,6 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
-using LinkTracker.Bot.Contracts.Enums;
+﻿using LinkTracker.Scrapper.Contracts.Dto;
 
-namespace LinkTracker.Bot.Contracts.Avro.Mappers;
+namespace LinkTracker.Scrapper.Contracts.Avro.Mappers;
 
 public static class LinkUpdateAvroMappers
 {
@@ -12,8 +11,7 @@ public static class LinkUpdateAvroMappers
             eventId = Guid.NewGuid().ToString(),
             url = dto.Url ?? string.Empty,
             description = dto.Description,
-            tgChatIds = dto.ChatIds,
-            priorityLevel = dto.PriorityLevel.ToString()
+            tgChatIds = dto.ChatIds
         };
     }
 
@@ -24,7 +22,6 @@ public static class LinkUpdateAvroMappers
             EventId = avro.eventId,
             Url = avro.url,
             Description = avro.description,
-            PriorityLevel = Enum.TryParse(avro.priorityLevel, true, out PriorityLevel parsed) ? parsed : PriorityLevel.Normal,
             ChatIds = avro.tgChatIds.ToList()
         };
     }
