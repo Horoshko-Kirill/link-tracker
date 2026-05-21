@@ -1,10 +1,11 @@
-﻿using LinkTracker.Bot.Contracts.Dto;
+﻿
 using LinkTracker.Scrapper.Application.Common.Pagination;
 using LinkTracker.Scrapper.Application.InterfacesCommon;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;
 using LinkTracker.Scrapper.Application.InterfacesServices;
 using LinkTracker.Scrapper.Application.Options;
 using LinkTracker.Scrapper.Application.Services;
+using LinkTracker.Scrapper.Contracts.Dto;
 using LinkTracker.Scrapper.Domain.Enum;
 using LinkTracker.Scrapper.Domain.Models;
 using Microsoft.Extensions.Logging;
