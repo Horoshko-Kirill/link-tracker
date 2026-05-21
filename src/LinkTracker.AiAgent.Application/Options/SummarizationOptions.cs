@@ -3,4 +3,7 @@
 public class SummarizationOptions
 {
     public int Threshould { get; set; } = 100;
+    public string Provider { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string ApiKey { get; set; } = string.Empty;
 }
