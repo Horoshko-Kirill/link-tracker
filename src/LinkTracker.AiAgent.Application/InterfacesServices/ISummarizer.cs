@@ -2,5 +2,5 @@
 
 public interface ISummarizer
 {
-    Task<string> SummarizeAsync(string text);
+    Task<string> SummarizeAsync(string text, CancellationToken cancellationToken = default);
 }

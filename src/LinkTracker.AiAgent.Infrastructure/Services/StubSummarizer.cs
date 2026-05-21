@@ -13,7 +13,7 @@ public class StubSummarizer : ISummarizer
         _options = options.Value;
     }
     
-    public Task<string> SummarizeAsync(string text)
+    public Task<string> SummarizeAsync(string text, CancellationToken cancellationToken = default)
     {
         if (text.Length <= _options.SummarizationOptions.Threshould)
         {
