@@ -25,7 +25,19 @@ public class HuggingFaceSummarizer : ISummarizer
             return text;
         }
         
-        var prompt = $"Summarize the following update in 2-3 sentences:\n\n{text}";
+        var prompt = $"""
+                      You are a text processing system.
+
+                      Your task:
+                      - Keep the original structure and meaning.
+                      - Do NOT change URLs.
+                      - Do NOT remove important entities (names, links, numbers, time, date).
+                      - Only shorten and simplify the description field.
+                      - Return only the processed text.
+
+                      Update:
+                      {text}
+                      """;
         
         using var request = new HttpRequestMessage(
             HttpMethod.Post,
