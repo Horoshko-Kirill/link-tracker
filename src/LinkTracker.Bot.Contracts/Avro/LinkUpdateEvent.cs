@@ -21,7 +21,7 @@ public class LinkUpdateEvent : ISpecificRecord
                     "type": "array",
                     "items": "long"
                     }
-                }
+                },
                 {
                     "name": "priorityLevel",
                     "type": "string",

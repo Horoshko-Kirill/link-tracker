@@ -216,6 +216,13 @@ services:
       --partitions 3
       --replication-factor 3
       --config min.insync.replicas=2
+      &&
+      kafka-topics --bootstrap-server kafka-1:29092
+      --create --if-not-exists
+      --topic link-updates-processed
+      --partitions 3
+      --replication-factor 3
+      --config min.insync.replicas=2
       "
     networks:
       - linktracker-network
