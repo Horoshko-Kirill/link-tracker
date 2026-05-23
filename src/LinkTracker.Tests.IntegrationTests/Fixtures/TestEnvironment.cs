@@ -19,7 +19,7 @@ public class TestEnvironment : IAsyncLifetime
     public IContainer Zookeeper { get; private set; } = null!;
     public IContainer Valkey { get; private set; } = null!;
     public IContainer WireMock { get; private set; } = null!;
-
+    public IContainer AiAgent { get; private set; } = null!;
     private static string DockerHost =>
         Environment.GetEnvironmentVariable("TESTCONTAINERS_HOST_OVERRIDE") ?? "localhost";
 
@@ -84,7 +84,10 @@ public class TestEnvironment : IAsyncLifetime
         await Kafka.ExecAsync([
             "bash",
             "-c",
-            "cub kafka-ready -b kafka:29092 1 60 && kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic link-updates --partitions 3 --replication-factor 1"
+            "cub kafka-ready -b kafka:29092 1 60 && " +
+            "kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic link-updates --partitions 3 --replication-factor 1 &&" +
+            "kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic link.raw-updates --partitions 1 --replication-factor 1 && " +
+            "kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic link.processed-updates --partitions 1 --replication-factor 1"
         ]);
 
         Valkey = new ContainerBuilder()
@@ -125,7 +128,7 @@ public class TestEnvironment : IAsyncLifetime
             .WithNetwork(_network)
             .WithNetworkAliases("wiremock")
             .WithPortBinding(8080, true)
-            .WithCommand("--global-response-templating", "--verbose") // удобно для отладки
+            .WithCommand("--global-response-templating", "--verbose")
             .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080).ForPath("/__admin")))
             .Build();
 
@@ -177,6 +180,21 @@ public class TestEnvironment : IAsyncLifetime
             .Build();
 
         await Bot.StartAsync();
+        
+        AiAgent = new ContainerBuilder()
+            .WithImage("link-tracker-ai-agent:latest")
+            .WithNetwork(_network)
+            .WithNetworkAliases("ai-agent")
+            .WithPortBinding(80, true)
+            .WithEnvironment("ASPNETCORE_URLS", "http://+:80")
+            .WithEnvironment("Kafka__BootstrapServers", "kafka:29092")
+            .WithEnvironment("Kafka__ConsumerTopic", "link.raw-updates")
+            .WithEnvironment("Kafka__ProduceTopic", "link.processed-updates")
+            .WithEnvironment("Kafka__GroupId", "ai-agent-tests")
+            .WithEnvironment("AiAgent__Summarization__ApiKey", "test")
+            .Build();
+
+        await AiAgent.StartAsync();
     }
 
     public async Task DisposeAsync()
@@ -190,6 +208,7 @@ public class TestEnvironment : IAsyncLifetime
         await Db.DisposeAsync();
         await Valkey.DisposeAsync();
         await WireMock.DisposeAsync();
+        await AiAgent.DisposeAsync();
         await _network.DeleteAsync();
     }
 }

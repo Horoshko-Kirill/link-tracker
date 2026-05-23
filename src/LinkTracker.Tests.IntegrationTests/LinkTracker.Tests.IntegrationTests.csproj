@@ -26,6 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LinkTracker.AiAgent.Application\LinkTracker.AiAgent.Application.csproj" />
+    <ProjectReference Include="..\LinkTracker.AiAgent.Contracts\LinkTracker.AiAgent.Contracts.csproj" />
+    <ProjectReference Include="..\LinkTracker.AiAgent.Domain\LinkTracker.AiAgent.Domain.csproj" />
+    <ProjectReference Include="..\LinkTracker.AiAgent.Infrastructure\LinkTracker.AiAgent.Infrastructure.csproj" />
+    <ProjectReference Include="..\LinkTracker.AiAgent\LinkTracker.AiAgent.csproj" />
     <ProjectReference Include="..\LinkTracker.Bot\LinkTracker.Bot.csproj" />
     <ProjectReference Include="..\LinkTracker.Scrapper\LinkTracker.Scrapper.csproj" />
   </ItemGroup>
