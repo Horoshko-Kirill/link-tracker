@@ -20,7 +20,7 @@ public class SummarizerFactory : ISummarizerFactory
 
     public ISummarizer Create()
     {
-        return _options.SummarizationOptions.Provider switch
+        return _options.Summarization.Provider switch
         {
             "HuggingFace" => _provider.GetRequiredService<HuggingFaceSummarizer>(),
             "Stub" => _provider.GetRequiredService<StubSummarizer>(),

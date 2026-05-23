@@ -54,7 +54,7 @@ public class KafkaWorker : BackgroundService
             try
             {
                 var msg = consumer.Consume(stoppingToken);
-
+                
                 var processedLink = await _pipeline.ProcessAsync(KafkaMapper.ToModel(msg.Message.Value), stoppingToken);
 
                 if (processedLink is null)

@@ -3,6 +3,6 @@
 public class AiAgentOptions
 {
     public const string SectionName = "AiAgent";
-    public FilteringOptions FilteringOptions { get; set; } = null!;
-    public SummarizationOptions SummarizationOptions { get; set; } = null!;
+    public FilteringOptions Filtering { get; set; } = null!;
+    public SummarizationOptions Summarization { get; set; } = null!;
 }

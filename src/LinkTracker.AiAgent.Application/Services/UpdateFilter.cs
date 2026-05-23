@@ -16,20 +16,20 @@ public class UpdateFilter : IUpdateFilter
     
     public bool ShouldProcess(RawLinkUpdate update)
     {
-        if (update.Description.Length < _options.FilteringOptions.MinLength)
+        if (update.Description.Length < _options.Filtering.MinLength)
         {
             return false;
         }
 
         var text = update.Description.ToLowerInvariant();
 
-        if (_options.FilteringOptions.ExcludedAuthors
+        if (_options.Filtering.ExcludedAuthors
             .Any(a => text.Contains(a.ToLowerInvariant())))
         {
             return false;
         }
 
-        if (_options.FilteringOptions.StopWords
+        if (_options.Filtering.StopWords
             .Any(w => text.Contains(w.ToLowerInvariant())))
         {
             return false;

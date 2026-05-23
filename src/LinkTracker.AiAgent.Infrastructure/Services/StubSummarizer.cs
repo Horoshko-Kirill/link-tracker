@@ -15,13 +15,13 @@ public class StubSummarizer : ISummarizer
     
     public Task<string> SummarizeAsync(string text, CancellationToken cancellationToken = default)
     {
-        if (text.Length <= _options.SummarizationOptions.Threshould)
+        if (text.Length <= _options.Summarization.Threshold)
         {
             return Task.FromResult(text);
         }
         
         return Task.FromResult(
-            text[.._options.SummarizationOptions.Threshould] + "..."
+            text[.._options.Summarization.Threshold] + "..."
         );
     }
 }

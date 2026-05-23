@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-
 using LinkTracker.Scrapper.Application.Common.Pagination;
 using LinkTracker.Scrapper.Application.InterfacesCommon;
 using LinkTracker.Scrapper.Application.InterfacesRepositories;

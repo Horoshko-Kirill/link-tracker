@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+using LinkTracker.AiAgent.Infrastructure.Kafka;
 using LinkTracker.AiAgent.Infrastructure.Options;
 using LinkTracker.Bot.Contracts.Avro;
 using Microsoft.Extensions.Configuration;
@@ -41,7 +42,8 @@ public static class KafkaExtensions
                 .SetValueSerializer(new AvroSerializer<LinkUpdateEvent>(schemaRegistry))
                 .Build();
         });
-        
+
+        services.AddHostedService<KafkaWorker>();
         return services;
     }
 }

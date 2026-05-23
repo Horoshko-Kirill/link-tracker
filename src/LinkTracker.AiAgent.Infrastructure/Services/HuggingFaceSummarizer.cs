@@ -20,30 +20,20 @@ public class HuggingFaceSummarizer : ISummarizer
     
     public async Task<string> SummarizeAsync(string text, CancellationToken cancellationToken = default)
     {
-        if (text.Length <= _options.SummarizationOptions.Threshould)
+        if (text.Length <= _options.Summarization.Threshold)
         {
             return text;
         }
         
-        var prompt = $"""
-                      You are a text processing system.
-
-                      Your task:
-                      - Keep the original structure and meaning.
-                      - Do NOT change URLs.
-                      - Do NOT remove important entities (names, links, numbers, time, date).
-                      - Only shorten and simplify the description field.
-                      - Return only the processed text.
-
-                      Update:
-                      {text}
-                      """;
+        var prompt = $"{text}";
         
         using var request = new HttpRequestMessage(
             HttpMethod.Post,
-            $"https://api-inference.huggingface.co/models/{_options.SummarizationOptions.Model}");
+            $"https://router.huggingface.co/hf-inference/models/{_options.Summarization.Model}");
         
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.SummarizationOptions.ApiKey);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.Summarization.ApiKey);
+        
+        
         
         request.Content = JsonContent.Create(new
         {

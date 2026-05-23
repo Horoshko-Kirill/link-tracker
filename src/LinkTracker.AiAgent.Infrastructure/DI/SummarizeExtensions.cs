@@ -14,7 +14,7 @@ public static class SummarizeExtensions
     {
         var aiAgentOptions = configuration.GetSection(AiAgentOptions.SectionName).Get<AiAgentOptions>();
         
-        switch (aiAgentOptions.SummarizationOptions.Provider)
+        switch (aiAgentOptions.Summarization.Provider)
         {
             case "HuggingFace":
                 services.AddSingleton<HuggingFaceSummarizer>();

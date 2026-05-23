@@ -9,7 +9,8 @@ public static class Extensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<IUpdateFilter, UpdateFilter>();
+        services.AddScoped<IUpdateFilter, UpdateFilter>();
+        services.AddScoped<IPipeline, Pipeline>();
         return services;
     }
 }

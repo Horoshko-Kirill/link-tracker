@@ -1,8 +1,8 @@
 ﻿using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
-using LinkTracker.Bot.Contracts.Avro;
 using LinkTracker.Scrapper.Application.InterfacesServices;
+using LinkTracker.Scrapper.Contracts.Avro;
 using LinkTracker.Scrapper.Infrastructure.MessageSenders;
 using LinkTracker.Scrapper.Infrastructure.Options;
 using Microsoft.Extensions.Configuration;

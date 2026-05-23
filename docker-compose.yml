@@ -17,7 +17,7 @@ services:
       - ClientType__Type=${PROTOCOL_TYPE_Scrapper}
       - KESTREL__TYPE=${PROTOCOL_TYPE_Bot}
       - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
-      - Kafka__Topic=link-updates
+      - Kafka__Topic=link-updates-processed
       - Kafka__GroupId=link-tracker-bot
       - Kafka__DeadLetterTopic=link-updates-dlq
       - Kafka__MaxProcessingAttempts=3
@@ -64,6 +64,30 @@ services:
         condition: service_started
       valkey-cluster-ready:
         condition: service_completed_successfully
+    networks:
+      - linktracker-network
+
+  ai-agent:
+    build:
+      context: .
+      dockerfile: src/LinkTracker.AiAgent/Dockerfile
+    container_name: ai-agent.api
+    ports:
+      - "7088:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
+      - Kafka__ConsumerTopic=link-updates
+      - Kafka__ProduceTopic=link-updates-processed
+      - Kafka__SchemaRegistryUrl=http://schema-registry:8081
+      - AiAgent__Summarization__ApiKey=${AiAgent__Summarization__ApiKey}
+    depends_on:
+      kafka-init-topics:
+        condition: service_completed_successfully
+      schema-registry:
+        condition: service_started
     networks:
       - linktracker-network
 
@@ -257,6 +281,12 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-1:29092,PLAINTEXT://kafka-2:29093,PLAINTEXT://kafka-3:29094
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/subjects"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     networks:
       - linktracker-network
 

@@ -10,7 +10,7 @@ public class LinkUpdateEvent : ISpecificRecord
         {
             "type": "record",
             "name": "LinkUpdateEvent",
-            "namespace": "LinkTracker.Bot.Contracts.Avro",
+            "namespace": "LinkTracker.Scrapper.Contracts.Avro",
             "fields": [
                 { "name": "eventId", "type": "string" },
                 { "name": "url", "type": "string" },
