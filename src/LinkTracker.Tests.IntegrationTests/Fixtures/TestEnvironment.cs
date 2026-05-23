@@ -180,7 +180,7 @@ public class TestEnvironment : IAsyncLifetime
             .Build();
 
         await Bot.StartAsync();
-        
+
         AiAgent = new ContainerBuilder()
             .WithImage("link-tracker-ai-agent:latest")
             .WithNetwork(_network)

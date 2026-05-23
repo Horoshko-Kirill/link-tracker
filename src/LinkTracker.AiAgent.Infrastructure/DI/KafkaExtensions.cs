@@ -15,7 +15,7 @@ public static class KafkaExtensions
     public static IServiceCollection AddKafka(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<KafkaOptions>(configuration.GetSection(KafkaOptions.SectionName));
-        
+
         services.AddSingleton<ISchemaRegistryClient>(sp =>
         {
             var options = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
@@ -25,7 +25,7 @@ public static class KafkaExtensions
                 Url = options.SchemaRegistryUrl
             });
         });
-        
+
         services.AddSingleton<IProducer<string, LinkUpdateEvent>>(sp =>
         {
             var options = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;

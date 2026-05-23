@@ -13,7 +13,7 @@ public class UpdateFilter : IUpdateFilter
     {
         _options = options.Value;
     }
-    
+
     public bool ShouldProcess(RawLinkUpdate update)
     {
         if (update.Description.Length < _options.Filtering.MinLength)

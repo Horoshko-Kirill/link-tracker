@@ -19,22 +19,22 @@ public class FiltersTests
                 MinLength = 5,
             }
         });
-        
+
         var filter = new UpdateFilter(options);
-        
+
         var dto = new RawLinkUpdate
         {
             EventId = "1",
             Url = "http://1",
             Description = "This is a spam",
-            ChatIds = {1, 2, 3}
+            ChatIds = { 1, 2, 3 }
         };
 
         var result = filter.ShouldProcess(dto);
-        
+
         Assert.False(result);
     }
-    
+
     [Fact]
     public void ShouldSkip_WhenTextSmall()
     {
@@ -47,22 +47,22 @@ public class FiltersTests
                 MinLength = 100,
             }
         });
-        
+
         var filter = new UpdateFilter(options);
-        
+
         var dto = new RawLinkUpdate
         {
             EventId = "1",
             Url = "http://1",
             Description = "This is a spam",
-            ChatIds = {1, 2, 3}
+            ChatIds = { 1, 2, 3 }
         };
 
         var result = filter.ShouldProcess(dto);
-        
+
         Assert.False(result);
     }
-    
+
     [Fact]
     public void ShouldSkip_WhenContainsExcludedAuthors()
     {
@@ -75,22 +75,22 @@ public class FiltersTests
                 MinLength = 5,
             }
         });
-        
+
         var filter = new UpdateFilter(options);
-        
+
         var dto = new RawLinkUpdate
         {
             EventId = "1",
             Url = "http://1",
             Description = "This is a spam from bot",
-            ChatIds = {1, 2, 3}
+            ChatIds = { 1, 2, 3 }
         };
 
         var result = filter.ShouldProcess(dto);
-        
+
         Assert.False(result);
     }
-    
+
     [Fact]
     public void ShouldAssert()
     {
@@ -103,19 +103,19 @@ public class FiltersTests
                 MinLength = 5,
             }
         });
-        
+
         var filter = new UpdateFilter(options);
-        
+
         var dto = new RawLinkUpdate
         {
             EventId = "1",
             Url = "http://1",
             Description = "This is good",
-            ChatIds = {1, 2, 3}
+            ChatIds = { 1, 2, 3 }
         };
 
         var result = filter.ShouldProcess(dto);
-        
+
         Assert.True(result);
     }
 }

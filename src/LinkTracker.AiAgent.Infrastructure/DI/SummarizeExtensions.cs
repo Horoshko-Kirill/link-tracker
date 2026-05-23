@@ -13,19 +13,19 @@ public static class SummarizeExtensions
     public static IServiceCollection AddSummarize(this IServiceCollection services, IConfiguration configuration)
     {
         var aiAgentOptions = configuration.GetSection(AiAgentOptions.SectionName).Get<AiAgentOptions>();
-        
+
         switch (aiAgentOptions.Summarization.Provider)
         {
             case "HuggingFace":
                 services.AddSingleton<HuggingFaceSummarizer>();
                 break;
         }
-        
+
         services.AddScoped<StubSummarizer>();
-        
+
         services.AddScoped<ISummarizerFactory, SummarizerFactory>();
         services.AddScoped<ISummarizer, ResilientSummarizer>();
-        
+
         return services;
     }
 }

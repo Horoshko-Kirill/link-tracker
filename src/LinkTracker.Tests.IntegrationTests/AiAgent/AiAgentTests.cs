@@ -19,7 +19,7 @@ public class AiAgentTests
     public async Task AiAgent_Should_Consume_And_Process_Valid_Message()
     {
         await Task.Delay(3000);
-        
+
         var rawTopic = "link.raw-updates";
         var processedTopic = "link.processed-updates";
 
@@ -88,8 +88,8 @@ public class AiAgentTests
 
         var output = result.Stdout ?? "";
 
-        return output.Contains("github") 
-               || output.Contains("test") 
+        return output.Contains("github")
+               || output.Contains("test")
                || output.Length > 0;
     }
 

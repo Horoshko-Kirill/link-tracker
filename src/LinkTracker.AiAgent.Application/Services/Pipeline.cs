@@ -14,14 +14,14 @@ public class Pipeline : IPipeline
         _filter = filter;
         _summarizer = summarizer;
     }
-    
+
     public async Task<ProcessedLinkUpdate?> ProcessAsync(RawLinkUpdate update, CancellationToken cancellationToken = default)
     {
         if (!_filter.ShouldProcess(update))
         {
             return null;
         }
-        
+
         var text = await _summarizer.SummarizeAsync(update.Description, cancellationToken);
 
         var result = new ProcessedLinkUpdate
@@ -32,7 +32,7 @@ public class Pipeline : IPipeline
             ChatIds = update.ChatIds,
             PriorityLevel = PriorityLevel.Normal
         };
-        
+
         return result;
     }
 }

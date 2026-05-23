@@ -32,7 +32,7 @@ public class KafkaWorker : BackgroundService
         _pipeline = pipeline;
         _logger = logger;
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var config = new ConsumerConfig
@@ -46,7 +46,7 @@ public class KafkaWorker : BackgroundService
         using var consumer = new ConsumerBuilder<string, LinkTracker.Scrapper.Contracts.Avro.LinkUpdateEvent>(config)
             .SetValueDeserializer(new AvroDeserializer<LinkTracker.Scrapper.Contracts.Avro.LinkUpdateEvent>(_schemaRegistryClient).AsSyncOverAsync())
             .Build();
-        
+
         consumer.Subscribe(_options.ConsumerTopic);
 
         while (!stoppingToken.IsCancellationRequested)
@@ -54,7 +54,7 @@ public class KafkaWorker : BackgroundService
             try
             {
                 var msg = consumer.Consume(stoppingToken);
-                
+
                 var processedLink = await _pipeline.ProcessAsync(KafkaMapper.ToModel(msg.Message.Value), stoppingToken);
 
                 if (processedLink is null)
@@ -68,7 +68,7 @@ public class KafkaWorker : BackgroundService
                 await _producer.ProduceAsync(
                     _options.ProduceTopic,
                     new Message<string, LinkTracker.Bot.Contracts.Avro.LinkUpdateEvent> { Key = result.eventId.ToString(), Value = result }, stoppingToken);
-                
+
                 consumer.Commit(msg);
             }
             catch (ConsumeException ex)
@@ -84,7 +84,7 @@ public class KafkaWorker : BackgroundService
                 _logger.LogError(ex, "Unexpected worker error");
             }
         }
-        
+
         consumer.Close();
     }
 }

@@ -2,7 +2,7 @@
 
 public enum PriorityLevel
 {
-    Low, 
-    Normal, 
+    Low,
+    Normal,
     High
 }

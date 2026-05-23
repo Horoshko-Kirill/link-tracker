@@ -47,7 +47,7 @@ public class LinkUpdateEvent : ISpecificRecord
             1 => url,
             2 => description,
             3 => tgChatIds,
-            4 => priorityLevel, 
+            4 => priorityLevel,
             _ => throw new AvroRuntimeException($"Bad index {fieldPos}")
         };
     }

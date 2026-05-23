@@ -17,24 +17,24 @@ public class HuggingFaceSummarizer : ISummarizer
         _options = options.Value;
         _httpClient = httpClient;
     }
-    
+
     public async Task<string> SummarizeAsync(string text, CancellationToken cancellationToken = default)
     {
         if (text.Length <= _options.Summarization.Threshold)
         {
             return text;
         }
-        
+
         var prompt = $"{text}";
-        
+
         using var request = new HttpRequestMessage(
             HttpMethod.Post,
             $"https://router.huggingface.co/hf-inference/models/{_options.Summarization.Model}");
-        
+
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.Summarization.ApiKey);
-        
-        
-        
+
+
+
         request.Content = JsonContent.Create(new
         {
             inputs = prompt

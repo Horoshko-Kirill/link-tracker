@@ -14,20 +14,20 @@ public class SummarizeTests
             Summarization = new SummarizationOptions
             {
                 Threshold = 10,
-                ApiKey =  "apikey",
-                Model =  "model",
+                ApiKey = "apikey",
+                Model = "model",
                 Provider = "provider"
             }
-        });   
-        
+        });
+
         var summarizer = new StubSummarizer(options);
 
         var text = "Hello, I'm .net developer";
         var result = await summarizer.SummarizeAsync(text);
-        
+
         Assert.Equal("Hello, I'm...", result);
     }
-    
+
     [Fact]
     public async Task ShouldSummarize_ShortText()
     {
@@ -36,17 +36,17 @@ public class SummarizeTests
             Summarization = new SummarizationOptions
             {
                 Threshold = 100,
-                ApiKey =  "apikey",
-                Model =  "model",
+                ApiKey = "apikey",
+                Model = "model",
                 Provider = "provider"
             }
-        });   
-        
+        });
+
         var summarizer = new StubSummarizer(options);
 
         var text = "Hello, I'm .net developer";
         var result = await summarizer.SummarizeAsync(text);
-        
+
         Assert.Equal("Hello, I'm .net developer", result);
     }
 }

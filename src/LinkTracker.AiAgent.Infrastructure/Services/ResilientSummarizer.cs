@@ -16,7 +16,7 @@ public class ResilientSummarizer : ISummarizer
         _stub = stub;
         _logger = logger;
     }
-    
+
     public async Task<string> SummarizeAsync(string text, CancellationToken cancellationToken = default)
     {
         try
