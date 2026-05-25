@@ -8,5 +8,5 @@ public class ProcessedLinkUpdate
     public string Url { get; set; } = null!;
     public string Description { get; set; } = null!;
     public List<long> ChatIds { get; set; } = new List<long>();
-    public PriorityLevel PriorityLevel { get; set; } = PriorityLevel.Normal;
+    public PriorityLevel PriorityLevel { get; set; } = PriorityLevel.Medium;
 }

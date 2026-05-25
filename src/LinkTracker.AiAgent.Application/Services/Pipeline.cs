@@ -30,7 +30,7 @@ public class Pipeline : IPipeline
             Url = update.Url,
             Description = text,
             ChatIds = update.ChatIds,
-            PriorityLevel = PriorityLevel.Normal
+            PriorityLevel = PriorityLevel.Medium
         };
 
         return result;

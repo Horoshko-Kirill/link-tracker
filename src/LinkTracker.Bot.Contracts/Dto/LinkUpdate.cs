@@ -11,5 +11,5 @@ public class LinkUpdate
     public List<long> ChatIds { get; set; } = new List<long>();
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public PriorityLevel PriorityLevel { get; set; } = PriorityLevel.Normal;
+    public PriorityLevel PriorityLevel { get; set; } = PriorityLevel.Medium;
 }

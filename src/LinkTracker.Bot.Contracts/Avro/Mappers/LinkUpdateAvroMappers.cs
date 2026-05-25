@@ -24,7 +24,7 @@ public static class LinkUpdateAvroMappers
             EventId = avro.eventId,
             Url = avro.url,
             Description = avro.description,
-            PriorityLevel = Enum.TryParse(avro.priorityLevel, true, out PriorityLevel parsed) ? parsed : PriorityLevel.Normal,
+            PriorityLevel = Enum.TryParse(avro.priorityLevel, true, out PriorityLevel parsed) ? parsed : PriorityLevel.Medium,
             ChatIds = avro.tgChatIds.ToList()
         };
     }
