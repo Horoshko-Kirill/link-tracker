@@ -1,5 +1,7 @@
 ﻿using LinkTracker.AiAgent.Application.InterfacesFactory;
+using LinkTracker.AiAgent.Application.InterfacesServices;
 using LinkTracker.AiAgent.Infrastructure.Factory;
+using LinkTracker.AiAgent.Infrastructure.MessageSenders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,8 @@ public static class Extensions
         services.AddHttpClient();
         services.AddSummarize(configuration);
         services.AddKafka(configuration);
+
+        services.AddScoped<IMessageSender, KafkaMessageSender>();
         return services;
     }
 }

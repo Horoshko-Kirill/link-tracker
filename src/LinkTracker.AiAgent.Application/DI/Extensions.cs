@@ -11,7 +11,9 @@ public static class Extensions
     {
         services.AddScoped<IUpdateFilter, UpdateFilter>();
         services.AddScoped<IPriority, Priority>();
+        services.AddScoped<IGrouping, Grouping>();
         services.AddScoped<IPipeline, Pipeline>();
+        services.AddSingleton<IGroupingService, GroupingService>();
         return services;
     }
 }

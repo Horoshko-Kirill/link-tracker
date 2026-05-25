@@ -8,6 +8,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LinkTracker.AiAgent.Domain\LinkTracker.AiAgent.Domain.csproj" />
+      <ProjectReference Include="..\LinkTracker.Bot.Contracts\LinkTracker.Bot.Contracts.csproj" />
+      <ProjectReference Include="..\LinkTracker.Scrapper.Contracts\LinkTracker.Scrapper.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

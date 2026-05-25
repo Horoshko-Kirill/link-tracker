@@ -1,6 +1,6 @@
 ﻿using LinkTracker.AiAgent.Domain.Models;
 
-namespace LinkTracker.AiAgent.Infrastructure.Mappers;
+namespace LinkTracker.AiAgent.Application.Mappers;
 
 public static class KafkaMapper
 {
