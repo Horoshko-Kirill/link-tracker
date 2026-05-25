@@ -62,6 +62,8 @@ public class KafkaWorker : BackgroundService
                     consumer.Commit(msg);
                     continue;
                 }
+                
+                
 
                 var result = KafkaMapper.ToDto(processedLink);
 
