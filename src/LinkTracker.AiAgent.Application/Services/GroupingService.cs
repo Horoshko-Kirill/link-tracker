@@ -44,7 +44,7 @@ public class GroupingService : IGroupingService
 
                     _ = SendLaterAsync(chatId);
                 }
-
+                
                 bucket.Updates.Add(update);
             }
         }
@@ -70,8 +70,8 @@ public class GroupingService : IGroupingService
                 updates = bucket.Updates.ToList();
                 _buckets.Remove(chatId);
             }
-
-            var grouped = _grouping.Group(bucket.Updates, chatId);
+            
+            var grouped = _grouping.Group(updates, chatId);
 
             var result = KafkaMapper.ToDto(grouped);
 

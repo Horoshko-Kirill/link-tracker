@@ -2,5 +2,5 @@
 
 public class GroupingOptions
 {
-    public long WindowMs = 0;
+    public long WindowMs { get; set; } = 0;
 }
