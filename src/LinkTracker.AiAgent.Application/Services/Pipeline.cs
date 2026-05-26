@@ -25,7 +25,7 @@ public class Pipeline : IPipeline
         }
 
         var priority = _priority.GetPriorityLevel(update.Description);
-        
+
         var text = await _summarizer.SummarizeAsync(update.Description, cancellationToken);
 
         var result = new ProcessedLinkUpdate

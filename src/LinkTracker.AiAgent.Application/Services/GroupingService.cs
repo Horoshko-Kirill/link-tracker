@@ -17,8 +17,8 @@ public class GroupingService : IGroupingService
     private readonly ILogger<GroupingService> _logger;
 
     public GroupingService(
-        IOptions<AiAgentOptions> options, 
-        IMessageSender messageSender, 
+        IOptions<AiAgentOptions> options,
+        IMessageSender messageSender,
         IGrouping grouping,
         ILogger<GroupingService> logger)
     {
@@ -27,7 +27,7 @@ public class GroupingService : IGroupingService
         _grouping = grouping;
         _logger = logger;
     }
-    
+
     public Task AddAsync(ProcessedLinkUpdate update, CancellationToken cancellationToken = default)
     {
         foreach (var chatId in update.ChatIds)
@@ -35,7 +35,7 @@ public class GroupingService : IGroupingService
             lock (_lock)
             {
                 GroupBucket? bucket;
-                
+
                 if (!_buckets.TryGetValue(chatId, out bucket))
                 {
                     bucket = new GroupBucket();
@@ -44,11 +44,11 @@ public class GroupingService : IGroupingService
 
                     _ = SendLaterAsync(chatId);
                 }
-                
+
                 bucket.Updates.Add(update);
             }
         }
-        
+
         return Task.CompletedTask;
     }
 
@@ -70,7 +70,7 @@ public class GroupingService : IGroupingService
                 updates = bucket.Updates.ToList();
                 _buckets.Remove(chatId);
             }
-            
+
             var grouped = _grouping.Group(updates, chatId);
 
             var result = KafkaMapper.ToDto(grouped);

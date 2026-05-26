@@ -18,16 +18,16 @@ public class PriorityTests
                 LowKeywords = ["low", "minor"]
             }
         });
-        
+
         var priorityService = new Priority(options);
 
         var text = "This text is high and low";
-        
+
         var result = priorityService.GetPriorityLevel(text);
-        
+
         Assert.Equal(PriorityLevel.High, result);
     }
-    
+
     [Fact]
     public void ShouldReturnLow()
     {
@@ -39,16 +39,16 @@ public class PriorityTests
                 LowKeywords = ["low", "minor"]
             }
         });
-        
+
         var priorityService = new Priority(options);
 
         var text = "This text is low";
-        
+
         var result = priorityService.GetPriorityLevel(text);
-        
+
         Assert.Equal(PriorityLevel.Low, result);
     }
-    
+
     [Fact]
     public void ShouldReturnMedium()
     {
@@ -60,13 +60,13 @@ public class PriorityTests
                 LowKeywords = ["low", "minor"]
             }
         });
-        
+
         var priorityService = new Priority(options);
 
         var text = "This is text";
-        
+
         var result = priorityService.GetPriorityLevel(text);
-        
+
         Assert.Equal(PriorityLevel.Medium, result);
     }
 }

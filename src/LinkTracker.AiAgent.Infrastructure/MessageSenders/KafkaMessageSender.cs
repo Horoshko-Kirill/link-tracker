@@ -11,7 +11,7 @@ public class KafkaMessageSender : IMessageSender
 {
     private readonly KafkaOptions _options;
     private readonly IProducer<string, LinkUpdateEvent> _producer;
-    
+
     public KafkaMessageSender(IOptions<KafkaOptions> options, IProducer<string, LinkUpdateEvent> producer)
     {
         _options = options.Value;

@@ -13,23 +13,23 @@ public class Priority : IPriority
     {
         _options = options.Value;
     }
-    
+
     public PriorityLevel GetPriorityLevel(string description)
     {
         var text = description.ToLowerInvariant();
-        
+
         if (_options.Prioritization.HighKeywords
             .Any(a => text.Contains(a.ToLowerInvariant())))
         {
             return PriorityLevel.High;
         }
-        
+
         if (_options.Prioritization.LowKeywords
             .Any(a => text.Contains(a.ToLowerInvariant())))
         {
             return PriorityLevel.Low;
         }
-        
+
         return PriorityLevel.Medium;
     }
 }

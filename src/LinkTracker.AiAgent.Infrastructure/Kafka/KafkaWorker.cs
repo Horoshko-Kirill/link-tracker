@@ -64,7 +64,7 @@ public class KafkaWorker : BackgroundService
                 }
 
                 await _groupingService.AddAsync(processedLink);
-                
+
                 consumer.Commit(msg);
             }
             catch (ConsumeException ex)

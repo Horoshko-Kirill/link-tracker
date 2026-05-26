@@ -30,19 +30,19 @@ public class GroupingTests
         };
 
         long chatId = 1;
-        
+
         var group = new Grouping();
-        
+
         var result = group.Group(updates, chatId);
-        
+
         Assert.Equal("1", result.EventId);
         Assert.Equal("1. http://1\r\n2. http://2", result.Url);
         Assert.Equal("1. Description1\r\n\r\n2. Description2", result.Description);
         Assert.Equal(PriorityLevel.High, result.PriorityLevel);
         Assert.Equal(chatId, result.ChatIds[0]);
     }
-    
-    
+
+
     [Fact]
     public void ShouldGetInputUpdate()
     {
@@ -57,13 +57,13 @@ public class GroupingTests
                 ChatIds = [1, 2, 3]
             }
         };
-        
+
         long chatId = 1;
-        
+
         var group = new Grouping();
-        
+
         var result = group.Group(updates, chatId);
-        
+
         Assert.Equal(result, updates[0]);
     }
 }

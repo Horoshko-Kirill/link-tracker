@@ -4,5 +4,5 @@ namespace LinkTracker.AiAgent.Application.InterfacesServices;
 
 public interface IGrouping
 {
-   ProcessedLinkUpdate Group(List<ProcessedLinkUpdate> updates, long chatId);
+    ProcessedLinkUpdate Group(List<ProcessedLinkUpdate> updates, long chatId);
 }
