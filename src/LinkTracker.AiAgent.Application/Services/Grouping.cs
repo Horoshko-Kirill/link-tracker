@@ -7,6 +7,11 @@ public class Grouping : IGrouping
 {
     public ProcessedLinkUpdate Group(List<ProcessedLinkUpdate> updates, long chatId)
     {
+        if (updates.Count == 1)
+        {
+            return updates[0];
+        }
+        
         var descriptions = updates
             .Select((u, i) => $"{i + 1}. {u.Description}");
         
