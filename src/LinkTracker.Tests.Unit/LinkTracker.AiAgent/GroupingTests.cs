@@ -6,7 +6,7 @@ namespace LinkTracker.Tests.Unit.LinkTracker.AiAgent;
 
 public class GroupingTests
 {
-    
+
     [Fact]
     public void ShouldGetInputUpdate()
     {
