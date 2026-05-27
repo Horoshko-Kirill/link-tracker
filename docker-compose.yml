@@ -151,14 +151,19 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "echo srvr | nc -w 2 localhost 2181 | grep -q 'Mode:'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
     networks:
       - linktracker-network
 
   kafka-1:
     image: confluentinc/cp-kafka:7.6.1
     container_name: linktracker.kafka-1
-    depends_on:
-      - zookeeper
     ports:
       - "9092:9092"
     environment:
@@ -172,14 +177,16 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
       KAFKA_MIN_INSYNC_REPLICAS: 2
+    restart: on-failure
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - linktracker-network
 
   kafka-2:
     image: confluentinc/cp-kafka:7.6.1
     container_name: linktracker.kafka-2
-    depends_on:
-      - zookeeper
     ports:
       - "9093:9093"
     environment:
@@ -193,14 +200,16 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
       KAFKA_MIN_INSYNC_REPLICAS: 2
+    restart: on-failure
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - linktracker-network
 
   kafka-3:
     image: confluentinc/cp-kafka:7.6.1
     container_name: linktracker.kafka-3
-    depends_on:
-      - zookeeper
     ports:
       - "9094:9094"
     environment:
@@ -214,6 +223,10 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
       KAFKA_MIN_INSYNC_REPLICAS: 2
+    restart: on-failure
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - linktracker-network
 
@@ -221,9 +234,12 @@ services:
     image: confluentinc/cp-kafka:7.6.1
     container_name: linktracker.kafka-init-topics
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
+      kafka-1:
+        condition: service_started
+      kafka-2:
+        condition: service_started
+      kafka-3:
+        condition: service_started
     command: >
       bash -c "
       cub kafka-ready -b kafka-1:29092 1 60 &&
@@ -256,9 +272,12 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: linktracker.kafka-ui
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
+      kafka-1:
+        condition: service_started
+      kafka-2:
+        condition: service_started
+      kafka-3:
+        condition: service_started
     ports:
       - "8080:8080"
     environment:
@@ -272,9 +291,12 @@ services:
     image: confluentinc/cp-schema-registry:7.6.1
     container_name: linktracker.schema-registry
     depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
+      kafka-1:
+        condition: service_started
+      kafka-2:
+        condition: service_started
+      kafka-3:
+        condition: service_started
     ports:
       - "8081:8081"
     environment:
@@ -287,6 +309,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 20s
+    restart: on-failure
     networks:
       - linktracker-network
 

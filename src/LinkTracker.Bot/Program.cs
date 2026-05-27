@@ -48,21 +48,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHostedService<TelegramHostedService>();
 
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(o =>
-    {
-        o.InvalidModelStateResponseFactory = context =>
-        {
-            var errors = context.ModelState
-                .Select(x => new
-                {
-                    Field = x.Key,
-                    Errors = x.Value.Errors.Select(e => e.ErrorMessage)
-                });
-
-            return new BadRequestObjectResult(errors);
-        };
-    });
+builder.Services.AddAppMetrics();
 
 var app = builder.Build();
 
@@ -72,6 +58,10 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseHttpsRedirection();
+
+app.UseMiddleware<RedMetricsMiddleware>();
 
 app.MapPrometheusScrapingEndpoint();
 

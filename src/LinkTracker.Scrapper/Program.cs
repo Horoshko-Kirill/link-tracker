@@ -1,4 +1,3 @@
-using System.Net;
 using LinkTracker.Scrapper.Application.DI;
 using LinkTracker.Scrapper.DI;
 using LinkTracker.Scrapper.Grpc;
@@ -6,7 +5,6 @@ using LinkTracker.Scrapper.Infrastructure.DI;
 using LinkTracker.Scrapper.Infrastructure.Options;
 using LinkTracker.Scrapper.Middleware;
 using LinkTracker.Scrapper.Options;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,9 +34,9 @@ builder.Services.AddGrpc();
 
 builder.WebHost.ConfigureKestrelWithProtocol();
 
-var clientOptions = builder.Configuration.GetSection(ClientOptions.SectionName).Get<ClientOptions>();
-
 builder.Services.AddClient(builder.Configuration);
+
+builder.Services.AddAppMetrics();
 
 var app = builder.Build();
 
@@ -49,6 +47,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseMiddleware<RedMetricsMiddleware>();
 
 app.MapPrometheusScrapingEndpoint();
 

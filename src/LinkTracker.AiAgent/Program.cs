@@ -2,6 +2,7 @@ using LinkTracker.AiAgent.Application.DI;
 using LinkTracker.AiAgent.Application.Options;
 using LinkTracker.AiAgent.DI;
 using LinkTracker.AiAgent.Infrastructure.DI;
+using LinkTracker.AiAgent.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<RedMetricsMiddleware>();
 
 app.MapPrometheusScrapingEndpoint();
 

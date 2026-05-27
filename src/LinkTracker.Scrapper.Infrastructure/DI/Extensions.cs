@@ -1,5 +1,7 @@
 ﻿using LinkTracker.Scrapper.Application.InterfacesClients;
+using LinkTracker.Scrapper.Application.InterfacesMetrics;
 using LinkTracker.Scrapper.Infrastructure.Clients;
+using LinkTracker.Scrapper.Infrastructure.Metrics;
 using LinkTracker.Scrapper.Infrastructure.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +25,8 @@ public static class Extensions
         {
             services.AddCached(configuration);
         }
-
+        
+        services.AddSingleton<IRedMetrics, RedMetrics>();
         return services;
     }
 }
