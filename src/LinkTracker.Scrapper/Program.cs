@@ -50,6 +50,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapPrometheusScrapingEndpoint();
+
 app.MapGrpcService<ScrapperGrpcLinkService>();
 
 app.MapControllers();

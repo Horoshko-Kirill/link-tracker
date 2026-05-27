@@ -73,6 +73,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.MapPrometheusScrapingEndpoint();
+
 app.MapGrpcService<BotGrpcUpdateService>();
 
 app.MapControllers();
