@@ -23,6 +23,8 @@ public static class ClientExtensions
             case "Grpc":
 
                 services.AddTransient<GrpcResilienceInterceptor>();
+                services.AddSingleton<GrpcExceptionInterceptor>();
+                services.AddSingleton<GrpcRedMetricsInterceptor>();
 
                 services.AddGrpcClient<ScrapperLinkService.ScrapperLinkServiceClient>((sp, o) =>
                 {
@@ -37,6 +39,7 @@ public static class ClientExtensions
                 services.AddGrpc(options =>
                 {
                     options.Interceptors.Add<GrpcExceptionInterceptor>();
+                    options.Interceptors.Add<GrpcRedMetricsInterceptor>();
                 });
 
                 break;

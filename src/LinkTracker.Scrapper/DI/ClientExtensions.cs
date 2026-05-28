@@ -23,7 +23,9 @@ public static class ClientExtensions
             case "Grpc":
 
                 services.AddTransient<GrpcResilienceInterceptor>();
-
+                services.AddSingleton<GrpcExceptionInterceptor>();
+                services.AddSingleton<GrpcRedMetricsInterceptor>();
+                
                 services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
                     {
                         var options = sp
@@ -39,6 +41,7 @@ public static class ClientExtensions
                 services.AddGrpc(options =>
                 {
                     options.Interceptors.Add<GrpcExceptionInterceptor>();
+                    options.Interceptors.Add<GrpcRedMetricsInterceptor>();
                 });
 
                 break;

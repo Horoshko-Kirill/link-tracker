@@ -21,6 +21,7 @@ public static class KestrelExtensions
 
             var protocolType = kestrelOptions?.Type ?? "Grpc";
             var port = kestrelOptions?.Port ?? 80;
+            var metricsPort = kestrelOptions?.MetricsPort ?? 9091;
 
             options.Listen(IPAddress.Any, port, listenOptions =>
             {
@@ -30,6 +31,11 @@ public static class KestrelExtensions
                     "Grpc" => HttpProtocols.Http2,
                     _ => HttpProtocols.Http2
                 };
+            });
+            
+            options.Listen(IPAddress.Any, metricsPort, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1;
             });
         });
     }

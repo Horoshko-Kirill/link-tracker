@@ -10,6 +10,7 @@ using LinkTracker.Bot.Middleware;
 using LinkTracker.Bot.Options;
 using LinkTracker.Bot.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,15 +60,28 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+var kestrelOptions = app.Services.GetRequiredService<IOptions<KestrelOptions>>().Value;
 
-app.UseMiddleware<RedMetricsMiddleware>();
+app.MapWhen(ctx => ctx.Connection.LocalPort == kestrelOptions.Port, mainApp =>
+{
+    mainApp.UseMiddleware<RedMetricsMiddleware>();
 
-app.MapPrometheusScrapingEndpoint();
+    mainApp.UseRouting();
+    mainApp.UseEndpoints(endpoints =>
+    {
+        endpoints.MapGrpcService<BotGrpcUpdateService>();
+        endpoints.MapControllers();
+    });
+});
 
-app.MapGrpcService<BotGrpcUpdateService>();
-
-app.MapControllers();
+app.MapWhen(ctx => ctx.Connection.LocalPort == kestrelOptions.MetricsPort, metricsApp =>
+{
+    metricsApp.UseRouting();
+    metricsApp.UseEndpoints(endpoints =>
+    {
+        endpoints.MapPrometheusScrapingEndpoint();
+    });
+});
 
 app.Run();
 

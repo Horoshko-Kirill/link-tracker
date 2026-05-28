@@ -5,6 +5,7 @@ using LinkTracker.Scrapper.Infrastructure.DI;
 using LinkTracker.Scrapper.Infrastructure.Options;
 using LinkTracker.Scrapper.Middleware;
 using LinkTracker.Scrapper.Options;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,14 +49,29 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+var kestrelOptions = app.Services.GetRequiredService<IOptions<KestrelOptions>>().Value;
 
 app.UseMiddleware<RedMetricsMiddleware>();
 
-app.MapPrometheusScrapingEndpoint();
+app.MapWhen(ctx => ctx.Connection.LocalPort == kestrelOptions.Port, mainApp =>
+{
+    mainApp.UseMiddleware<RedMetricsMiddleware>();
 
-app.MapGrpcService<ScrapperGrpcLinkService>();
+    mainApp.UseRouting();
+    mainApp.UseEndpoints(endpoints =>
+    {
+        endpoints.MapGrpcService<ScrapperGrpcLinkService>();
+        endpoints.MapControllers();
+    });
+});
 
-app.MapControllers();
+app.MapWhen(ctx => ctx.Connection.LocalPort == kestrelOptions.MetricsPort, metricsApp =>
+{
+    metricsApp.UseRouting();
+    metricsApp.UseEndpoints(endpoints =>
+    {
+        endpoints.MapPrometheusScrapingEndpoint();
+    });
+});
 
 app.Run();
