@@ -40,7 +40,7 @@ public class StackOverflowUpdateProvider : IUpdateProvider
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "external_source",
                 "github.com",

@@ -27,7 +27,7 @@ public class ChatRepositoryMetricsDecorator : IChatRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_chats",
@@ -46,7 +46,7 @@ public class ChatRepositoryMetricsDecorator : IChatRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_chats",
@@ -65,7 +65,7 @@ public class ChatRepositoryMetricsDecorator : IChatRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_chats",
@@ -84,7 +84,7 @@ public class ChatRepositoryMetricsDecorator : IChatRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_chats",
@@ -103,7 +103,7 @@ public class ChatRepositoryMetricsDecorator : IChatRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_chats",
@@ -117,12 +117,12 @@ public class ChatRepositoryMetricsDecorator : IChatRepository
 
         try
         {
-            return await  _inner.ChatExistByChatIdAsync(chatId, cancellationToken);
+            return await _inner.ChatExistByChatIdAsync(chatId, cancellationToken);
         }
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_chats",
@@ -141,7 +141,7 @@ public class ChatRepositoryMetricsDecorator : IChatRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_chats",

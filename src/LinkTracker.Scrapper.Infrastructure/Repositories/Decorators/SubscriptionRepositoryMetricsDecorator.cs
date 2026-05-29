@@ -27,7 +27,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -46,7 +46,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -65,7 +65,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -84,7 +84,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -103,7 +103,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -122,7 +122,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -141,7 +141,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -160,7 +160,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -179,7 +179,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",
@@ -198,7 +198,7 @@ public class SubscriptionRepositoryMetricsDecorator : ISubscriptionRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_subscriptions",

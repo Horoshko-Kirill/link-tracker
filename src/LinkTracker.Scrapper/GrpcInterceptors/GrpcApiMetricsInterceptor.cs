@@ -8,12 +8,12 @@ namespace LinkTracker.Scrapper.GrpcInterceptors;
 public class GrpcApiMetricsInterceptor : Interceptor
 {
     private readonly IApiMetrics _metrics;
-    
+
     public GrpcApiMetricsInterceptor(IApiMetrics metrics)
     {
         _metrics = metrics;
     }
-    
+
     public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(
         TRequest request,
         ServerCallContext context,

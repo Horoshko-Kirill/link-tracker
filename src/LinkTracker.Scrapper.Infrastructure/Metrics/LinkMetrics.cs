@@ -12,7 +12,7 @@ public class LinkMetrics : ILinkMetrics
         var meter = meterFactory.Create("linktracker.scrapper.link.metrics");
         _linksGauge = meter.CreateUpDownCounter<long>("links_on_track_total");
     }
-    
+
     public void IncLinks(string domain)
     {
         _linksGauge.Add(1, new KeyValuePair<string, object?>("tracked_source", domain));

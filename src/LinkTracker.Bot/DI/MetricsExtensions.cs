@@ -18,7 +18,7 @@ public static class MetricsExtensions
                     .AddMeter("linktracker.bot.red")
                     .AddPrometheusExporter();
             });
-        
+
         return services;
     }
 }

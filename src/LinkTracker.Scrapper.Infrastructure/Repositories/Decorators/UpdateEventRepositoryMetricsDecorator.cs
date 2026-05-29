@@ -27,7 +27,7 @@ public class UpdateEventRepositoryMetricsDecorator : IUpdateEventRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_update_event",
@@ -46,7 +46,7 @@ public class UpdateEventRepositoryMetricsDecorator : IUpdateEventRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_update_event",
@@ -65,7 +65,7 @@ public class UpdateEventRepositoryMetricsDecorator : IUpdateEventRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_update_event",
@@ -84,7 +84,7 @@ public class UpdateEventRepositoryMetricsDecorator : IUpdateEventRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_update_event",

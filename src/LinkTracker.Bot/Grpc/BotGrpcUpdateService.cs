@@ -22,7 +22,7 @@ public class BotGrpcUpdateService : BotUpdateService.BotUpdateServiceBase
             Description = update.Description,
             ChatIds = update.ChatIds.ToList()
         };
-        
+
         await _handler.HandleAsync(linkUpdate);
 
         return new GrpcEmpty();

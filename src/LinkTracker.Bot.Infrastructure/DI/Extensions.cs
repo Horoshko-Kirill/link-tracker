@@ -31,7 +31,7 @@ public static class Extensions
         services.AddSingleton<IDeadLetterQueueProducer, DeadLetterQueueProducer>();
 
         services.AddHostedService<LinkUpdateKafkaConsumer>();
-        
+
         services.AddSingleton<IRedMetrics, RedMetrics>();
         services.AddSingleton<ICommandMetrics, CommandMetrics>();
         services.AddSingleton<INotificationMetrics, NotificationMetrics>();

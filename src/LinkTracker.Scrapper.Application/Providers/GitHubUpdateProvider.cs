@@ -31,7 +31,7 @@ public class GitHubUpdateProvider : IUpdateProvider
 
         var owner = parts[0];
         var repo = parts[1];
-        
+
         var sw = Stopwatch.StartNew();
 
         try
@@ -41,7 +41,7 @@ public class GitHubUpdateProvider : IUpdateProvider
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "external_source",
                 "github.com",

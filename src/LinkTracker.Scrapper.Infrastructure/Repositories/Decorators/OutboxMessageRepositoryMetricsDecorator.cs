@@ -27,7 +27,7 @@ public class OutboxMessageRepositoryMetricsDecorator : IOutboxMessageRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_outbox_messages",
@@ -46,7 +46,7 @@ public class OutboxMessageRepositoryMetricsDecorator : IOutboxMessageRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_outbox_messages",
@@ -65,7 +65,7 @@ public class OutboxMessageRepositoryMetricsDecorator : IOutboxMessageRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_outbox_messages",

@@ -12,7 +12,7 @@ public class ExternalMetrics : IExternalMetrics
         var meter = meterFactory.Create("linktracker.scrapper.external.metrics");
         _scopeDuration = meter.CreateHistogram<double>("request_duration_ms_total");
     }
-    
+
     public void ObserveScopeDuration(string scope, string scopeType, double ms)
     {
         _scopeDuration.Record(ms, new KeyValuePair<string, object?>[]

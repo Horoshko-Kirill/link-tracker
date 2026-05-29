@@ -459,6 +459,33 @@ services:
     networks:
       - linktracker-network
 
+  prometheus:
+    image: prom/prometheus
+    container_name: linktracker.prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - bot
+      - scrapper
+      - ai-agent
+    networks:
+      - linktracker-network
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: linktracker.grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - linktracker-network
+
+
 networks:
   linktracker-network:
     driver: bridge
@@ -469,3 +496,4 @@ volumes:
   valkey_node_2_data:
   valkey_node_3_data:
   redis_insight_data:
+  grafana_data:

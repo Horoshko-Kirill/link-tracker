@@ -26,14 +26,14 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         try
         {
             await _inner.AddLinkAsync(link, cancellationToken);
-            
+
             _linkMetrics.IncLinks(GetDomainHelper.GetDomain(link.Url));
-            
+
         }
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -52,7 +52,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -71,7 +71,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -90,7 +90,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -101,7 +101,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
     public async Task RemoveLinkAsync(long id, CancellationToken cancellationToken = default)
     {
         var sw = Stopwatch.StartNew();
-        
+
         try
         {
             var link = await _inner.GetByIdAsync(id, cancellationToken);
@@ -110,16 +110,16 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
             {
                 return;
             }
-            
+
             await _inner.RemoveLinkAsync(id, cancellationToken);
-            
+
             _linkMetrics.DecLinks(GetDomainHelper.GetDomain(link.Url));
-            
+
         }
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -138,7 +138,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -157,7 +157,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -176,7 +176,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",
@@ -195,7 +195,7 @@ public class LinkRepositoryMetricsDecorator : ILinkRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_links",

@@ -19,7 +19,7 @@ public static class MetricsExtensions
                     .AddMeter("linktracker.scrapper.link.metrics")
                     .AddPrometheusExporter();
             });
-        
+
         return services;
     }
 }

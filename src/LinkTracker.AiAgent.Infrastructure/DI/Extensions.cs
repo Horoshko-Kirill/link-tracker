@@ -16,9 +16,9 @@ public static class Extensions
         services.AddHttpClient();
         services.AddSummarize(configuration);
         services.AddKafka(configuration);
-        
+
         services.AddScoped<IMessageSender, KafkaMessageSender>();
-        
+
         services.AddSingleton<IRedMetrics, RedMetrics>();
         return services;
     }

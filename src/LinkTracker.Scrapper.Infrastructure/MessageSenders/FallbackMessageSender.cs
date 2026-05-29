@@ -15,8 +15,8 @@ public class FallbackMessageSender : IMessageSender
     private readonly ILogger<FallbackMessageSender> _logger;
 
     public FallbackMessageSender(
-        ILogger<FallbackMessageSender> logger, 
-        KafkaMessageSender kafkaMessageSender, 
+        ILogger<FallbackMessageSender> logger,
+        KafkaMessageSender kafkaMessageSender,
         HttpMessageSender httpMessageSender,
         IExternalMetrics externalMetrics)
     {

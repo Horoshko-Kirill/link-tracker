@@ -8,7 +8,7 @@ public class RedMetrics : IRedMetrics
     private readonly Counter<long> _requests;
     private readonly Counter<long> _errors;
     private readonly Histogram<double> _duration;
-    
+
     public RedMetrics(IMeterFactory meterFactory)
     {
         var meter = meterFactory.Create("linktracker.aiagnet.red");
@@ -17,7 +17,7 @@ public class RedMetrics : IRedMetrics
         _errors = meter.CreateCounter<long>("http_requests_errors_total");
         _duration = meter.CreateHistogram<double>("http_request_duration_ms");
     }
-    
+
     public void IncRequest(string service, string method, string route, int statusCode)
     {
         _requests.Add(1, new KeyValuePair<string, object?>[]

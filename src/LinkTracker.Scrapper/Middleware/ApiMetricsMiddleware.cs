@@ -7,13 +7,13 @@ public class ApiMetricsMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IApiMetrics _metrics;
-    
+
     public ApiMetricsMiddleware(RequestDelegate next, IApiMetrics metrics)
     {
         _next = next;
         _metrics = metrics;
     }
-    
+
     public async Task Invoke(HttpContext context)
     {
         var sw = Stopwatch.StartNew();

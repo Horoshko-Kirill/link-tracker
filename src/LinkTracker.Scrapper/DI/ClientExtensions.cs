@@ -26,7 +26,7 @@ public static class ClientExtensions
                 services.AddSingleton<GrpcExceptionInterceptor>();
                 services.AddSingleton<GrpcRedMetricsInterceptor>();
                 services.AddSingleton<GrpcApiMetricsInterceptor>();
-                
+
                 services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
                     {
                         var options = sp

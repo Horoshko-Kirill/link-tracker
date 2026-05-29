@@ -18,11 +18,11 @@ public class CommandDispatcherMetricsDecorator : ICommandDispatcher
     public async Task DispatchAsync(string message, long chatId, CancellationToken cancellationToken)
     {
         var sw = Stopwatch.StartNew();
-        
+
         var command = message.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
-        
+
         _metrics.IncCommand(command);
-        
+
         try
         {
             await _inner.DispatchAsync(message, chatId, cancellationToken);

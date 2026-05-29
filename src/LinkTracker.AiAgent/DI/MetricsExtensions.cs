@@ -16,7 +16,7 @@ public static class MetricsExtensions
                     .AddMeter("linktracker.aiagnet.red")
                     .AddPrometheusExporter();
             });
-        
+
         return services;
     }
 }

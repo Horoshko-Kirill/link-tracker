@@ -14,7 +14,7 @@ public class ApiMetrics : IApiMetrics
         _requests = meter.CreateCounter<long>("api_requests_total");
         _duration = meter.CreateHistogram<double>("request_duration_ms_total");
     }
-    
+
     public void IncRequest(string source, string method, string route)
     {
         _requests.Add(1, new KeyValuePair<string, object?>[]

@@ -1,0 +1,57 @@
+// Панель 1 – Request Rate
+sum(rate(http_requests_total{app="$app"}[5m]))
+
+// Панель 2 – Error Rate
+sum(rate(http_requests_errors_total{app="$app"}[5m]))
+
+// Панель 3 – Error Ratio
+(
+sum(rate(http_requests_errors_total{app="$app"}[5m]))
+/
+sum(rate(http_requests_total{app="$app"}[5m]))
+) * 100
+
+// Панель 4 – Latency P95
+histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket{app="$app"}[5m])) by (le))
+
+// Панель 5 – Latency P99
+histogram_quantile(0.99, sum(rate(http_request_duration_ms_bucket{app="$app"}[5m])) by (le))
+
+// Панель 6 – RAM Usage
+dotnet_process_memory_working_set_bytes{app="$app"}
+
+// Панель 7 – CPU Usage
+rate(dotnet_process_cpu_time_seconds_total{app="$app"}[5m])
+
+// Панель 8 – GC Collections
+rate(dotnet_gc_collections_total{app="$app"}[5m])
+
+// Панель 9 – Threads Count
+dotnet_thread_pool_thread_count_total{app="$app"}
+
+// Панель 10 – Command Rate (bot)
+sum(rate(command_requests_total{app="bot"}[5m])) by (command)
+
+// Панель 11 – Command Rate (duplicate)
+sum(rate(command_requests_total{app="bot"}[5m])) by (command)
+
+// Панель 12 – Summary Commands (pie chart)
+sum by (command) (command_requests_total{job="bot", command!="*"})
+
+// Панель 13 – Notifications Sent (bot)
+sum(rate(sent_notification_total{app="bot"}[5m]))
+
+// Панель 14 – API Request Rate (scrapper)
+sum(rate(api_requests_total{app="scrapper"}[5m])) by (source)
+
+// Панель 15 – API Latency (scrapper)
+histogram_quantile(0.95, sum(rate(http_client_request_duration_seconds_bucket{app="scrapper"}[5m])) by (le, server_address))
+
+// Панель 16 – Links Tracked (scrapper)
+sum by (tracked_source) (links_on_track{app="scrapper"})
+
+// Панель 17 – External Calls by Scope (scrapper)
+sum(rate(request_duration_ms_count{app="scrapper", otel_scope_name="linktracker.scrapper.external.metrics"}[5m])) by (scope, scope_type)
+
+// Панель 18 – External Calls by Scope P95 (scrapper)
+histogram_quantile(0.95, sum(rate(request_duration_ms_bucket{app="scrapper", otel_scope_name="linktracker.scrapper.external.metrics"}[5m])) by (le, scope, scope_type))

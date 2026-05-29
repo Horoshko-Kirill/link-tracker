@@ -32,7 +32,7 @@ public static class KestrelExtensions
                     _ => HttpProtocols.Http2
                 };
             });
-            
+
             options.Listen(IPAddress.Any, metricsPort, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1;

@@ -11,7 +11,7 @@ public class RedMetricsMiddleware
     {
         _next = next;
     }
-    
+
     public async Task InvokeAsync(HttpContext context, IRedMetrics metrics)
     {
         var sw = Stopwatch.StartNew();

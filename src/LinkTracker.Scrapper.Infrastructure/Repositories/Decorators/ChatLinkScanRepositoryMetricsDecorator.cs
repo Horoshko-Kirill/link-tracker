@@ -27,7 +27,7 @@ public class ChatLinkScanRepositoryMetricsDecorator : IChatLinkScanReportReposit
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_link_scan_report",
@@ -46,7 +46,7 @@ public class ChatLinkScanRepositoryMetricsDecorator : IChatLinkScanReportReposit
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_link_scan_report",
@@ -65,7 +65,7 @@ public class ChatLinkScanRepositoryMetricsDecorator : IChatLinkScanReportReposit
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_link_scan_report",

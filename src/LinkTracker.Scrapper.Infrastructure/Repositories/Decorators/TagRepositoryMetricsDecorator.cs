@@ -16,7 +16,7 @@ public class TagRepositoryMetricsDecorator : ITagRepository
         _inner = inner;
         _externalMetrics = externalMetrics;
     }
-    
+
     public async Task AddTagAsync(Tag tag, CancellationToken cancellationToken = default)
     {
         var sw = Stopwatch.StartNew();
@@ -28,7 +28,7 @@ public class TagRepositoryMetricsDecorator : ITagRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_tags",
@@ -47,7 +47,7 @@ public class TagRepositoryMetricsDecorator : ITagRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_tags",
@@ -66,7 +66,7 @@ public class TagRepositoryMetricsDecorator : ITagRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_tags",
@@ -85,7 +85,7 @@ public class TagRepositoryMetricsDecorator : ITagRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_tags",
@@ -104,7 +104,7 @@ public class TagRepositoryMetricsDecorator : ITagRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_tags",
@@ -123,7 +123,7 @@ public class TagRepositoryMetricsDecorator : ITagRepository
         finally
         {
             sw.Stop();
-            
+
             _externalMetrics.ObserveScopeDuration(
                 "db",
                 "scrapper_tags",

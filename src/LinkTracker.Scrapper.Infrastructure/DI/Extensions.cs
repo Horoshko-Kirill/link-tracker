@@ -25,7 +25,7 @@ public static class Extensions
         {
             services.AddCached(configuration);
         }
-        
+
         services.AddSingleton<IRedMetrics, RedMetrics>();
         services.AddSingleton<IApiMetrics, ApiMetrics>();
         services.AddSingleton<IExternalMetrics, ExternalMetrics>();
