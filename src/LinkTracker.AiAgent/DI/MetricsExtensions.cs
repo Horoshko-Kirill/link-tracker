@@ -13,6 +13,7 @@ public static class MetricsExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
+                    .AddMeter("linktracker.aiagnet.red")
                     .AddPrometheusExporter();
             });
         

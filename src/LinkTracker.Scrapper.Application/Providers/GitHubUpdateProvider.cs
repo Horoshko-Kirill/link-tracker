@@ -1,4 +1,6 @@
-﻿using LinkTracker.Scrapper.Application.InterfacesClients;
+﻿using System.Diagnostics;
+using LinkTracker.Scrapper.Application.InterfacesClients;
+using LinkTracker.Scrapper.Application.InterfacesMetrics;
 using LinkTracker.Scrapper.Application.Providers.Interfaces;
 using LinkTracker.Scrapper.Contracts.Dto;
 
@@ -7,10 +9,11 @@ namespace LinkTracker.Scrapper.Application.Providers;
 public class GitHubUpdateProvider : IUpdateProvider
 {
     private readonly IGitHubClient _gitHubClient;
-
-    public GitHubUpdateProvider(IGitHubClient gitHubClient)
+    private readonly IExternalMetrics _externalMetrics;
+    public GitHubUpdateProvider(IGitHubClient gitHubClient, IExternalMetrics externalMetrics)
     {
         _gitHubClient = gitHubClient;
+        _externalMetrics = externalMetrics;
     }
     public bool CanHandle(Uri url)
     {
@@ -28,8 +31,22 @@ public class GitHubUpdateProvider : IUpdateProvider
 
         var owner = parts[0];
         var repo = parts[1];
+        
+        var sw = Stopwatch.StartNew();
 
-        return await _gitHubClient.GetNewEventsAsync(owner, repo, from, cancellationToken);
+        try
+        {
+            return await _gitHubClient.GetNewEventsAsync(owner, repo, from, cancellationToken);
+        }
+        finally
+        {
+            sw.Stop();
+            
+            _externalMetrics.ObserveScopeDuration(
+                "external_source",
+                "github.com",
+                sw.Elapsed.TotalMilliseconds);
+        }
     }
 
 }

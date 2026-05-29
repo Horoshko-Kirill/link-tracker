@@ -13,6 +13,9 @@ public static class MetricsExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
+                    .AddMeter("linktracker.bot.commands")
+                    .AddMeter("linktracker.bot.notifications")
+                    .AddMeter("linktracker.bot.red")
                     .AddPrometheusExporter();
             });
         

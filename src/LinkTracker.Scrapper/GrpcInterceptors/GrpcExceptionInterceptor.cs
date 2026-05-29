@@ -1,10 +1,10 @@
-﻿using Grpc.Core;
+﻿using System.Text.Json;
+using Grpc.Core;
 using Grpc.Core.Interceptors;
 using LinkTracker.Scrapper.Application.Exceptions;
 using LinkTracker.Scrapper.Contracts.Dto;
-using System.Text.Json;
 
-namespace LinkTracker.Scrapper.ExceptionInterceptor;
+namespace LinkTracker.Scrapper.GrpcInterceptors;
 
 public class GrpcExceptionInterceptor : Interceptor
 {

@@ -5,6 +5,7 @@ using LinkTracker.Scrapper.Infrastructure.Database.Sql;
 using LinkTracker.Scrapper.Infrastructure.Database.Transaction;
 using LinkTracker.Scrapper.Infrastructure.Options;
 using LinkTracker.Scrapper.Infrastructure.Repositories;
+using LinkTracker.Scrapper.Infrastructure.Repositories.Decorators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,6 +62,13 @@ public static class RepositoryExtensions
                 break;
         }
 
+        services.Decorate<IChatLinkScanReportRepository, ChatLinkScanRepositoryMetricsDecorator>();
+        services.Decorate<IUpdateEventRepository, UpdateEventRepositoryMetricsDecorator>();
+        services.Decorate<IChatRepository, ChatRepositoryMetricsDecorator>();
+        services.Decorate<ITagRepository, TagRepositoryMetricsDecorator>();
+        services.Decorate<ISubscriptionRepository, SubscriptionRepositoryMetricsDecorator>();
+        services.Decorate<ILinkRepository, LinkRepositoryMetricsDecorator>();
+        services.Decorate<IOutboxMessageRepository, OutboxMessageRepositoryMetricsDecorator>();
         return services;
     }
 }

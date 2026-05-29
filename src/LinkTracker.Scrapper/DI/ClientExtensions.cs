@@ -1,6 +1,6 @@
 ﻿using LinkTracker.Bot.Contracts.Grpc;
 using LinkTracker.Scrapper.Application.InterfacesClients;
-using LinkTracker.Scrapper.ExceptionInterceptor;
+using LinkTracker.Scrapper.GrpcInterceptors;
 using LinkTracker.Scrapper.Infrastructure.Clients;
 using LinkTracker.Scrapper.Options;
 using Microsoft.Extensions.Options;
@@ -25,6 +25,7 @@ public static class ClientExtensions
                 services.AddTransient<GrpcResilienceInterceptor>();
                 services.AddSingleton<GrpcExceptionInterceptor>();
                 services.AddSingleton<GrpcRedMetricsInterceptor>();
+                services.AddSingleton<GrpcApiMetricsInterceptor>();
                 
                 services.AddGrpcClient<BotUpdateService.BotUpdateServiceClient>((sp, o) =>
                     {
@@ -42,6 +43,7 @@ public static class ClientExtensions
                 {
                     options.Interceptors.Add<GrpcExceptionInterceptor>();
                     options.Interceptors.Add<GrpcRedMetricsInterceptor>();
+                    options.Interceptors.Add<GrpcApiMetricsInterceptor>();
                 });
 
                 break;

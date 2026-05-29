@@ -27,6 +27,9 @@ public static class Extensions
         }
         
         services.AddSingleton<IRedMetrics, RedMetrics>();
+        services.AddSingleton<IApiMetrics, ApiMetrics>();
+        services.AddSingleton<IExternalMetrics, ExternalMetrics>();
+        services.AddSingleton<ILinkMetrics, LinkMetrics>();
         return services;
     }
 }

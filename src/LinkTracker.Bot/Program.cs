@@ -36,6 +36,7 @@ builder.Logging.AddConsole();
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+builder.Services.Decorate<ICommandDispatcher, CommandDispatcherMetricsDecorator>();
 builder.Services.AddScoped<IMessageRoute, MessageRoute>();
 
 builder.Services.AddGrpc();

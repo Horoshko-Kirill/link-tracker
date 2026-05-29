@@ -52,6 +52,7 @@ if (app.Environment.IsDevelopment())
 var kestrelOptions = app.Services.GetRequiredService<IOptions<KestrelOptions>>().Value;
 
 app.UseMiddleware<RedMetricsMiddleware>();
+app.UseMiddleware<ApiMetricsMiddleware>();
 
 app.MapWhen(ctx => ctx.Connection.LocalPort == kestrelOptions.Port, mainApp =>
 {

@@ -7,7 +7,7 @@ services:
     container_name: bot.api
     ports:
       - "7175:80"
-      - "7176:7156"
+      - "7176:7176"
     environment:
       - Bot__Token=${BOT_TOKEN}
       - Scrapper__BaseUrl=http://scrapper:80
@@ -16,7 +16,7 @@ services:
       - KESTREL__PORT=80
       - ClientType__Type=${PROTOCOL_TYPE_Scrapper}
       - KESTREL__TYPE=${PROTOCOL_TYPE_Bot}
-      - Kestrel__MetricsPort=7156
+      - Kestrel__MetricsPort=7176
       - Kafka__BootstrapServers=kafka-1:29092,kafka-2:29093,kafka-3:29094
       - Kafka__Topic=link-updates-processed
       - Kafka__GroupId=link-tracker-bot

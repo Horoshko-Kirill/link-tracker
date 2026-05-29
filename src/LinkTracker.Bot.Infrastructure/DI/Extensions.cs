@@ -33,6 +33,8 @@ public static class Extensions
         services.AddHostedService<LinkUpdateKafkaConsumer>();
         
         services.AddSingleton<IRedMetrics, RedMetrics>();
+        services.AddSingleton<ICommandMetrics, CommandMetrics>();
+        services.AddSingleton<INotificationMetrics, NotificationMetrics>();
         return services;
     }
 }

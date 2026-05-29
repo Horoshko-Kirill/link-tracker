@@ -3,7 +3,7 @@ using Grpc.Core;
 using Grpc.Core.Interceptors;
 using LinkTracker.Scrapper.Application.InterfacesMetrics;
 
-namespace LinkTracker.Scrapper.ExceptionInterceptor;
+namespace LinkTracker.Scrapper.GrpcInterceptors;
 
 public class GrpcRedMetricsInterceptor : Interceptor
 {

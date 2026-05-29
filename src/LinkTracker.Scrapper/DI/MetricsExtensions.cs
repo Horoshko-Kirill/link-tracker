@@ -13,6 +13,10 @@ public static class MetricsExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
+                    .AddMeter("linktracker.scrapper.red")
+                    .AddMeter("linktracker.scrapper.api")
+                    .AddMeter("linktracker.scrapper.external.metrics")
+                    .AddMeter("linktracker.scrapper.link.metrics")
                     .AddPrometheusExporter();
             });
         

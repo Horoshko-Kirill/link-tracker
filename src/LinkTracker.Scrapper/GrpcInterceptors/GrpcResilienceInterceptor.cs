@@ -4,7 +4,7 @@ using LinkTracker.Scrapper.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using Polly;
 
-namespace LinkTracker.Scrapper.ExceptionInterceptor;
+namespace LinkTracker.Scrapper.GrpcInterceptors;
 
 public class GrpcResilienceInterceptor : Interceptor
 {
