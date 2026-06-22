@@ -1,0 +1,30 @@
+
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+
+  - job_name: 'bot'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'bot:7176'
+        labels:
+          app: bot
+
+  - job_name: 'scrapper'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'scrapper:7198'
+        labels:
+          app: scrapper
+
+  - job_name: 'aiagent'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'ai-agent:80'
+        labels:
+          app: aiagent
+

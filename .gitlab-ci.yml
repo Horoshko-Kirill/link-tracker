@@ -1,4 +1,4 @@
-image: mcr.microsoft.com/dotnet/sdk:9.0
+image: mcr.microsoft.com/dotnet/sdk:10.0
 
 stages:
   - build
@@ -15,7 +15,7 @@ build:
     - dotnet build
   only:
     - merge_requests
-    - master
+
 
 linter:
   stage: validate
@@ -23,7 +23,7 @@ linter:
     - dotnet format --verify-no-changes
   only:
     - merge_requests
-    - master
+
 
 module_test:
   stage: test
@@ -35,31 +35,36 @@ module_test:
       allow_failure: false
     - when: never
   script:
-    - dotnet test
+    - dotnet test src/LinkTracker.Tests.Unit/LinkTracker.Tests.Unit.csproj
 
 integration_test:
-  image: docker 
+  image: docker:29.0.1-cli
   stage: test
-  needs: 
+  needs:
     - job: module_test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master"
       when: always
       allow_failure: false
     - when: never
-  variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
   tags:
     - dind
   services:
     - name: docker:29.0.1-dind
       alias: docker
-  before_script:
-    - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1 
+    DOCKER_CERT_PATH: "/certs/client"
   script:
-    - echo "Running tests..."
+    - until [ -f /certs/client/ca.pem ]; do echo "waiting docker certs"; sleep 1; done
+    - docker version
+    - docker build -t link-tracker-scrapper:latest -f src/LinkTracker.Scrapper/Dockerfile .
+    - docker build -t link-tracker-bot:latest -f src/LinkTracker.Bot/Dockerfile .
+    - docker build -t link-tracker-bot.migrator:latest -f src/LinkTracker.Bot.Migrator/Dockerfile .
+    - docker build -t link-tracker-scrapper.migrator:latest -f src/LinkTracker.Scrapper.Migrator/Dockerfile .
+    - docker run --rm --add-host docker:host-gateway -v "$PWD:/src" -w /src -e DOCKER_HOST=tcp://docker:2376 -e DOCKER_TLS_VERIFY=1 -e DOCKER_CERT_PATH=/certs/client -e TESTCONTAINERS_HOST_OVERRIDE=docker -v /certs/client:/certs/client:ro mcr.microsoft.com/dotnet/sdk:10.0 dotnet test src/LinkTracker.Tests.IntegrationTests/LinkTracker.Tests.IntegrationTests.csproj
+
 
   

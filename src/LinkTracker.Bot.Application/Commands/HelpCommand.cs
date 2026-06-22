@@ -1,0 +1,28 @@
+﻿using LinkTracker.Bot.Application.Commands.Interfaces;
+using LinkTracker.Bot.Application.Constants;
+using LinkTracker.Bot.Application.InterfacesClients;
+
+namespace LinkTracker.Bot.Application.Commands;
+
+/// <summary>
+/// Команда /help для вывода возможных команд
+/// </summary>
+public class HelpCommand : ICommand
+{
+    private readonly ITelegramClient _client;
+
+    public HelpCommand(ITelegramClient client)
+    {
+        _client = client;
+    }
+    public string Name => "/help";
+
+    public string Description => "Список команд";
+
+    public async Task ExecuteAsync(long chatId, string[] args, CancellationToken cancellationToken = default)
+    {
+        var message = HelpConstants.constants;
+
+        await _client.SendMessageAsync(chatId, message, cancellationToken);
+    }
+}

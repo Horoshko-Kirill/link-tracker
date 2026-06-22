@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Mappers\**" />
+    <EmbeddedResource Remove="Mappers\**" />
+    <None Remove="Mappers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LinkTracker.Bot.Contracts\LinkTracker.Bot.Contracts.csproj" />
+    <ProjectReference Include="..\LinkTracker.Bot.Domain\LinkTracker.Bot.Domain.csproj" />
+    <ProjectReference Include="..\LinkTracker.Scrapper.Application\LinkTracker.Scrapper.Application.csproj" />
+    <ProjectReference Include="..\LinkTracker.Scrapper.Contracts\LinkTracker.Scrapper.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.8" />
+    <PackageReference Include="Telegram.Bot" Version="22.9.0" />
+  </ItemGroup>
+
+</Project>

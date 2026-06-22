@@ -1,41 +1,78 @@
+using LinkTracker.Scrapper.Application.DI;
+using LinkTracker.Scrapper.DI;
+using LinkTracker.Scrapper.Grpc;
+using LinkTracker.Scrapper.Infrastructure.DI;
+using LinkTracker.Scrapper.Infrastructure.Options;
+using LinkTracker.Scrapper.Middleware;
+using LinkTracker.Scrapper.Options;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.Configure<BotOptions>(
+    builder.Configuration.GetSection(BotOptions.SectionName));
+
+builder.Services.Configure<ClientOptions>(
+    builder.Configuration.GetSection(ClientOptions.SectionName));
+
+builder.Services.Configure<ResilienceOptions>(
+    builder.Configuration.GetSection(ResilienceOptions.SectionName));
+
+builder.Services.Configure<KestrelOptions>(
+    builder.Configuration.GetSection(KestrelOptions.SectionName));
+
 builder.Services.AddOpenApi();
+
+builder.Services.AddControllers();
+
+builder.Services.AddApplication(builder.Configuration);
+
+builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddGrpc();
+
+builder.WebHost.ConfigureKestrelWithProtocol();
+
+builder.Services.AddClient(builder.Configuration);
+
+builder.Services.AddAppMetrics();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+var kestrelOptions = app.Services.GetRequiredService<IOptions<KestrelOptions>>().Value;
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseMiddleware<RedMetricsMiddleware>();
+app.UseMiddleware<ApiMetricsMiddleware>();
 
-app.MapGet("/weatherforecast", () =>
+app.MapWhen(ctx => ctx.Connection.LocalPort == kestrelOptions.Port, mainApp =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    mainApp.UseMiddleware<RedMetricsMiddleware>();
+
+    mainApp.UseRouting();
+    mainApp.UseEndpoints(endpoints =>
+    {
+        endpoints.MapGrpcService<ScrapperGrpcLinkService>();
+        endpoints.MapControllers();
+    });
+});
+
+app.MapWhen(ctx => ctx.Connection.LocalPort == kestrelOptions.MetricsPort, metricsApp =>
+{
+    metricsApp.UseRouting();
+    metricsApp.UseEndpoints(endpoints =>
+    {
+        endpoints.MapPrometheusScrapingEndpoint();
+    });
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
